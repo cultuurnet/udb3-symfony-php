@@ -1,0 +1,24 @@
+{
+  "name": "cultuurnet/udb3-symfony",
+  "description": "UDB3 integration with Symfony HTTPFoundation",
+  "license": "GPLv3",
+  "authors": [
+    {
+      "name": "Kristof Coomans",
+      "email": "kristof@2dotstwice.be"
+    }
+  ],
+  "require": {
+    "symfony/http-foundation": "~2.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "CultuurNet\\UDB3\\Symfony\\": "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.x-dev"
+    }
+  }
+}
