@@ -88,7 +88,7 @@ class PlaceRestController extends OfferRestBaseController {
         PlaceEditingServiceInterface $place_editor,
         RepositoryInterface $event_relations_repository,
         CultureFeed_User $user,
-        FileUsageInterface $fileUsage
+        FileUsageInterface $fileUsage = null
     ) {
         $this->entityService = $entity_service;
         $this->editor = $place_editor;
@@ -166,17 +166,16 @@ class PlaceRestController extends OfferRestBaseController {
             $response->setData(
                 [
                     'placeId' => $place_id,
-                    'url' => $this->getUrlGenerator()->generateFromRoute(
+                    /*'url' => $this->getUrlGenerator()->generateFromRoute(
                         'culturefeed_udb3.place',
                         ['cdbid' => $place_id],
                         ['absolute' => TRUE]
-                    ),
+                    ),*/
                 ]
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
