@@ -7,10 +7,12 @@ namespace CultuurNet\UDB3\Symfony;
 
 use CultureFeed_User;
 use CultuurNet\Auth\TokenCredentials;
+use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\EventServiceInterface;
+use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location;
@@ -26,11 +28,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * Class EventRestController.
- *
- * @package Drupal\culturefeed_udb3\Controller
- */
 class EventRestController extends OfferRestBaseController
 {
 
@@ -70,17 +67,14 @@ class EventRestController extends OfferRestBaseController
     protected $fileUsage;
 
     /**
-     * {@inheritdoc}
+     * @var IriGeneratorInterface
      */
-    public static function create(ContainerInterface $container) {
-        return new static(
-            $container->get('culturefeed_udb3.event.service'),
-            $container->get('culturefeed_udb3.event.editor'),
-            $container->get('culturefeed_udb3.event.used_labels_memory'),
-            $container->get('culturefeed.current_user'),
-            $container->get('file.usage')
-        );
-    }
+    protected $iriGenerator;
+
+    /**
+     * @var CalendarDeserializer
+     */
+    protected $calendarDeserializer;
 
     /**
      * Constructs a RestController.
@@ -93,19 +87,23 @@ class EventRestController extends OfferRestBaseController
      *   The event labeller.
      * @param CultureFeed_User $user
      *   The culturefeed user.
+     * @param IriGeneratorInterface $iriGenerator
      */
     public function __construct(
         EventServiceInterface $event_service,
         EventEditingServiceInterface $event_editor,
         DefaultUsedLabelsMemoryService $used_labels_memory,
         CultureFeed_User $user,
-        FileUsageInterface $fileUsage
+        FileUsageInterface $fileUsage = null,
+        IriGeneratorInterface $iriGenerator
     ) {
         $this->eventService = $event_service;
         $this->editor = $event_editor;
         $this->usedLabelsMemory = $used_labels_memory;
         $this->user = $user;
         $this->fileUsage = $fileUsage;
+        $this->iriGenerator = $iriGenerator;
+        $this->calendarDeserializer = new CalendarDeserializer();
     }
 
     /**
@@ -303,9 +301,11 @@ class EventRestController extends OfferRestBaseController
         return $response;
 
     }
-
     /**
      * Create a new event.
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function createEvent(Request $request) {
 
@@ -315,10 +315,8 @@ class EventRestController extends OfferRestBaseController
         try {
 
             if (empty($body_content->name) || empty($body_content->type) || empty($body_content->location) || empty($body_content->calendarType)) {
-                throw new InvalidArgumentException('Required fields are missing');
+                throw new \InvalidArgumentException('Required fields are missing');
             }
-
-            $calendar = $this->initCalendarForCreate($body_content);
 
             $theme = null;
             if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
@@ -328,25 +326,28 @@ class EventRestController extends OfferRestBaseController
             $event_id = $this->editor->createEvent(
                 new Title($body_content->name->nl),
                 new EventType($body_content->type->id, $body_content->type->label),
-                new Location($body_content->location->id, $body_content->location->name, $body_content->location->address->addressCountry, $body_content->location->address->addressLocality, $body_content->location->address->postalCode, $body_content->location->address->streetAddress),
-                $calendar,
+                new Location($body_content->location->id,
+                    $body_content->location->name,
+                    $body_content->location->address->addressCountry,
+                    $body_content->location->address->addressLocality,
+                    $body_content->location->address->postalCode,
+                    $body_content->location->address->streetAddress
+                ),
+                $this->calendarDeserializer->deserialize($body_content),
                 $theme
             );
 
             $response->setData(
                 [
                     'eventId' => $event_id,
-                    'url' => $this->getUrlGenerator()->generateFromRoute(
-                        'culturefeed_udb3.event',
-                        ['cdbid' => $event_id],
-                        ['absolute' => TRUE]
-                    ),
+                    'url' => $this->iriGenerator->iri($event_id)
                 ]
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
+            //TODO: Move the watchdog stuff to a psr logger?
+            //watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -391,8 +392,6 @@ class EventRestController extends OfferRestBaseController
                 throw new InvalidArgumentException('Required fields are missing');
             }
 
-            $calendar = $this->initCalendarForCreate($body_content);
-
             $theme = null;
             if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
                 $theme = new Theme($body_content->theme->id, $body_content->theme->label);
@@ -403,7 +402,7 @@ class EventRestController extends OfferRestBaseController
                 new Title($body_content->name->nl),
                 new EventType($body_content->type->id, $body_content->type->label),
                 new Location($body_content->location->id, $body_content->location->name, $body_content->location->address->addressCountry, $body_content->location->address->addressLocality, $body_content->location->address->postalCode, $body_content->location->address->streetAddress),
-                $calendar,
+                $this->calendarDeserializer->deserialize($body_content),
                 $theme
             );
 
@@ -420,6 +419,7 @@ class EventRestController extends OfferRestBaseController
     }
 
     /**
+     * TODO: This authenticator is hard coded to Drupal. Move it to a service.
      * Check if the current user has edit access to the given item.
      *
      * @param string cdbid
