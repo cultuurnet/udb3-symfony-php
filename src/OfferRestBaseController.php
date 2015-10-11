@@ -211,8 +211,14 @@ abstract class OfferRestBaseController
         $response = new JsonResponse();
         try {
             $data = $body_content->bookingInfo;
-            $bookingInfo = new BookingInfo($data->url, $data->urlLabel, $data->phone, $data->email,
-                $data->availabilityStarts, $data->availabilityEnds, $data->availabilityStarts, $data->availabilityStarts);
+            $bookingInfo = new BookingInfo(
+                $data->url,
+                $data->urlLabel,
+                $data->phone,
+                $data->email,
+                isset($data->availabilityStarts) ? $data->availabilityStarts : '',
+                isset($data->availabilityEnds) ? $data->availabilityEnds : ''
+            );
             $command_id = $this->editor->updateBookingInfo($cdbid, $bookingInfo);
             $response->setData(['commandId' => $command_id]);
         }
