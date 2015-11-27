@@ -174,7 +174,6 @@ class EventRestController extends OfferRestBaseController
         } catch (Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -220,7 +219,6 @@ class EventRestController extends OfferRestBaseController
         } catch (Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -261,7 +259,6 @@ class EventRestController extends OfferRestBaseController
         } catch (Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -295,7 +292,6 @@ class EventRestController extends OfferRestBaseController
         } catch (Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -346,8 +342,6 @@ class EventRestController extends OfferRestBaseController
         } catch (\Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            //TODO: Move the watchdog stuff to a psr logger?
-            //watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -372,7 +366,6 @@ class EventRestController extends OfferRestBaseController
         } catch (Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -411,7 +404,6 @@ class EventRestController extends OfferRestBaseController
         } catch (Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
@@ -446,7 +438,6 @@ class EventRestController extends OfferRestBaseController
         catch (Exception $e) {
             $response->setStatusCode(400);
             $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
         }
 
         return $response;
