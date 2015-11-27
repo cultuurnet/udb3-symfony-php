@@ -163,18 +163,13 @@ class EventRestController extends OfferRestBaseController
             return new JsonResponse(['error' => "title required"], 400);
         }
 
-        try {
-            $command_id = $this->editor->translateTitle(
-                $cdbid,
-                new Language($language),
-                $body_content->title
-            );
+        $command_id = $this->editor->translateTitle(
+            $cdbid,
+            new Language($language),
+            $body_content->title
+        );
 
-            $response->setData(['commandId' => $command_id]);
-        } catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -207,19 +202,13 @@ class EventRestController extends OfferRestBaseController
             return new JsonResponse(['error' => "description required"], 400);
         }
 
-        try {
+        $command_id = $this->editor->translateDescription(
+            $cdbid,
+            new Language($language),
+            $body_content->description
+        );
 
-            $command_id = $this->editor->translateDescription(
-                $cdbid,
-                new Language($language),
-                $body_content->description
-            );
-
-            $response->setData(['commandId' => $command_id]);
-        } catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -241,25 +230,19 @@ class EventRestController extends OfferRestBaseController
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
-        try {
+        $label = new Label($body_content->label);
+        $command_id = $this->eventEditor->label(
+            $cdbid,
+            $label
+        );
 
-            $label = new Label($body_content->label);
-            $command_id = $this->eventEditor->label(
-                $cdbid,
-                $label
-            );
+        $user = $this->user;
+        $this->usedLabelsMemory->rememberLabelUsed(
+            $user->id,
+            $label
+        );
 
-            $user = $this->user;
-            $this->usedLabelsMemory->rememberLabelUsed(
-                $user->id,
-                $label
-            );
-
-            $response->setData(['commandId' => $command_id]);
-        } catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -282,17 +265,12 @@ class EventRestController extends OfferRestBaseController
 
         $response = new JsonResponse();
 
-        try {
-            $command_id = $this->eventEditor->unlabel(
-                $cdbid,
-                new Label($label)
-            );
+        $command_id = $this->eventEditor->unlabel(
+            $cdbid,
+            new Label($label)
+        );
 
-            $response->setData(['commandId' => $command_id]);
-        } catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -308,41 +286,36 @@ class EventRestController extends OfferRestBaseController
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
-        try {
 
-            if (empty($body_content->name) || empty($body_content->type) || empty($body_content->location) || empty($body_content->calendarType)) {
-                throw new \InvalidArgumentException('Required fields are missing');
-            }
-
-            $theme = null;
-            if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
-                $theme = new Theme($body_content->theme->id, $body_content->theme->label);
-            }
-
-            $event_id = $this->editor->createEvent(
-                new Title($body_content->name->nl),
-                new EventType($body_content->type->id, $body_content->type->label),
-                new Location($body_content->location->id,
-                    $body_content->location->name,
-                    $body_content->location->address->addressCountry,
-                    $body_content->location->address->addressLocality,
-                    $body_content->location->address->postalCode,
-                    $body_content->location->address->streetAddress
-                ),
-                $this->calendarDeserializer->deserialize($body_content),
-                $theme
-            );
-
-            $response->setData(
-                [
-                    'eventId' => $event_id,
-                    'url' => $this->iriGenerator->iri($event_id)
-                ]
-            );
-        } catch (\Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
+        if (empty($body_content->name) || empty($body_content->type) || empty($body_content->location) || empty($body_content->calendarType)) {
+            throw new \InvalidArgumentException('Required fields are missing');
         }
+
+        $theme = null;
+        if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
+            $theme = new Theme($body_content->theme->id, $body_content->theme->label);
+        }
+
+        $event_id = $this->editor->createEvent(
+            new Title($body_content->name->nl),
+            new EventType($body_content->type->id, $body_content->type->label),
+            new Location($body_content->location->id,
+                $body_content->location->name,
+                $body_content->location->address->addressCountry,
+                $body_content->location->address->addressLocality,
+                $body_content->location->address->postalCode,
+                $body_content->location->address->streetAddress
+            ),
+            $this->calendarDeserializer->deserialize($body_content),
+            $theme
+        );
+
+        $response->setData(
+            [
+                'eventId' => $event_id,
+                'url' => $this->iriGenerator->iri($event_id)
+            ]
+        );
 
         return $response;
     }
@@ -354,19 +327,12 @@ class EventRestController extends OfferRestBaseController
 
         $response = new JsonResponse();
 
-        try {
-
-            if (empty($cdbid)) {
-                throw new InvalidArgumentException('Required fields are missing');
-            }
-
-            $result = $this->editor->deleteEvent($cdbid);
-            $response->setData(['result' => $result]);
-
-        } catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
+        if (empty($cdbid)) {
+            throw new InvalidArgumentException('Required fields are missing');
         }
+
+        $result = $this->editor->deleteEvent($cdbid);
+        $response->setData(['result' => $result]);
 
         return $response;
     }
@@ -379,32 +345,25 @@ class EventRestController extends OfferRestBaseController
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
-        try {
-
-            if (empty($body_content->name) || empty($body_content->type)) {
-                throw new InvalidArgumentException('Required fields are missing');
-            }
-
-            $theme = null;
-            if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
-                $theme = new Theme($body_content->theme->id, $body_content->theme->label);
-            }
-
-            $command_id = $this->editor->updateMajorInfo(
-                $cdbid,
-                new Title($body_content->name->nl),
-                new EventType($body_content->type->id, $body_content->type->label),
-                new Location($body_content->location->id, $body_content->location->name, $body_content->location->address->addressCountry, $body_content->location->address->addressLocality, $body_content->location->address->postalCode, $body_content->location->address->streetAddress),
-                $this->calendarDeserializer->deserialize($body_content),
-                $theme
-            );
-
-            $response->setData(['commandId' => $command_id]);
-
-        } catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
+        if (empty($body_content->name) || empty($body_content->type)) {
+            throw new InvalidArgumentException('Required fields are missing');
         }
+
+        $theme = null;
+        if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
+            $theme = new Theme($body_content->theme->id, $body_content->theme->label);
+        }
+
+        $command_id = $this->editor->updateMajorInfo(
+            $cdbid,
+            new Title($body_content->name->nl),
+            new EventType($body_content->type->id, $body_content->type->label),
+            new Location($body_content->location->id, $body_content->location->name, $body_content->location->address->addressCountry, $body_content->location->address->addressLocality, $body_content->location->address->postalCode, $body_content->location->address->streetAddress),
+            $this->calendarDeserializer->deserialize($body_content),
+            $theme
+        );
+
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -426,19 +385,14 @@ class EventRestController extends OfferRestBaseController
         $entryApi = $improvedEntryApiFactory->get()->withTokenCredentials($credentials);
 
         $response = new JsonResponse();
-        try {
-            $result = $entryApi->checkPermission($this->user->id, $this->user->mbox, array($cdbid));
-            $has_permission = FALSE;
-            if (!empty($result->event)) {
-                $has_permission = (string)$result->event->editable == 'true';
-            }
 
-            $response->setData(['hasPermission' => $has_permission]);
+        $result = $entryApi->checkPermission($this->user->id, $this->user->mbox, array($cdbid));
+        $has_permission = FALSE;
+        if (!empty($result->event)) {
+            $has_permission = (string)$result->event->editable == 'true';
         }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
+
+        $response->setData(['hasPermission' => $has_permission]);
 
         return $response;
 
