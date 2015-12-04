@@ -358,7 +358,14 @@ class EventRestController extends OfferRestBaseController
             $cdbid,
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Location($body_content->location->id, $body_content->location->name, $body_content->location->address->addressCountry, $body_content->location->address->addressLocality, $body_content->location->address->postalCode, $body_content->location->address->streetAddress),
+            new Location(
+                $body_content->location->id,
+                $body_content->location->name,
+                $body_content->location->address->addressCountry,
+                $body_content->location->address->addressLocality,
+                $body_content->location->address->postalCode,
+                $body_content->location->address->streetAddress
+            ),
             $this->calendarDeserializer->deserialize($body_content),
             $theme
         );
