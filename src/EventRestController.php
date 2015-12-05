@@ -6,11 +6,11 @@
 namespace CultuurNet\UDB3\Symfony;
 
 use CultureFeed_User;
-use CultuurNet\Auth\TokenCredentials;
 use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
+use CultuurNet\UDB3\Event\SecurityInterface;
 use CultuurNet\UDB3\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
@@ -19,26 +19,17 @@ use CultuurNet\UDB3\Location;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
-use Drupal;
 use Drupal\file\FileUsage\FileUsageInterface;
-use Exception;
 use InvalidArgumentException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\String\String;
 
 class EventRestController extends OfferRestBaseController
 {
 
     const IMAGE_UPLOAD_DIR = 'public://events';
-
-    /**
-     * The search service.
-     *
-     * @var PullParsingSearchService;
-     */
-    protected $searchService;
 
     /**
      * The event editor
@@ -77,6 +68,11 @@ class EventRestController extends OfferRestBaseController
     protected $calendarDeserializer;
 
     /**
+     * @var SecurityInterface
+     */
+    protected $security;
+
+    /**
      * Constructs a RestController.
      *
      * @param EventServiceInterface $event_service
@@ -88,6 +84,7 @@ class EventRestController extends OfferRestBaseController
      * @param CultureFeed_User $user
      *   The culturefeed user.
      * @param IriGeneratorInterface $iriGenerator
+     * @param SecurityInterface $security
      */
     public function __construct(
         EventServiceInterface $event_service,
@@ -95,7 +92,8 @@ class EventRestController extends OfferRestBaseController
         DefaultUsedLabelsMemoryService $used_labels_memory,
         CultureFeed_User $user,
         FileUsageInterface $fileUsage = null,
-        IriGeneratorInterface $iriGenerator
+        IriGeneratorInterface $iriGenerator,
+        SecurityInterface $security
     ) {
         $this->eventService = $event_service;
         $this->editor = $event_editor;
@@ -104,6 +102,7 @@ class EventRestController extends OfferRestBaseController
         $this->fileUsage = $fileUsage;
         $this->iriGenerator = $iriGenerator;
         $this->calendarDeserializer = new CalendarDeserializer();
+        $this->security = $security;
     }
 
     /**
@@ -275,6 +274,7 @@ class EventRestController extends OfferRestBaseController
         return $response;
 
     }
+
     /**
      * Create a new event.
      *
@@ -370,39 +370,19 @@ class EventRestController extends OfferRestBaseController
             $theme
         );
 
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
-
+        return JsonResponse::create(['commandId' => $command_id]);
     }
 
     /**
-     * TODO: This authenticator is hard coded to Drupal. Move it to a service.
      * Check if the current user has edit access to the given item.
      *
-     * @param string cdbid
+     * @param string $cdbid
      *   Id of item to check.
      */
     public function hasPermission($cdbid) {
+        $has_permission = $this->security->allowsUpdates(new String($cdbid));
 
-        $improvedEntryApiFactory = Drupal::service('culturefeed_udb3.udb2_entry_api_improved_factory');
-        $userCredentials = Drupal::service('culturefeed.user_credentials');
-
-        $credentials = new TokenCredentials($userCredentials->getToken(), $userCredentials->getSecret());
-        $entryApi = $improvedEntryApiFactory->get()->withTokenCredentials($credentials);
-
-        $response = new JsonResponse();
-
-        $result = $entryApi->checkPermission($this->user->id, $this->user->mbox, array($cdbid));
-        $has_permission = FALSE;
-        if (!empty($result->event)) {
-            $has_permission = (string)$result->event->editable == 'true';
-        }
-
-        $response->setData(['hasPermission' => $has_permission]);
-
-        return $response;
-
+        return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 
     /**
