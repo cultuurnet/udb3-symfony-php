@@ -41,19 +41,12 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "description required"], 400);
         }
 
-        try {
+        $command_id = $this->editor->updateDescription(
+            $cdbid,
+            $body_content->description
+        );
 
-            $command_id = $this->editor->updateDescription(
-                $cdbid,
-                $body_content->description
-            );
-
-            $response->setData(['commandId' => $command_id]);
-        } catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -74,15 +67,9 @@ abstract class OfferRestBaseController
         }
 
         $response = new JsonResponse();
-        try {
-            $command_id = $this->editor->updateTypicalAgeRange($cdbid, $body_content->typicalAgeRange);
-            $response->setData(['commandId' => $command_id]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $command_id = $this->editor->updateTypicalAgeRange($cdbid, $body_content->typicalAgeRange);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -98,15 +85,9 @@ abstract class OfferRestBaseController
     public function deleteTypicalAgeRange(Request $request, $cdbid) {
 
         $response = new JsonResponse();
-        try {
-            $command_id = $this->editor->deleteTypicalAgeRange($cdbid);
-            $response->setData(['commandId' => $command_id]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $command_id = $this->editor->deleteTypicalAgeRange($cdbid);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -127,15 +108,9 @@ abstract class OfferRestBaseController
         }
 
         $response = new JsonResponse();
-        try {
-            $command_id = $this->editor->updateOrganizer($cdbid, $body_content->organizer);
-            $response->setData(['commandId' => $command_id]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $command_id = $this->editor->updateOrganizer($cdbid, $body_content->organizer);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -151,15 +126,9 @@ abstract class OfferRestBaseController
     public function deleteOrganizer($cdbid, $organizerId) {
 
         $response = new JsonResponse();
-        try {
-            $command_id = $this->editor->deleteOrganizer($cdbid, $organizerId);
-            $response->setData(['commandId' => $command_id]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $command_id = $this->editor->deleteOrganizer($cdbid, $organizerId);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -180,15 +149,9 @@ abstract class OfferRestBaseController
         }
 
         $response = new JsonResponse();
-        try {
-            $command_id = $this->editor->updateContactPoint($cdbid, new ContactPoint($body_content->contactPoint->phone, $body_content->contactPoint->email, $body_content->contactPoint->url));
-            $response->setData(['commandId' => $command_id]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $command_id = $this->editor->updateContactPoint($cdbid, new ContactPoint($body_content->contactPoint->phone, $body_content->contactPoint->email, $body_content->contactPoint->url));
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -209,24 +172,18 @@ abstract class OfferRestBaseController
         }
 
         $response = new JsonResponse();
-        try {
-            $data = $body_content->bookingInfo;
-            $bookingInfo = new BookingInfo(
-                $data->url,
-                $data->urlLabel,
-                $data->phone,
-                $data->email,
-                isset($data->availabilityStarts) ? $data->availabilityStarts : '',
-                isset($data->availabilityEnds) ? $data->availabilityEnds : ''
-            );
-            $command_id = $this->editor->updateBookingInfo($cdbid, $bookingInfo);
-            $response->setData(['commandId' => $command_id]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $data = $body_content->bookingInfo;
+        $bookingInfo = new BookingInfo(
+            $data->url,
+            $data->urlLabel,
+            $data->phone,
+            $data->email,
+            isset($data->availabilityStarts) ? $data->availabilityStarts : '',
+            isset($data->availabilityEnds) ? $data->availabilityEnds : ''
+        );
+        $command_id = $this->editor->updateBookingInfo($cdbid, $bookingInfo);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -247,15 +204,9 @@ abstract class OfferRestBaseController
         }
 
         $response = new JsonResponse();
-        try {
-            $command_id = $this->editor->updateFacilities($cdbid, $body_content->facilities);
-            $response->setData(['commandId' => $command_id]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $command_id = $this->editor->updateFacilities($cdbid, $body_content->facilities);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
@@ -284,17 +235,11 @@ abstract class OfferRestBaseController
 
         // Create the command and return the url to the image + thumbnail version.
         $response = new JsonResponse();
-        try {
-            $url = file_create_url($drupal_file->getFileUri());
-            $thumbnail_url = ImageStyle::load('thumbnail')->buildUrl($drupal_file->getFileUri());
-            $command_id = $this->editor->addImage($cdbid, new MediaObject($url, $thumbnail_url, $description, $copyrightHolder, '', 'ImageObject'));
-            $response->setData(['commandId' => $command_id, 'thumbnailUrl' => $thumbnail_url, 'url' => $url]);
-        }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
-        }
+
+        $url = file_create_url($drupal_file->getFileUri());
+        $thumbnail_url = ImageStyle::load('thumbnail')->buildUrl($drupal_file->getFileUri());
+        $command_id = $this->editor->addImage($cdbid, new MediaObject($url, $thumbnail_url, $description, $copyrightHolder, '', 'ImageObject'));
+        $response->setData(['commandId' => $command_id, 'thumbnailUrl' => $thumbnail_url, 'url' => $url]);
 
         return $response;
 
@@ -310,52 +255,45 @@ abstract class OfferRestBaseController
     public function updateImage(Request $request, $cdbid, $index) {
 
         $response = new JsonResponse();
-        try {
 
-            $itemJson = $this->getItem($cdbid);
-            $item = json_decode($itemJson);
-            if (!isset($item->mediaObject[$index])) {
-                return new JsonResponse(['error' => "The image to edit was not found"], 400);
-            }
-
-            // Get the fid of the old file.
-            $url = $item->mediaObject[$index]->url;
-            $thumbnail_url = $item->mediaObject[$index]->thumbnailUrl;
-            $old_fid = $this->getFileIdByUrl($url);
-
-            // A new file was uploaded.
-            if ($request->files->has('file')) {
-
-                $drupal_file = $this->saveUploadedImage($request->files->get('file'), $cdbid, $this->getImageDestination($cdbid));
-                if (!$drupal_file) {
-                    return new JsonResponse(['error' => "Error while saving file"], 400);
-                }
-
-                $url = file_create_url($drupal_file->getFileUri());
-                $thumbnail_url = ImageStyle::load('thumbnail')->buildUrl($drupal_file->getFileUri());
-
-                $description = $request->request->get('description');
-                $copyright = $request->request->get('copyrightHolder');
-
-            }
-            // Use existing url.
-            else {
-
-                // Format is json if only the text was changed.
-                $body_content = json_decode($request->getContent());
-                $description = empty($body_content->description) ? '' : $body_content->description;
-                $copyright = empty($body_content->copyrightHolder) ? '' : $body_content->copyrightHolder;
-
-            }
-
-            $command_id = $this->editor->updateImage($cdbid, $index, new MediaObject($url, $thumbnail_url, $description, $copyright, $old_fid, 'ImageObject'));
-            $response->setData(['commandId' => $command_id, 'thumbnailUrl' => $thumbnail_url, 'url' => $url]);
+        $itemJson = $this->getItem($cdbid);
+        $item = json_decode($itemJson);
+        if (!isset($item->mediaObject[$index])) {
+            return new JsonResponse(['error' => "The image to edit was not found"], 400);
         }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-            watchdog_exception('udb3', $e);
+
+        // Get the fid of the old file.
+        $url = $item->mediaObject[$index]->url;
+        $thumbnail_url = $item->mediaObject[$index]->thumbnailUrl;
+        $old_fid = $this->getFileIdByUrl($url);
+
+        // A new file was uploaded.
+        if ($request->files->has('file')) {
+
+            $drupal_file = $this->saveUploadedImage($request->files->get('file'), $cdbid, $this->getImageDestination($cdbid));
+            if (!$drupal_file) {
+                return new JsonResponse(['error' => "Error while saving file"], 400);
+            }
+
+            $url = file_create_url($drupal_file->getFileUri());
+            $thumbnail_url = ImageStyle::load('thumbnail')->buildUrl($drupal_file->getFileUri());
+
+            $description = $request->request->get('description');
+            $copyright = $request->request->get('copyrightHolder');
+
         }
+        // Use existing url.
+        else {
+
+            // Format is json if only the text was changed.
+            $body_content = json_decode($request->getContent());
+            $description = empty($body_content->description) ? '' : $body_content->description;
+            $copyright = empty($body_content->copyrightHolder) ? '' : $body_content->copyrightHolder;
+
+        }
+
+        $command_id = $this->editor->updateImage($cdbid, $index, new MediaObject($url, $thumbnail_url, $description, $copyright, $old_fid, 'ImageObject'));
+        $response->setData(['commandId' => $command_id, 'thumbnailUrl' => $thumbnail_url, 'url' => $url]);
 
         return $response;
 
@@ -370,26 +308,19 @@ abstract class OfferRestBaseController
      */
     public function deleteImage($cdbid, $index) {
 
-        try {
-
-            $itemJson = $this->getItem($cdbid);
-            $item = json_decode($itemJson);
-            if (!isset($item->mediaObject[$index])) {
-                return new JsonResponse(['error' => "The image to edit was not found"], 400);
-            }
-
-            // Get the fid of the old file.
-            $url = $item->mediaObject[$index]->url;
-            $old_fid = $this->getFileIdByUrl($url);
-
-            $response = new JsonResponse();
-            $command_id = $this->editor->deleteImage($cdbid, $index, $old_fid);
-            $response->setData(['commandId' => $command_id]);
+        $itemJson = $this->getItem($cdbid);
+        $item = json_decode($itemJson);
+        if (!isset($item->mediaObject[$index])) {
+            return new JsonResponse(['error' => "The image to edit was not found"], 400);
         }
-        catch (Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
+
+        // Get the fid of the old file.
+        $url = $item->mediaObject[$index]->url;
+        $old_fid = $this->getFileIdByUrl($url);
+
+        $response = new JsonResponse();
+        $command_id = $this->editor->deleteImage($cdbid, $index, $old_fid);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
 
