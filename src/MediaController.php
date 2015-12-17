@@ -2,23 +2,33 @@
 
 namespace CultuurNet\UDB3\Symfony;
 
-use CultuurNet\UDB3\ImageAsset\ImageUploaderInterface;
-use CultuurNet\UDB3\ImageAsset\ImageUploaderService;
-use CultuurNet\UDB3\ImageAsset\UploadImage;
+use CultuurNet\UDB3\Media\ImageUploaderInterface;
+use CultuurNet\UDB3\Media\ImageUploaderService;
+use CultuurNet\UDB3\Media\MediaManager;
+use CultuurNet\UDB3\Media\UploadImage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\Identity\UUID;
 use ValueObjects\String\String;
 
-class ImageAssetController
+class MediaController
 {
     /**
      * @var ImageUploaderInterface
      */
     protected $imageUploader;
 
-    public function __construct(ImageUploaderInterface $imageUploader)
-    {
+    /**
+     * @var MediaManager;
+     */
+    protected $mediaManager;
+
+    public function __construct(
+        ImageUploaderInterface $imageUploader,
+        MediaManager $mediaManager
+    ) {
         $this->imageUploader = $imageUploader;
+        $this->mediaManager = $mediaManager;
     }
 
     public function upload(Request $request)
@@ -51,5 +61,16 @@ class ImageAssetController
 
         return $response;
 
+    }
+
+    public function get(Request $request, $id)
+    {
+        $mediaObject = $this->mediaManager->get(new UUID($id));
+
+        if (!$mediaObject) {
+            return new JsonResponse(['error' => "media with id:".$id." not found"], 404);
+        }
+
+        return JsonResponse::create($mediaObject->toJsonLd());
     }
 }

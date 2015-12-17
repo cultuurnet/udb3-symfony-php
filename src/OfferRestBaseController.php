@@ -8,7 +8,7 @@ namespace CultuurNet\UDB3\Symfony;
 use CultuurNet\UDB3\BookingInfo;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\ContactPoint;
-use CultuurNet\UDB3\MediaObject;
+use CultuurNet\UDB3\Media\MediaObject;
 use CultuurNet\UDB3\Timestamp;
 use Drupal\Core\Site\Settings;
 use Drupal\image\Entity\ImageStyle;
