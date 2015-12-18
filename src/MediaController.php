@@ -21,6 +21,10 @@ class MediaController
      */
     protected $mediaManager;
 
+    /**
+     * @param ImageUploaderInterface $imageUploader
+     * @param MediaManager $mediaManager
+     */
     public function __construct(
         ImageUploaderInterface $imageUploader,
         MediaManager $mediaManager
