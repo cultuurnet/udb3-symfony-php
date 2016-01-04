@@ -8,7 +8,10 @@ namespace CultuurNet\UDB3\Symfony;
 use CultuurNet\UDB3\BookingInfo;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\ContactPoint;
+use CultuurNet\UDB3\Event\EventEditingServiceInterface;
+use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Media\MediaObject;
+use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Timestamp;
 use Drupal\Core\Site\Settings;
 use Drupal\image\Entity\ImageStyle;
@@ -23,7 +26,16 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class OfferRestBaseController
 {
+    /**
+     * TODO: Create a shared interface for event and places
+     * @var EventEditingServiceInterface|PlaceEditingServiceInterface
+     */
     protected $editor;
+
+    /**
+     * @var MediaManagerInterface
+     */
+    protected $mediaManager;
 
     /**
      * Update the description property.
@@ -216,33 +228,21 @@ abstract class OfferRestBaseController
      * Add an image.
      *
      * @param Request $request
-     * @param type $cdbid
+     * @param string $eventId
      */
-    public function addImage(Request $request, $cdbid) {
-
-        if (!$request->files->has('file')) {
-            return new JsonResponse(['error' => "file required"], 400);
+    public function addImage(Request $request, $eventId) {
+        $body_content = json_decode($request->getContent());
+        if (empty($body_content->mediaObjectId)) {
+            return new JsonResponse(['error' => "media object id required"], 400);
         }
 
-        // Save the image in drupal files.
-        $drupal_file = $this->saveUploadedImage($request->files->get('file'), $cdbid, $this->getImageDestination($cdbid));
-        if (!$drupal_file) {
-            return new JsonResponse(['error' => "Error while saving file"], 400);
-        }
+        $mediaObject = $this->mediaManager->get($mediaObjectId);
 
-        $description = $request->request->get('description');
-        $copyrightHolder = $request->request->get('copyrightHolder');
-
-        // Create the command and return the url to the image + thumbnail version.
         $response = new JsonResponse();
-
-        $url = file_create_url($drupal_file->getFileUri());
-        $thumbnail_url = ImageStyle::load('thumbnail')->buildUrl($drupal_file->getFileUri());
-        $command_id = $this->editor->addImage($cdbid, new MediaObject($url, $thumbnail_url, $description, $copyrightHolder, '', 'ImageObject'));
-        $response->setData(['commandId' => $command_id, 'thumbnailUrl' => $thumbnail_url, 'url' => $url]);
+        $commandId = $this->editor->addImage($cdbid, $mediaObject);
+        $response->setData(['commandId' => $commandId]);
 
         return $response;
-
     }
 
     /**
