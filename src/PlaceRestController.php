@@ -32,8 +32,6 @@ use CultuurNet\UDB3\CalendarDeserializer;
  */
 class PlaceRestController extends OfferRestBaseController {
 
-    const IMAGE_UPLOAD_DIR = 'public://places';
-
     /**
      * The entity service.
      *
@@ -254,13 +252,6 @@ class PlaceRestController extends OfferRestBaseController {
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-    }
-
-    /**
-     * Get the image destination.
-     */
-    public function getImageDestination($id) {
-        return self::IMAGE_UPLOAD_DIR . '/' . $id;
     }
 
     /**

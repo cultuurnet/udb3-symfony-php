@@ -30,9 +30,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class EventRestController extends OfferRestBaseController
 {
-
-    const IMAGE_UPLOAD_DIR = 'public://events';
-
     /**
      * The search service.
      *
@@ -403,13 +400,6 @@ class EventRestController extends OfferRestBaseController
 
         return $response;
 
-    }
-
-    /**
-     * Get the image destination.
-     */
-    public function getImageDestination($id) {
-        return self::IMAGE_UPLOAD_DIR . '/' . $id;
     }
 
     /**
