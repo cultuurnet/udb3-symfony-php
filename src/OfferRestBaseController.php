@@ -20,6 +20,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\Identity\UUID;
 
 /**
  * Base class for offer reset callbacks.
@@ -236,10 +237,12 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "media object id required"], 400);
         }
 
+        $mediaObjectId = new UUID($body_content->mediaObjectId);
+
         $mediaObject = $this->mediaManager->get($mediaObjectId);
 
         $response = new JsonResponse();
-        $commandId = $this->editor->addImage($cdbid, $mediaObject);
+        $commandId = $this->editor->addImage($eventId, $mediaObject);
         $response->setData(['commandId' => $commandId]);
 
         return $response;

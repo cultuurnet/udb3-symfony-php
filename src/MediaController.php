@@ -5,9 +5,11 @@ namespace CultuurNet\UDB3\Symfony;
 use CultuurNet\UDB3\Media\ImageUploaderInterface;
 use CultuurNet\UDB3\Media\ImageUploaderService;
 use CultuurNet\UDB3\Media\MediaManager;
+use CultuurNet\UDB3\Media\Serialization\MediaObjectSerializer;
 use CultuurNet\UDB3\Media\UploadImage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String;
 
@@ -23,12 +25,19 @@ class MediaController
      */
     protected $mediaManager;
 
+    /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
     public function __construct(
         ImageUploaderInterface $imageUploader,
-        MediaManager $mediaManager
+        MediaManager $mediaManager,
+        SerializerInterface $serializer
     ) {
         $this->imageUploader = $imageUploader;
         $this->mediaManager = $mediaManager;
+        $this->serializer = $serializer;
     }
 
     public function upload(Request $request)
@@ -71,6 +80,9 @@ class MediaController
             return new JsonResponse(['error' => "media with id:".$id." not found"], 404);
         }
 
-        return JsonResponse::create($mediaObject->toJsonLd());
+        $serializedMediaObject = $this->serializer
+            ->serialize($mediaObject, 'json-ld');
+
+        return JsonResponse::create($serializedMediaObject);
     }
 }

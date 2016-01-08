@@ -16,11 +16,10 @@ use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location;
+use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
-use Drupal;
-use Drupal\file\FileUsage\FileUsageInterface;
 use Exception;
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -58,12 +57,6 @@ class EventRestController extends OfferRestBaseController
     protected $user;
 
     /**
-     * The file usage interface.
-     * @var FileUsageInterface
-     */
-    protected $fileUsage;
-
-    /**
      * @var IriGeneratorInterface
      */
     protected $iriGenerator;
@@ -85,20 +78,21 @@ class EventRestController extends OfferRestBaseController
      * @param CultureFeed_User $user
      *   The culturefeed user.
      * @param IriGeneratorInterface $iriGenerator
+     * @param MediaManagerInterface $mediaManager
      */
     public function __construct(
         EventServiceInterface $event_service,
         EventEditingServiceInterface $event_editor,
         DefaultUsedLabelsMemoryService $used_labels_memory,
         CultureFeed_User $user,
-        FileUsageInterface $fileUsage = null,
+        MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator
     ) {
         $this->eventService = $event_service;
         $this->editor = $event_editor;
         $this->usedLabelsMemory = $used_labels_memory;
         $this->user = $user;
-        $this->fileUsage = $fileUsage;
+        $this->mediaManager = $mediaManager;
         $this->iriGenerator = $iriGenerator;
         $this->calendarDeserializer = new CalendarDeserializer();
     }
