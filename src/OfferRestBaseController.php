@@ -239,10 +239,10 @@ abstract class OfferRestBaseController
 
         $mediaObjectId = new UUID($body_content->mediaObjectId);
 
-        $mediaObject = $this->mediaManager->get($mediaObjectId);
+        $image = $this->mediaManager->getImage($mediaObjectId);
 
         $response = new JsonResponse();
-        $commandId = $this->editor->addImage($eventId, $mediaObject);
+        $commandId = $this->editor->addImage($eventId, $image);
         $response->setData(['commandId' => $commandId]);
 
         return $response;
