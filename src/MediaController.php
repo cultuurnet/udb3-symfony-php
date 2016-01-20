@@ -2,6 +2,8 @@
 
 namespace CultuurNet\UDB3\Symfony;
 
+use Broadway\Repository\AggregateNotFoundException;
+use CultuurNet\UDB3\EntityNotFoundException;
 use CultuurNet\UDB3\Media\ImageUploaderInterface;
 use CultuurNet\UDB3\Media\MediaManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -67,10 +69,12 @@ class MediaController
 
     public function get(Request $request, $id)
     {
-        $mediaObject = $this->mediaManager->get(new UUID($id));
-
-        if (!$mediaObject) {
-            return new JsonResponse(['error' => "media with id:{$id} not found"], 404);
+        try {
+            $mediaObject = $this->mediaManager->get(new UUID($id));
+        } catch(AggregateNotFoundException $ex) {
+            throw new EntityNotFoundException(
+                sprintf('Media with id: %s not found.', $id)
+            );
         }
 
         return JsonResponse::create($mediaObject->toJsonLd());
