@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
+use ValueObjects\String\String;
 
 /**
  * Base class for offer reset callbacks.
@@ -252,54 +253,27 @@ abstract class OfferRestBaseController
      * Update an image.
      *
      * @param Request $request
-     * @param string $cdbid
-     * @param string $index
+     * @param string $eventId
+     * @param string $mediaObjectId
      */
-    public function updateImage(Request $request, $cdbid, $index) {
+    public function updateImage(Request $request, $eventId, $mediaObjectId) {
+        $body_content = json_decode($request->getContent());
+        $description = new String($body_content->description);
+        $copyrightHolder = new String($body_content->copyrightHolder);
+        $imageId = new UUID($mediaObjectId);
+        $image = $this->mediaManager->getImage($imageId);
+
+        $commandId = $this->editor->updateImage(
+            $eventId,
+            $image,
+            $description,
+            $copyrightHolder
+        );
 
         $response = new JsonResponse();
-
-        $itemJson = $this->getItem($cdbid);
-        $item = json_decode($itemJson);
-        if (!isset($item->mediaObject[$index])) {
-            return new JsonResponse(['error' => "The image to edit was not found"], 400);
-        }
-
-        // Get the fid of the old file.
-        $url = $item->mediaObject[$index]->url;
-        $thumbnail_url = $item->mediaObject[$index]->thumbnailUrl;
-        $old_fid = $this->getFileIdByUrl($url);
-
-        // A new file was uploaded.
-        if ($request->files->has('file')) {
-
-            $drupal_file = $this->saveUploadedImage($request->files->get('file'), $cdbid, $this->getImageDestination($cdbid));
-            if (!$drupal_file) {
-                return new JsonResponse(['error' => "Error while saving file"], 400);
-            }
-
-            $url = file_create_url($drupal_file->getFileUri());
-            $thumbnail_url = ImageStyle::load('thumbnail')->buildUrl($drupal_file->getFileUri());
-
-            $description = $request->request->get('description');
-            $copyright = $request->request->get('copyrightHolder');
-
-        }
-        // Use existing url.
-        else {
-
-            // Format is json if only the text was changed.
-            $body_content = json_decode($request->getContent());
-            $description = empty($body_content->description) ? '' : $body_content->description;
-            $copyright = empty($body_content->copyrightHolder) ? '' : $body_content->copyrightHolder;
-
-        }
-
-        $command_id = $this->editor->updateImage($cdbid, $index, new MediaObject($url, $thumbnail_url, $description, $copyright, $old_fid, 'ImageObject'));
-        $response->setData(['commandId' => $command_id, 'thumbnailUrl' => $thumbnail_url, 'url' => $url]);
+        $response->setData(['commandId' => $commandId]);
 
         return $response;
-
     }
 
     /**
