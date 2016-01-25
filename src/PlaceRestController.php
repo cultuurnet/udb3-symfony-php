@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Address;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
+use CultuurNet\UDB3\Event\SecurityInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Theme;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Exception\Exception;
 use CultuurNet\UDB3\CalendarDeserializer;
+use ValueObjects\String\String;
 
 /**
  * Class PlaceRestController.
@@ -61,6 +63,11 @@ class PlaceRestController extends OfferRestBaseController {
     protected $eventRelationsRepository;
 
     /**
+     * @var SecurityInterface
+     */
+    protected $security;
+
+    /**
      * {@inheritdoc}
      */
     public static function create(ContainerInterface $container) {
@@ -77,16 +84,21 @@ class PlaceRestController extends OfferRestBaseController {
     /**
      * Constructs a RestController.
      *
-     * @param EntityServiceInterface $entity_service
+     * @param EntityServiceInterface       $entity_service
      *   The entity service.
-     * @param CultureFeed_User $user
+     * @param PlaceEditingServiceInterface $place_editor
+     * @param RepositoryInterface          $event_relations_repository,
+     * @param CultureFeed_User             $user
      *   The culturefeed user.
+     * @param SecurityInterface            $security
+     * @param FileUsageInterface           $fileUsage
      */
     public function __construct(
         EntityServiceInterface $entity_service,
         PlaceEditingServiceInterface $place_editor,
         RepositoryInterface $event_relations_repository,
         CultureFeed_User $user,
+        SecurityInterface $security,
         FileUsageInterface $fileUsage = null
     ) {
         $this->entityService = $entity_service;
@@ -94,6 +106,7 @@ class PlaceRestController extends OfferRestBaseController {
         $this->eventRelationsRepository = $event_relations_repository;
         $this->user = $user;
         $this->fileUsage = $fileUsage;
+        $this->security = $security;
     }
 
     /**
@@ -288,6 +301,20 @@ class PlaceRestController extends OfferRestBaseController {
         }
 
         return $response;
+    }
+
+    /**
+     * Check if the current user has edit access to the given item.
+     *
+     * @param string $cdbid
+     *   Id of item to check.
+     *
+     * @return JsonResponse
+     */
+    public function hasPermission($cdbid) {
+        $has_permission = $this->security->allowsUpdates(new String($cdbid));
+
+        return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 
 }
