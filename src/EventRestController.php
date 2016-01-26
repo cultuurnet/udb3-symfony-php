@@ -1,7 +1,4 @@
 <?php
-/**
- * @file
- */
 
 namespace CultuurNet\UDB3\Symfony;
 
@@ -16,10 +13,10 @@ use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location;
+use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
-use Drupal\file\FileUsage\FileUsageInterface;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,8 +25,12 @@ use ValueObjects\String\String;
 
 class EventRestController extends OfferRestBaseController
 {
-
-    const IMAGE_UPLOAD_DIR = 'public://events';
+    /**
+     * The search service.
+     *
+     * @var PullParsingSearchService;
+     */
+    protected $searchService;
 
     /**
      * The event editor
@@ -50,12 +51,6 @@ class EventRestController extends OfferRestBaseController
      * @var Culturefeed_User
      */
     protected $user;
-
-    /**
-     * The file usage interface.
-     * @var FileUsageInterface
-     */
-    protected $fileUsage;
 
     /**
      * @var IriGeneratorInterface
@@ -84,6 +79,7 @@ class EventRestController extends OfferRestBaseController
      * @param CultureFeed_User $user
      *   The culturefeed user.
      * @param IriGeneratorInterface $iriGenerator
+     * @param MediaManagerInterface $mediaManager
      * @param SecurityInterface $security
      */
     public function __construct(
@@ -91,7 +87,7 @@ class EventRestController extends OfferRestBaseController
         EventEditingServiceInterface $event_editor,
         DefaultUsedLabelsMemoryService $used_labels_memory,
         CultureFeed_User $user,
-        FileUsageInterface $fileUsage = null,
+        MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator,
         SecurityInterface $security
     ) {
@@ -99,7 +95,7 @@ class EventRestController extends OfferRestBaseController
         $this->editor = $event_editor;
         $this->usedLabelsMemory = $used_labels_memory;
         $this->user = $user;
-        $this->fileUsage = $fileUsage;
+        $this->mediaManager = $mediaManager;
         $this->iriGenerator = $iriGenerator;
         $this->calendarDeserializer = new CalendarDeserializer();
         $this->security = $security;
@@ -111,7 +107,8 @@ class EventRestController extends OfferRestBaseController
      * @return BinaryFileResponse
      *   The response.
      */
-    public function eventContext() {
+    public function eventContext()
+    {
         $response = new BinaryFileResponse('/udb3/api/1.0/event.jsonld');
         $response->headers->set('Content-Type', 'application/ld+json');
         return $response;
@@ -126,8 +123,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonLdResponse
      *   The response.
      */
-    public function details($cdbid) {
-
+    public function details($cdbid)
+    {
         $event = $this->getItem($cdbid);
 
         $response = JsonResponse::create()
@@ -137,7 +134,6 @@ class EventRestController extends OfferRestBaseController
             ->setTtl(60 * 5);
 
         return $response;
-
     }
 
     /**
@@ -153,8 +149,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function title(Request $request, $cdbid, $language) {
-
+    public function title(Request $request, $cdbid, $language)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -171,7 +167,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -187,8 +182,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function description(Request $request, $cdbid, $language) {
-
+    public function description(Request $request, $cdbid, $language)
+    {
         // If it's the main language, it should use updateDescription instead of translate.
         if ($language == Event::MAIN_LANGUAGE_CODE) {
             return parent::updateDescription($request, $cdbid, $language);
@@ -210,7 +205,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -224,8 +218,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function addLabel(Request $request, $cdbid) {
-
+    public function addLabel(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -244,7 +238,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -260,8 +253,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function deleteLabel(Request $request, $cdbid, $label) {
-
+    public function deleteLabel(Request $request, $cdbid, $label)
+    {
         $response = new JsonResponse();
 
         $command_id = $this->eventEditor->unlabel(
@@ -272,7 +265,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -281,13 +273,16 @@ class EventRestController extends OfferRestBaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function createEvent(Request $request) {
-
+    public function createEvent(Request $request)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
 
-        if (empty($body_content->name) || empty($body_content->type) || empty($body_content->location) || empty($body_content->calendarType)) {
+        if (empty($body_content->name) ||
+            empty($body_content->type) ||
+            empty($body_content->location) ||
+            empty($body_content->calendarType)) {
             throw new \InvalidArgumentException('Required fields are missing');
         }
 
@@ -299,7 +294,8 @@ class EventRestController extends OfferRestBaseController
         $event_id = $this->editor->createEvent(
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Location($body_content->location->id,
+            new Location(
+                $body_content->location->id,
                 $body_content->location->name,
                 $body_content->location->address->addressCountry,
                 $body_content->location->address->addressLocality,
@@ -323,8 +319,8 @@ class EventRestController extends OfferRestBaseController
     /**
      * Remove an event.
      */
-    public function deleteEvent(Request $request, $cdbid) {
-
+    public function deleteEvent(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
 
         if (empty($cdbid)) {
@@ -340,8 +336,8 @@ class EventRestController extends OfferRestBaseController
     /**
      * Update the major info of an item.
      */
-    public function updateMajorInfo(Request $request, $cdbid) {
-
+    public function updateMajorInfo(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -379,25 +375,18 @@ class EventRestController extends OfferRestBaseController
      * @param string $cdbid
      *   Id of item to check.
      */
-    public function hasPermission($cdbid) {
+    public function hasPermission($cdbid)
+    {
         $has_permission = $this->security->allowsUpdates(new String($cdbid));
 
         return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 
     /**
-     * Get the image destination.
-     */
-    public function getImageDestination($id) {
-        return self::IMAGE_UPLOAD_DIR . '/' . $id;
-    }
-
-    /**
      * Get the detail of an item.
      */
-    public function getItem($id) {
+    public function getItem($id)
+    {
         return $this->eventService->getEvent($id);
     }
-
 }
-
