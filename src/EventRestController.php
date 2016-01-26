@@ -107,7 +107,8 @@ class EventRestController extends OfferRestBaseController
      * @return BinaryFileResponse
      *   The response.
      */
-    public function eventContext() {
+    public function eventContext()
+    {
         $response = new BinaryFileResponse('/udb3/api/1.0/event.jsonld');
         $response->headers->set('Content-Type', 'application/ld+json');
         return $response;
@@ -122,8 +123,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonLdResponse
      *   The response.
      */
-    public function details($cdbid) {
-
+    public function details($cdbid)
+    {
         $event = $this->getItem($cdbid);
 
         $response = JsonResponse::create()
@@ -133,7 +134,6 @@ class EventRestController extends OfferRestBaseController
             ->setTtl(60 * 5);
 
         return $response;
-
     }
 
     /**
@@ -149,8 +149,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function title(Request $request, $cdbid, $language) {
-
+    public function title(Request $request, $cdbid, $language)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -167,7 +167,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -183,8 +182,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function description(Request $request, $cdbid, $language) {
-
+    public function description(Request $request, $cdbid, $language)
+    {
         // If it's the main language, it should use updateDescription instead of translate.
         if ($language == Event::MAIN_LANGUAGE_CODE) {
             return parent::updateDescription($request, $cdbid, $language);
@@ -206,7 +205,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -220,8 +218,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function addLabel(Request $request, $cdbid) {
-
+    public function addLabel(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -240,7 +238,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -256,8 +253,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function deleteLabel(Request $request, $cdbid, $label) {
-
+    public function deleteLabel(Request $request, $cdbid, $label)
+    {
         $response = new JsonResponse();
 
         $command_id = $this->eventEditor->unlabel(
@@ -268,7 +265,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -277,13 +273,16 @@ class EventRestController extends OfferRestBaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function createEvent(Request $request) {
-
+    public function createEvent(Request $request)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
 
-        if (empty($body_content->name) || empty($body_content->type) || empty($body_content->location) || empty($body_content->calendarType)) {
+        if (empty($body_content->name) ||
+            empty($body_content->type) ||
+            empty($body_content->location) ||
+            empty($body_content->calendarType)) {
             throw new \InvalidArgumentException('Required fields are missing');
         }
 
@@ -295,7 +294,8 @@ class EventRestController extends OfferRestBaseController
         $event_id = $this->editor->createEvent(
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Location($body_content->location->id,
+            new Location(
+                $body_content->location->id,
                 $body_content->location->name,
                 $body_content->location->address->addressCountry,
                 $body_content->location->address->addressLocality,
@@ -319,8 +319,8 @@ class EventRestController extends OfferRestBaseController
     /**
      * Remove an event.
      */
-    public function deleteEvent(Request $request, $cdbid) {
-
+    public function deleteEvent(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
 
         if (empty($cdbid)) {
@@ -336,8 +336,8 @@ class EventRestController extends OfferRestBaseController
     /**
      * Update the major info of an item.
      */
-    public function updateMajorInfo(Request $request, $cdbid) {
-
+    public function updateMajorInfo(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -375,7 +375,8 @@ class EventRestController extends OfferRestBaseController
      * @param string $cdbid
      *   Id of item to check.
      */
-    public function hasPermission($cdbid) {
+    public function hasPermission($cdbid)
+    {
         $has_permission = $this->security->allowsUpdates(new String($cdbid));
 
         return JsonResponse::create(['hasPermission' => $has_permission]);
@@ -384,9 +385,8 @@ class EventRestController extends OfferRestBaseController
     /**
      * Get the detail of an item.
      */
-    public function getItem($id) {
+    public function getItem($id)
+    {
         return $this->eventService->getEvent($id);
     }
-
 }
-

@@ -30,8 +30,8 @@ use CultuurNet\UDB3\CalendarDeserializer;
  *
  * @package Drupal\culturefeed_udb3\Controller
  */
-class PlaceRestController extends OfferRestBaseController {
-
+class PlaceRestController extends OfferRestBaseController
+{
     /**
      * The entity service.
      *
@@ -63,8 +63,8 @@ class PlaceRestController extends OfferRestBaseController {
     /**
      * {@inheritdoc}
      */
-    public static function create(ContainerInterface $container) {
-
+    public static function create(ContainerInterface $container)
+    {
         return new static(
             $container->get('culturefeed_udb3.place.service'),
             $container->get('culturefeed_udb3.place.editor'),
@@ -102,7 +102,8 @@ class PlaceRestController extends OfferRestBaseController {
      * @return BinaryFileResponse
      *   The response.
      */
-    public function placeContext() {
+    public function placeContext()
+    {
         $response = new BinaryFileResponse('/udb3/api/1.0/place.jsonld');
         $response->headers->set('Content-Type', 'application/ld+json');
         return $response;
@@ -117,8 +118,8 @@ class PlaceRestController extends OfferRestBaseController {
      * @return JsonLdResponse
      *   The response.
      */
-    public function details($cdbid) {
-
+    public function details($cdbid)
+    {
         $place = $this->getItem($cdbid);
 
         $response = JsonResponse::create()
@@ -128,14 +129,13 @@ class PlaceRestController extends OfferRestBaseController {
             ->setTtl(60 * 5);
 
         return $response;
-
     }
 
     /**
      * Create a new place.
      */
-    public function createPlace(Request $request) {
-
+    public function createPlace(Request $request)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -156,7 +156,12 @@ class PlaceRestController extends OfferRestBaseController {
         $place_id = $this->editor->createPlace(
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Address($address->streetAddress, $address->postalCode, $address->addressLocality, $address->addressCountry),
+            new Address(
+                $address->streetAddress,
+                $address->postalCode,
+                $address->addressLocality,
+                $address->addressCountry
+            ),
             $calendar,
             $theme
         );
@@ -178,8 +183,8 @@ class PlaceRestController extends OfferRestBaseController {
     /**
      * Remove a place.
      */
-    public function deletePlace(Request $request, $cdbid) {
-
+    public function deletePlace(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
 
         if (empty($cdbid)) {
@@ -195,8 +200,8 @@ class PlaceRestController extends OfferRestBaseController {
     /**
      * Update the major info of an item.
      */
-    public function updateMajorInfo(Request $request, $cdbid) {
-
+    public function updateMajorInfo(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -217,7 +222,12 @@ class PlaceRestController extends OfferRestBaseController {
             $cdbid,
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Address($address->streetAddress, $address->postalCode, $address->addressLocality, $address->addressCountry),
+            new Address(
+                $address->streetAddress,
+                $address->postalCode,
+                $address->addressLocality,
+                $address->addressCountry
+            ),
             $calendar,
             $theme
         );
@@ -234,8 +244,8 @@ class PlaceRestController extends OfferRestBaseController {
      * @param string $cdbid
      * @return JsonResponse
      */
-    public function updateFacilities(Request $request, $cdbid) {
-
+    public function updateFacilities(Request $request, $cdbid)
+    {
         $body_content = json_decode($request->getContent());
         if (empty($body_content->facilities)) {
             return new JsonResponse(['error' => "facilities required"], 400);
@@ -257,7 +267,8 @@ class PlaceRestController extends OfferRestBaseController {
     /**
      * Get the detail of an item.
      */
-    public function getItem($id) {
+    public function getItem($id)
+    {
         return $this->entityService->getEntity($id);
     }
 
@@ -265,8 +276,8 @@ class PlaceRestController extends OfferRestBaseController {
      * Get the events for a given place.
      * @return type
      */
-    public function getEvents(Request $request, $cdbid) {
-
+    public function getEvents(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
 
         // Load all event relations from the database.
@@ -289,5 +300,4 @@ class PlaceRestController extends OfferRestBaseController {
 
         return $response;
     }
-
 }
