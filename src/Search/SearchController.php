@@ -58,8 +58,7 @@ class SearchController
                 ->setTtl(60 * 5);
 
             return $response;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new ApiProblemJsonResponse(
                 new ApiProblem(
                     'An error occurred while searching. Please correct your search query.'
