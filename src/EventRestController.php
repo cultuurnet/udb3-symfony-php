@@ -1,16 +1,13 @@
 <?php
-/**
- * @file
- */
 
 namespace CultuurNet\UDB3\Symfony;
 
 use CultureFeed_User;
-use CultuurNet\Auth\TokenCredentials;
 use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
+use CultuurNet\UDB3\Event\SecurityInterface;
 use CultuurNet\UDB3\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
@@ -20,12 +17,11 @@ use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
-use Exception;
 use InvalidArgumentException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\String\String;
 
 class EventRestController extends OfferRestBaseController
 {
@@ -67,6 +63,11 @@ class EventRestController extends OfferRestBaseController
     protected $calendarDeserializer;
 
     /**
+     * @var SecurityInterface
+     */
+    protected $security;
+
+    /**
      * Constructs a RestController.
      *
      * @param EventServiceInterface $event_service
@@ -79,6 +80,7 @@ class EventRestController extends OfferRestBaseController
      *   The culturefeed user.
      * @param IriGeneratorInterface $iriGenerator
      * @param MediaManagerInterface $mediaManager
+     * @param SecurityInterface $security
      */
     public function __construct(
         EventServiceInterface $event_service,
@@ -86,7 +88,8 @@ class EventRestController extends OfferRestBaseController
         DefaultUsedLabelsMemoryService $used_labels_memory,
         CultureFeed_User $user,
         MediaManagerInterface $mediaManager,
-        IriGeneratorInterface $iriGenerator
+        IriGeneratorInterface $iriGenerator,
+        SecurityInterface $security
     ) {
         $this->eventService = $event_service;
         $this->editor = $event_editor;
@@ -95,6 +98,7 @@ class EventRestController extends OfferRestBaseController
         $this->mediaManager = $mediaManager;
         $this->iriGenerator = $iriGenerator;
         $this->calendarDeserializer = new CalendarDeserializer();
+        $this->security = $security;
     }
 
     /**
@@ -103,7 +107,8 @@ class EventRestController extends OfferRestBaseController
      * @return BinaryFileResponse
      *   The response.
      */
-    public function eventContext() {
+    public function eventContext()
+    {
         $response = new BinaryFileResponse('/udb3/api/1.0/event.jsonld');
         $response->headers->set('Content-Type', 'application/ld+json');
         return $response;
@@ -118,8 +123,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonLdResponse
      *   The response.
      */
-    public function details($cdbid) {
-
+    public function details($cdbid)
+    {
         $event = $this->getItem($cdbid);
 
         $response = JsonResponse::create()
@@ -129,7 +134,6 @@ class EventRestController extends OfferRestBaseController
             ->setTtl(60 * 5);
 
         return $response;
-
     }
 
     /**
@@ -145,8 +149,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function title(Request $request, $cdbid, $language) {
-
+    public function title(Request $request, $cdbid, $language)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -163,7 +167,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -179,8 +182,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function description(Request $request, $cdbid, $language) {
-
+    public function description(Request $request, $cdbid, $language)
+    {
         // If it's the main language, it should use updateDescription instead of translate.
         if ($language == Event::MAIN_LANGUAGE_CODE) {
             return parent::updateDescription($request, $cdbid, $language);
@@ -202,7 +205,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -216,8 +218,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function addLabel(Request $request, $cdbid) {
-
+    public function addLabel(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -236,7 +238,6 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
 
     /**
@@ -252,8 +253,8 @@ class EventRestController extends OfferRestBaseController
      * @return JsonResponse
      *   The response.
      */
-    public function deleteLabel(Request $request, $cdbid, $label) {
-
+    public function deleteLabel(Request $request, $cdbid, $label)
+    {
         $response = new JsonResponse();
 
         $command_id = $this->eventEditor->unlabel(
@@ -264,21 +265,24 @@ class EventRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-
     }
+
     /**
      * Create a new event.
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function createEvent(Request $request) {
-
+    public function createEvent(Request $request)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
 
-        if (empty($body_content->name) || empty($body_content->type) || empty($body_content->location) || empty($body_content->calendarType)) {
+        if (empty($body_content->name) ||
+            empty($body_content->type) ||
+            empty($body_content->location) ||
+            empty($body_content->calendarType)) {
             throw new \InvalidArgumentException('Required fields are missing');
         }
 
@@ -290,7 +294,8 @@ class EventRestController extends OfferRestBaseController
         $event_id = $this->editor->createEvent(
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Location($body_content->location->id,
+            new Location(
+                $body_content->location->id,
                 $body_content->location->name,
                 $body_content->location->address->addressCountry,
                 $body_content->location->address->addressLocality,
@@ -314,8 +319,8 @@ class EventRestController extends OfferRestBaseController
     /**
      * Remove an event.
      */
-    public function deleteEvent(Request $request, $cdbid) {
-
+    public function deleteEvent(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
 
         if (empty($cdbid)) {
@@ -331,8 +336,8 @@ class EventRestController extends OfferRestBaseController
     /**
      * Update the major info of an item.
      */
-    public function updateMajorInfo(Request $request, $cdbid) {
-
+    public function updateMajorInfo(Request $request, $cdbid)
+    {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
@@ -361,47 +366,27 @@ class EventRestController extends OfferRestBaseController
             $theme
         );
 
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
-
+        return JsonResponse::create(['commandId' => $command_id]);
     }
 
     /**
-     * TODO: This authenticator is hard coded to Drupal. Move it to a service.
      * Check if the current user has edit access to the given item.
      *
-     * @param string cdbid
+     * @param string $cdbid
      *   Id of item to check.
      */
-    public function hasPermission($cdbid) {
+    public function hasPermission($cdbid)
+    {
+        $has_permission = $this->security->allowsUpdates(new String($cdbid));
 
-        $improvedEntryApiFactory = Drupal::service('culturefeed_udb3.udb2_entry_api_improved_factory');
-        $userCredentials = Drupal::service('culturefeed.user_credentials');
-
-        $credentials = new TokenCredentials($userCredentials->getToken(), $userCredentials->getSecret());
-        $entryApi = $improvedEntryApiFactory->get()->withTokenCredentials($credentials);
-
-        $response = new JsonResponse();
-
-        $result = $entryApi->checkPermission($this->user->id, $this->user->mbox, array($cdbid));
-        $has_permission = FALSE;
-        if (!empty($result->event)) {
-            $has_permission = (string)$result->event->editable == 'true';
-        }
-
-        $response->setData(['hasPermission' => $has_permission]);
-
-        return $response;
-
+        return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 
     /**
      * Get the detail of an item.
      */
-    public function getItem($id) {
+    public function getItem($id)
+    {
         return $this->eventService->getEvent($id);
     }
-
 }
-
