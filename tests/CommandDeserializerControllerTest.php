@@ -53,8 +53,12 @@ class CommandDeserializerControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->commandBus->expects($this->once())
             ->method('dispatch')
-            ->with($command);
+            ->with($command)
+            ->willReturn('i-command-id');
 
-        $this->controller->handle($request);
+        $response = $this->controller->handle($request);
+
+        $content = $response->getContent();
+        $this->assertEquals('{"commandId":"i-command-id"}', $content);
     }
 }
