@@ -32,5 +32,4 @@ class ApiProblemJsonResponse extends JsonResponse
             $headers
         );
     }
-
 }
