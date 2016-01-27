@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String;
 
-class EventRestController extends OfferRestBaseController
+class EventEditingRestController extends OfferRestBaseController
 {
     /**
      * The search service.
