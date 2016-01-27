@@ -20,6 +20,11 @@ class CommandDeserializerController
     private $commandBus;
 
     /**
+     * @var DeserializerInterface
+     */
+    private $deserializer;
+
+    /**
      * @param DeserializerInterface $commandDeserializer
      * @param CommandBusInterface $commandBus
      */
