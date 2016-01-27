@@ -10,7 +10,7 @@ use ValueObjects\String\String;
 
 /**
  * Creates a command by deserializing the body of a request using the injected
- * deserializer, and dispatches it to the inject command bus.
+ * deserializer, and dispatches it to the injected command bus.
  */
 class CommandDeserializerController
 {
