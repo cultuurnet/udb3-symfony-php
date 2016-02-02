@@ -3,7 +3,7 @@
  * @file
  */
 
-namespace CultuurNet\UDB3\Symfony;
+namespace CultuurNet\UDB3\Symfony\Place;
 
 use CultureFeed_User;
 use CultuurNet\UDB3\Address;
@@ -12,6 +12,9 @@ use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\JsonLdResponse;
+use CultuurNet\UDB3\Symfony\OfferRestBaseController;
+use CultuurNet\UDB3\Symfony\type;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use Drupal;
