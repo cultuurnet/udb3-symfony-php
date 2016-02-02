@@ -29,11 +29,11 @@ use Symfony\Component\Serializer\Exception\Exception;
 use CultuurNet\UDB3\CalendarDeserializer;
 
 /**
- * Class PlaceRestController.
+ * Class PlaceEditingRestController.
  *
  * @package Drupal\culturefeed_udb3\Controller
  */
-class PlaceRestController extends OfferRestBaseController
+class PlaceEditingRestController extends OfferRestBaseController
 {
     /**
      * The entity service.
