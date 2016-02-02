@@ -11,6 +11,16 @@ use Symfony\Component\HttpFoundation\Request;
 class PlaceRestController
 {
     /**
+     * @var EntityServiceInterface
+     */
+    private $service;
+
+    /**
+     * @var PlaceLookupServiceInterface
+     */
+    private $lookupService;
+
+    /**
      * @param EntityServiceInterface $service
      * @param PlaceLookupServiceInterface $lookupService
      */
