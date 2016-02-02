@@ -1,10 +1,6 @@
 <?php
-/**
- * @file
- */
 
 namespace CultuurNet\UDB3\Symfony;
-
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -22,4 +18,4 @@ class JsonLdResponse extends JsonResponse
             $headers
         );
     }
-} 
+}

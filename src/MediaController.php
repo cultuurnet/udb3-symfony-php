@@ -77,7 +77,7 @@ class MediaController
     {
         try {
             $mediaObject = $this->mediaManager->get(new UUID($id));
-        } catch(AggregateNotFoundException $ex) {
+        } catch (AggregateNotFoundException $ex) {
             throw new EntityNotFoundException(
                 sprintf('Media with id: %s not found.', $id)
             );

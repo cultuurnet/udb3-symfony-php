@@ -34,7 +34,6 @@ use ValueObjects\String\String;
  */
 class PlaceRestController extends OfferRestBaseController
 {
-
     /**
      * The entity service.
      *
@@ -143,7 +142,6 @@ class PlaceRestController extends OfferRestBaseController
             ->setTtl(60 * 5);
 
         return $response;
-
     }
 
     /**
