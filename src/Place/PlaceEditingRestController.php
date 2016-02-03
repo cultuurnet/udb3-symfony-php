@@ -71,20 +71,6 @@ class PlaceEditingRestController extends OfferRestBaseController
     protected $security;
 
     /**
-     * {@inheritdoc}
-     */
-    public static function create(ContainerInterface $container)
-    {
-        return new static(
-            $container->get('culturefeed_udb3.place.service'),
-            $container->get('culturefeed_udb3.place.editor'),
-            $container->get('culturefeed_udb3.event_relations_repository'),
-            $container->get('culturefeed.current_user'),
-            $container->get('file.usage')
-        );
-    }
-
-    /**
      * Constructs a RestController.
      *
      * @param EntityServiceInterface       $entity_service
