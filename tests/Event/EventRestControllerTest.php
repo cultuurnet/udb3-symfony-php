@@ -16,36 +16,18 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
     const REMOVED_ID = 'removedId';
 
     /**
-     * @test
+     * @var EventRestController
      */
-    public function returns_a_http_response_with_json_history_for_an_event()
-    {
-        $jsonResponse = $this->eventRestController->history(self::EXISTING_ID);
-
-        $this->assertEquals(Response::HTTP_OK, $jsonResponse->getStatusCode());
-        $this->assertEquals($this->jsonDocument->getRawBody(), $jsonResponse->getContent());
-    }
+    private $eventRestController;
 
     /**
-     * @test
+     * @var JsonDocument
      */
-    public function returns_a_http_response_with_error_NOT_FOUND_for_a_non_existing_event()
-    {
-        $jsonResponse = $this->eventRestController->history(self::NON_EXISTING_ID);
-
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
-    }
+    private $jsonDocument;
 
     /**
-     * @test
+     * @inheritdoc
      */
-    public function returns_a_http_response_with_error_HTTP_GONE_for_a_removed_event()
-    {
-        $jsonResponse = $this->eventRestController->history(self::REMOVED_ID);
-
-        $this->assertEquals(Response::HTTP_GONE, $jsonResponse->getStatusCode());
-    }
-
     public function setUp()
     {
         $this->jsonDocument = new JsonDocument('id', 'history');
@@ -75,16 +57,36 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
             $eventServiceInterface,
             $documentRepositoryInterface
         );
-
     }
 
     /**
-     * @var EventRestController
+     * @test
      */
-    private $eventRestController;
+    public function returns_a_http_response_with_json_history_for_an_event()
+    {
+        $jsonResponse = $this->eventRestController->history(self::EXISTING_ID);
+
+        $this->assertEquals(Response::HTTP_OK, $jsonResponse->getStatusCode());
+        $this->assertEquals($this->jsonDocument->getRawBody(), $jsonResponse->getContent());
+    }
 
     /**
-     * @var JsonDocument
+     * @test
      */
-    private $jsonDocument;
+    public function returns_a_http_response_with_error_NOT_FOUND_for_a_non_existing_event()
+    {
+        $jsonResponse = $this->eventRestController->history(self::NON_EXISTING_ID);
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function returns_a_http_response_with_error_HTTP_GONE_for_a_removed_event()
+    {
+        $jsonResponse = $this->eventRestController->history(self::REMOVED_ID);
+
+        $this->assertEquals(Response::HTTP_GONE, $jsonResponse->getStatusCode());
+    }
 }
