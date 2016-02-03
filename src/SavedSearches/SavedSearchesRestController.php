@@ -54,6 +54,8 @@ class SavedSearchesRestController
     }
 
     /**
+     * @param Request $request
+     *
      * @return JsonResponse
      */
     public function save(Request $request)
