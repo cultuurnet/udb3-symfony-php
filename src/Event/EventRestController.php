@@ -73,7 +73,7 @@ class EventRestController
             } else {
                 $response = $this->createApiProblemJsonResponseNotFound($cdbid);
             }
-        } catch(DocumentGoneException $documentGoneException) {
+        } catch (DocumentGoneException $documentGoneException) {
             $response = $this->createApiProblemJsonResponseGone($cdbid);
         }
 

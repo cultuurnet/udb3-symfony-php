@@ -54,15 +54,17 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
 
         $documentRepositoryInterface = $this->getMock(DocumentRepositoryInterface::class);
         $documentRepositoryInterface->method('get')
-            ->willReturnCallback(function ($id) {
-                switch($id) {
-                    case self::EXISTING_ID:
-                        return $this->jsonDocument;
-                    case self::REMOVED_ID:
-                        throw new DocumentGoneException();
-                    default:
-                        return null;
-                }}
+            ->willReturnCallback(
+                function ($id) {
+                    switch ($id) {
+                        case self::EXISTING_ID:
+                            return $this->jsonDocument;
+                        case self::REMOVED_ID:
+                            throw new DocumentGoneException();
+                        default:
+                            return null;
+                    }
+                }
             );
 
         /**
@@ -71,7 +73,8 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
          */
         $this->eventRestController = new EventRestController(
             $eventServiceInterface,
-            $documentRepositoryInterface);
+            $documentRepositoryInterface
+        );
 
     }
 
@@ -84,5 +87,4 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
      * @var JsonDocument
      */
     private $jsonDocument;
-
 }
