@@ -22,6 +22,7 @@ class ApiProblemJsonResponse extends JsonResponse
             $headers += [
                 'X-Status-Code' => $problem->getStatus()
             ];
+            $status = $problem->getStatus();
         }
 
         $data = $problem->asArray();
