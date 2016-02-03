@@ -39,7 +39,7 @@ class EventRestController
     }
 
     /**
-     * @param $cdbid
+     * @param string $cdbid
      * @return JsonLdResponse
      */
     public function get($cdbid)
@@ -55,7 +55,7 @@ class EventRestController
     }
 
     /**
-     * @param $cdbid
+     * @param string $cdbid
      * @return JsonResponse
      */
     public function history($cdbid)
@@ -81,7 +81,7 @@ class EventRestController
     }
 
     /**
-     * @param $cdbid
+     * @param string $cdbid
      * @return ApiProblemJsonResponse
      */
     private function createApiProblemJsonResponseNotFound($cdbid)
@@ -94,7 +94,7 @@ class EventRestController
     }
 
     /**
-     * @param $cdbid
+     * @param string $cdbid
      * @return ApiProblemJsonResponse
      */
     private function createApiProblemJsonResponseGone($cdbid)
@@ -108,7 +108,7 @@ class EventRestController
 
     /**
      * @param string $message
-     * @param $cdbid
+     * @param string $cdbid
      * @param int $statusCode
      * @return ApiProblemJsonResponse
      */
