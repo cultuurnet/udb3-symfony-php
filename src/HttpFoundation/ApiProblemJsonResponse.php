@@ -12,16 +12,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  **/
 class ApiProblemJsonResponse extends JsonResponse
 {
-    public function __construct(ApiProblem $problem, $status = 200, $headers = array())
+    public function __construct(ApiProblem $problem, $headers = array())
     {
         $headers += [
             'Content-Type' => 'application/problem+json',
         ];
 
+        $status = 200;
         if (null !== $problem->getStatus()) {
             $headers += [
                 'X-Status-Code' => $problem->getStatus()
             ];
+            $status = $problem->getStatus();
         }
 
         $data = $problem->asArray();
