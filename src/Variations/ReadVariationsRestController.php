@@ -9,13 +9,14 @@ use CultuurNet\UDB3\Variations\ReadModel\Search\CriteriaFromParameterBagFactory;
 use CultuurNet\UDB3\Variations\ReadModel\Search\RepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class ReadVariationsRestController
 {
     /**
-     * @var PageUrlGenerator
+     * @var UrlGenerator
      */
-    private $pageUrlGenerator;
+    private $urlGenerator;
 
     /**
      * @var RepositoryInterface
@@ -30,11 +31,11 @@ class ReadVariationsRestController
     public function __construct(
         DocumentRepositoryInterface $documentRepository,
         RepositoryInterface $searchRepository,
-        PageUrlGenerator $pageUrlGenerator
+        UrlGenerator $urlGenerator
     ) {
         $this->documentRepository = $documentRepository;
         $this->searchRepository = $searchRepository;
-        $this->pageUrlGenerator = $pageUrlGenerator;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -68,13 +69,20 @@ class ReadVariationsRestController
             $criteria
         );
 
+        $pageUrlFactory = new PageUrlGenerator(
+            $request->query,
+            $this->urlGenerator,
+            'variations',
+            'page'
+        );
+
         return new JsonResponse(
             new PagedCollection(
                 $pageNumber,
                 $itemsPerPage,
                 $variations,
                 $totalItems,
-                $this->pageUrlGenerator,
+                $pageUrlFactory,
                 true
             )
         );
