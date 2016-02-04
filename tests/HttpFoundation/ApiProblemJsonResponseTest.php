@@ -16,7 +16,10 @@ class ApiProblemJsonResponseTest extends PHPUnit_Framework_TestCase
     {
         $apiProblemJsonResponse = new ApiProblemJsonResponse(new ApiProblem());
 
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $apiProblemJsonResponse->getStatusCode());
+        $this->assertEquals(
+            Response::HTTP_BAD_REQUEST,
+            $apiProblemJsonResponse->getStatusCode()
+        );
     }
 
     /**
@@ -29,6 +32,9 @@ class ApiProblemJsonResponseTest extends PHPUnit_Framework_TestCase
 
         $apiProblemJsonResponse = new ApiProblemJsonResponse($apiProblem);
 
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $apiProblemJsonResponse->getStatusCode());
+        $this->assertEquals(
+            Response::HTTP_NOT_FOUND,
+            $apiProblemJsonResponse->getStatusCode()
+        );
     }
 }
