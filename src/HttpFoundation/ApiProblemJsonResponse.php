@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\HttpFoundation;
 
 use Crell\ApiProblem\ApiProblem;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Response type application/problem+json.
@@ -12,12 +13,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  **/
 class ApiProblemJsonResponse extends JsonResponse
 {
-    public function __construct(ApiProblem $problem, $status = 200, $headers = array())
+    public function __construct(ApiProblem $problem, $headers = array())
     {
         $headers += [
             'Content-Type' => 'application/problem+json',
         ];
 
+        $status = Response::HTTP_BAD_REQUEST;
         if (null !== $problem->getStatus()) {
             $headers += [
                 'X-Status-Code' => $problem->getStatus()
