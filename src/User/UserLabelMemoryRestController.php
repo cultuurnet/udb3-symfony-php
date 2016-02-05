@@ -5,7 +5,7 @@ namespace CultuurNet\UDB3\Symfony\User;
 use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class UserLabelMemoryController
+class UserLabelMemoryRestController
 {
     /**
      * @var UsedLabelsMemoryServiceInterface
