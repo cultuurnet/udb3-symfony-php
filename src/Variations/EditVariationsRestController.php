@@ -8,6 +8,7 @@ use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\Symfony\CommandDeserializerControllerTrait;
 use CultuurNet\UDB3\Variations\Command\DeleteEventVariation;
 use CultuurNet\UDB3\Variations\Command\EditDescriptionJSONDeserializer;
+use CultuurNet\UDB3\Variations\Model\Properties\Id;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\GoneHttpException;
@@ -43,7 +44,9 @@ class EditVariationsRestController
     {
         $this->guardId($id);
 
-        $deserializer = new EditDescriptionJSONDeserializer($id);
+        $deserializer = new EditDescriptionJSONDeserializer(
+            new Id($id)
+        );
 
         return $this->handleRequestWithDeserializer(
             $request,
@@ -59,7 +62,9 @@ class EditVariationsRestController
     {
         $this->guardId($id);
 
-        $command = new DeleteEventVariation($id);
+        $command = new DeleteEventVariation(
+            new Id($id)
+        );
 
         return $this->handleCommand($command);
     }
