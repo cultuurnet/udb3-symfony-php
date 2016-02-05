@@ -7,7 +7,7 @@ use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Event\SecurityInterface;
+use CultuurNet\UDB3\Offer\SecurityInterface;
 use CultuurNet\UDB3\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
