@@ -76,8 +76,7 @@ class EditVariationsRestController
     {
         try {
             $document = $this->repository->get($id);
-        }
-        catch (DocumentGoneException $e) {
+        } catch (DocumentGoneException $e) {
             throw new GoneHttpException();
         }
 
