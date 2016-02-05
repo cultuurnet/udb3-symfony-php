@@ -1,19 +1,21 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony;
+namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultureFeed_User;
 use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Event\SecurityInterface;
+use CultuurNet\UDB3\Offer\SecurityInterface;
 use CultuurNet\UDB3\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
+use CultuurNet\UDB3\Symfony\JsonLdResponse;
+use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
@@ -23,15 +25,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String;
 
-class EventRestController extends OfferRestBaseController
+class EventEditingRestController extends OfferRestBaseController
 {
-    /**
-     * The search service.
-     *
-     * @var PullParsingSearchService;
-     */
-    protected $searchService;
-
     /**
      * The event editor
      * @var EventEditingServiceInterface

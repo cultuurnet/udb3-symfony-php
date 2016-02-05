@@ -59,11 +59,13 @@ class SearchController
 
             return $response;
         } catch (\Exception $e) {
+            $apiProblem = new ApiProblem(
+                'An error occurred while searching. Please correct your search query.'
+            );
+            $apiProblem->setStatus(Response::HTTP_BAD_REQUEST);
+
             return new ApiProblemJsonResponse(
-                new ApiProblem(
-                    'An error occurred while searching. Please correct your search query.'
-                ),
-                400
+                $apiProblem
             );
         }
     }
