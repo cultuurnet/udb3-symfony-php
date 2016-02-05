@@ -36,7 +36,7 @@ class EditVariationsRestController
 
     /**
      * @param Request $request
-     * @param $id
+     * @param string $id
      * @return JsonResponse
      */
     public function edit(Request $request, $id)
@@ -52,7 +52,7 @@ class EditVariationsRestController
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @return JsonResponse
      */
     public function delete($id)
