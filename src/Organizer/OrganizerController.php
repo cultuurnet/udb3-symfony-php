@@ -32,7 +32,11 @@ class OrganizerController
     private $iriGenerator;
 
     /**
-     * @param EntityServiceInterface $service
+     * OrganizerController constructor.
+     * @param EntityServiceInterface           $service
+     * @param OrganizerLookupServiceInterface  $organizerLookupService
+     * @param OrganizerEditingServiceInterface $organizerEditingService
+     * @param IriGeneratorInterface            $organizerIriGenerator
      */
     public function __construct(
         EntityServiceInterface $service,
@@ -47,7 +51,7 @@ class OrganizerController
     }
 
     /**
-     * Get an organizer by it's cdbid.
+     * Get an organizer by its cdbid.
      * @param string $cdbid
      * @return JsonLdResponse $response
      */
