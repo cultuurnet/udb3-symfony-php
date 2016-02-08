@@ -211,7 +211,8 @@ class PlaceEditingRestController extends OfferRestBaseController
             throw new \InvalidArgumentException('Required fields are missing');
         }
 
-        $calendar = $this->initCalendarForCreate($body_content);
+        $deserializer = new CalendarDeserializer();
+        $calendar = $deserializer->deserialize($body_content);
 
         $theme = null;
         if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
