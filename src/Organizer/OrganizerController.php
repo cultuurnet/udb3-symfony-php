@@ -22,8 +22,9 @@ class OrganizerController
     }
 
     /**
+     * Get an organizer by it's cdbid.
      * @param $cdbid
-     * @return mixed
+     * @return JsonLdResponse $response
      */
     public function get($cdbid)
     {
