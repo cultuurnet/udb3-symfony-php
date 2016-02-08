@@ -32,7 +32,7 @@ class OrganizerController
 
     /**
      * Get an organizer by it's cdbid.
-     * @param $cdbid
+     * @param string $cdbid
      * @return JsonLdResponse $response
      */
     public function get($cdbid)
@@ -50,7 +50,11 @@ class OrganizerController
         return $response;
     }
 
-    function findByPartOfTitle($term)
+    /**
+     * @param string $term
+     * @return JsonLdResponse
+     */
+    public function findByPartOfTitle($term)
     {
         // @todo Add & process pagination parameters
 
