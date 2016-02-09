@@ -159,6 +159,17 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "contactPoint and his properties required"], 400);
         }
 
+        // ContactPoint requires arrays
+        if(!is_array($body_content->contactPoint->phone)) {
+            $body_content->contactPoint->phone = [$body_content->contactPoint->phone];
+        }
+        if(!is_array($body_content->contactPoint->email)) {
+            $body_content->contactPoint->email = [$body_content->contactPoint->email];
+        }
+        if(!is_array($body_content->contactPoint->url)) {
+            $body_content->contactPoint->url = [$body_content->contactPoint->url];
+        }
+
         $response = new JsonResponse();
 
         $command_id = $this->editor->updateContactPoint(
