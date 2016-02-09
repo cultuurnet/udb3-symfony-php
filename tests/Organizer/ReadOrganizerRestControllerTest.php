@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: nick
- * Date: 08/02/16
- * Time: 15:19
- */
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
@@ -15,7 +9,7 @@ use CultuurNet\UDB3\ReadModel\JsonDocument;
 class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var EntityServiceInterface
+     * @var EntityServiceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $service;
 
@@ -25,7 +19,7 @@ class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     private $organizerController;
 
     /**
-     * @var OrganizerLookupServiceInterface
+     * @var OrganizerLookupServiceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $lookupService;
 
