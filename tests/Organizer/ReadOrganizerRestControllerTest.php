@@ -9,12 +9,10 @@
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
 use CultuurNet\UDB3\EntityServiceInterface;
-use CultuurNet\UDB3\Iri\IriGeneratorInterface;
-use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Organizer\ReadModel\Lookup\OrganizerLookupServiceInterface;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
 
-class OrganizerControllerTest extends \PHPUnit_Framework_TestCase
+class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var EntityServiceInterface
@@ -22,9 +20,14 @@ class OrganizerControllerTest extends \PHPUnit_Framework_TestCase
     private $service;
 
     /**
-     * @var OrganizerController
+     * @var ReadOrganizerRestController
      */
     private $organizerController;
+
+    /**
+     * @var OrganizerLookupServiceInterface
+     */
+    private $lookupService;
 
     /**
      * @inheritdoc
@@ -32,15 +35,11 @@ class OrganizerControllerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->service = $this->getMock(EntityServiceInterface::class);
-        $lookupService = $this->getMock(OrganizerLookupServiceInterface::class);
-        $editingService = $this->getMock(OrganizerEditingServiceInterface::class);
-        $iriGenerator = $this->getMock(IriGeneratorInterface::class);
+        $this->lookupService = $this->getMock(OrganizerLookupServiceInterface::class);
 
-        $this->organizerController = new OrganizerController(
+        $this->organizerController = new ReadOrganizerRestController(
             $this->service,
-            $lookupService,
-            $editingService,
-            $iriGenerator
+            $this->lookupService
         );
     }
 
