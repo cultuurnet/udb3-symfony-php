@@ -280,29 +280,20 @@ abstract class OfferRestBaseController
     }
 
     /**
-     * Delete an image.
+     * Remove an image from an item by id.
      *
      * @param Request $request
-     * @param string $cdbid
-     * @param string $index
+     * @param string $eventId
+     * @param string $mediaObjectId
      */
-    public function deleteImage($cdbid, $index)
+    public function removeImage($eventId, $mediaObjectId)
     {
-        $itemJson = $this->getItem($cdbid);
-        $item = json_decode($itemJson);
-        if (!isset($item->mediaObject[$index])) {
-            return new JsonResponse(['error' => "The image to edit was not found"], 400);
-        }
+        $imageId = new UUID($mediaObjectId);
+        $image = $this->mediaManager->getImage($imageId);
 
-        // Get the fid of the old file.
-        $url = $item->mediaObject[$index]->url;
-        $old_fid = $this->getFileIdByUrl($url);
+        $command_id = $this->editor->removeImage($eventId, $image);
 
-        $response = new JsonResponse();
-        $command_id = $this->editor->deleteImage($cdbid, $index, $old_fid);
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
+        return new JsonResponse(['commandId' => $command_id]);
     }
 
     /**
