@@ -31,11 +31,11 @@ use CultuurNet\UDB3\CalendarDeserializer;
 use ValueObjects\String\String;
 
 /**
- * Class PlaceEditingRestController.
+ * Class EditPlaceRestController.
  *
  * @package Drupal\culturefeed_udb3\Controller
  */
-class PlaceEditingRestController extends OfferRestBaseController
+class EditPlaceRestController extends OfferRestBaseController
 {
     /**
      * The entity service.

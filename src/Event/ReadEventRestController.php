@@ -11,7 +11,7 @@ use CultuurNet\UDB3\EventServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 
-class EventRestController
+class ReadEventRestController
 {
     const HISTORY_ERROR_NOT_FOUND = 'An error occurred while getting the history of the event with id %s!';
     const HISTORY_ERROR_GONE = 'An error occurred while getting the history of the event with id %s which was removed!';
