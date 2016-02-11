@@ -754,12 +754,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "73f4491d98047ab16f61603a97ab7a580215e3a6"
+                "reference": "dc82d8387062924aaa7d7247d2c08aa405f975d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/73f4491d98047ab16f61603a97ab7a580215e3a6",
-                "reference": "73f4491d98047ab16f61603a97ab7a580215e3a6",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/dc82d8387062924aaa7d7247d2c08aa405f975d3",
+                "reference": "dc82d8387062924aaa7d7247d2c08aa405f975d3",
                 "shasum": ""
             },
             "require": {
@@ -795,7 +795,6 @@
             },
             "require-dev": {
                 "alchemy/zippy": "~0.2",
-                "mikey179/vfsstream": "~1.6.2",
                 "phing/phing": "~2.10",
                 "phpunit/phpunit": "~4.3",
                 "satooshi/php-coveralls": "~0.7",
@@ -827,7 +826,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-02-02 19:49:36"
+            "time": "2016-01-26 09:59:25"
         },
         {
             "name": "danielstjules/stringy",
