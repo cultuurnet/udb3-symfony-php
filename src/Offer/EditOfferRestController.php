@@ -2,10 +2,13 @@
 
 namespace CultuurNet\UDB3\Symfony\Offer;
 
+use CultuurNet\Deserializer\DeserializerInterface;
+use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\String\String;
 
 class EditOfferRestController
 {
@@ -25,17 +28,27 @@ class EditOfferRestController
     private $labelMemory;
 
     /**
+     * @var DeserializerInterface
+     */
+    private $labelJsonDeserializer;
+
+    /**
      * EditOfferRestController constructor.
      * @param OfferEditingServiceInterface $editingServiceInterface
+     * @param \CultureFeed_User $user
+     * @param UsedLabelsMemoryServiceInterface $labelMemory
+     * @param DeserializerInterface $labelJsonDeserializer
      */
     public function __construct(
         OfferEditingServiceInterface $editingServiceInterface,
         \CultureFeed_User $user,
-        UsedLabelsMemoryServiceInterface $labelMemory
+        UsedLabelsMemoryServiceInterface $labelMemory,
+        DeserializerInterface $labelJsonDeserializer
     ) {
         $this->editService = $editingServiceInterface;
         $this->user = $user;
         $this->labelMemory = $labelMemory;
+        $this->labelJsonDeserializer = $labelJsonDeserializer;
     }
 
     /**
@@ -46,9 +59,9 @@ class EditOfferRestController
     public function addLabel(Request $request, $cdbid)
     {
         $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
+        $json = new String($request->getContent());
+        $label = $this->labelJsonDeserializer->deserialize($json);
 
-        $label = new \CultuurNet\UDB3\Label($body_content->label);
         $commandId = $this->editService->addLabel(
             $cdbid,
             $label
@@ -75,7 +88,7 @@ class EditOfferRestController
 
         $commandId = $this->editService->deleteLabel(
             $cdbid,
-            new \CultuurNet\UDB3\Label($label)
+            new Label($label)
         );
 
         $response->setData(['commandId' => $commandId]);
