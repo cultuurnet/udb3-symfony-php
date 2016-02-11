@@ -46,8 +46,9 @@ class EditOfferRestController
     public function addLabel(Request $request, $cdbid)
     {
         $response = new JsonResponse();
+        $body_content = json_decode($request->getContent());
 
-        $label = new \CultuurNet\UDB3\Label($request->request->get('label'));
+        $label = new \CultuurNet\UDB3\Label($body_content->label);
         $commandId = $this->editService->addLabel(
             $cdbid,
             $label
