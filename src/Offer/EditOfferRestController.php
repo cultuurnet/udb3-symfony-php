@@ -58,7 +58,6 @@ class EditOfferRestController
      */
     public function addLabel(Request $request, $cdbid)
     {
-        $response = new JsonResponse();
         $json = new String($request->getContent());
         $label = $this->labelJsonDeserializer->deserialize($json);
 
@@ -72,9 +71,7 @@ class EditOfferRestController
             $label
         );
 
-        $response->setData(['commandId' => $commandId]);
-
-        return $response;
+        return new JsonResponse(['commandId' => $commandId]);
     }
 
     /**
@@ -84,15 +81,11 @@ class EditOfferRestController
      */
     public function removeLabel($cdbid, $label)
     {
-        $response = new JsonResponse();
-
         $commandId = $this->editService->deleteLabel(
             $cdbid,
             new Label($label)
         );
 
-        $response->setData(['commandId' => $commandId]);
-
-        return $response;
+        return new JsonResponse(['commandId' => $commandId]);
     }
 }
