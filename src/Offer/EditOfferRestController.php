@@ -22,16 +22,32 @@ class EditOfferRestController
     private $labelJsonDeserializer;
 
     /**
+     * @var DeserializerInterface
+     */
+    private $titleJsonDeserializer;
+
+    /**
+     * @var DeserializerInterface
+     */
+    private $descriptionJsonDeserializer;
+
+    /**
      * EditOfferRestController constructor.
      * @param OfferEditingServiceInterface $editingServiceInterface
      * @param DeserializerInterface $labelJsonDeserializer
+     * @param DeserializerInterface $titleJsonDeserializer
+     * @param DeserializerInterface $descriptionJsonDeserializer
      */
     public function __construct(
         OfferEditingServiceInterface $editingServiceInterface,
-        DeserializerInterface $labelJsonDeserializer
+        DeserializerInterface $labelJsonDeserializer,
+        DeserializerInterface $titleJsonDeserializer,
+        DeserializerInterface $descriptionJsonDeserializer
     ) {
         $this->editService = $editingServiceInterface;
         $this->labelJsonDeserializer = $labelJsonDeserializer;
+        $this->titleJsonDeserializer = $titleJsonDeserializer;
+        $this->descriptionJsonDeserializer = $descriptionJsonDeserializer;
     }
 
     /**
@@ -75,28 +91,19 @@ class EditOfferRestController
      */
     public function translateTitle(Request $request, $cdbid, $lang)
     {
-        $response = new JsonResponse();
+        $title = $this->titleJsonDeserializer->deserialize(
+            new String($request->getContent())
+        );
 
-        // TODO json decode this
-        $title = $request->request->get('title');
-        if (!$title) {
-            return new JsonResponse(['error' => "title required"], 400);
-        }
+        $commandId = $this->editService->translateTitle(
+            $cdbid,
+            new \CultuurNet\UDB3\Language($lang),
+            $title
+        );
 
-        try {
-            $commandId = $this->editService->translateTitle(
-                $cdbid,
-                new \CultuurNet\UDB3\Language($lang),
-                new \ValueObjects\String\String($title)
-            );
-
-            $response->setData(['commandId' => $commandId]);
-        } catch (\Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
-
-        return $response;
+        return new JsonResponse(
+            ['commandId' => $commandId]
+        );
     }
 
     /**
@@ -107,27 +114,18 @@ class EditOfferRestController
      */
     public function translateDescription(Request $request, $cdbid, $lang)
     {
-        $response = new JsonResponse();
+        $description = $this->descriptionJsonDeserializer->deserialize(
+            new String($request->getContent())
+        );
 
-        // TODO json decode this
-        $description = $request->request->get('description');
-        if (!$description) {
-            return new JsonResponse(['error' => "description required"], 400);
-        }
+        $commandId = $this->editService->translateDescription(
+            $cdbid,
+            new \CultuurNet\UDB3\Language($lang),
+            $description
+        );
 
-        try {
-            $commandId = $this->editService->translateDescription(
-                $cdbid,
-                new \CultuurNet\UDB3\Language($lang),
-                new \ValueObjects\String\String($request->get('description'))
-            );
-
-            $response->setData(['commandId' => $commandId]);
-        } catch (\Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
-        }
-
-        return $response;
+        return new JsonResponse(
+            ['commandId' => $commandId]
+        );
     }
 }
