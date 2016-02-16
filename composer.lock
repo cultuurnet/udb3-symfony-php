@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a8a50ba66dcf6e42dfce75c8b5f04629",
-    "content-hash": "957e0f8319b10255656a03cb4a898a6f",
+    "hash": "b1aefe8051f8984cc14160aeab8a8f26",
+    "content-hash": "a86864644d0670005c6299326376b2bf",
     "packages": [
         {
             "name": "2dotstwice/collection",
@@ -750,16 +750,16 @@
         },
         {
             "name": "cultuurnet/udb3",
-            "version": "dev-feature/III-698",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "927417fa52dd7d1a36a50f009aaf1e5504a340ca"
+                "reference": "bfece9c24d8f0ed4c0ecdc5bf6cb27389ca4c2ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/927417fa52dd7d1a36a50f009aaf1e5504a340ca",
-                "reference": "927417fa52dd7d1a36a50f009aaf1e5504a340ca",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/bfece9c24d8f0ed4c0ecdc5bf6cb27389ca4c2ec",
+                "reference": "bfece9c24d8f0ed4c0ecdc5bf6cb27389ca4c2ec",
                 "shasum": ""
             },
             "require": {
@@ -827,7 +827,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-02-16 15:09:11"
+            "time": "2016-02-16 19:39:55"
         },
         {
             "name": "danielstjules/stringy",
@@ -3039,20 +3039,20 @@
         },
         {
             "name": "zendframework/zend-stdlib",
-            "version": "2.7.4",
+            "version": "2.7.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stdlib.git",
-                "reference": "cae029346a33663b998507f94962eb27de060683"
+                "reference": "b894a85f3ef8a52e7aa62c3c5aa245e383c70cca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/cae029346a33663b998507f94962eb27de060683",
-                "reference": "cae029346a33663b998507f94962eb27de060683",
+                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/b894a85f3ef8a52e7aa62c3c5aa245e383c70cca",
+                "reference": "b894a85f3ef8a52e7aa62c3c5aa245e383c70cca",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5",
+                "php": "^5.5 || ^7.0",
                 "zendframework/zend-hydrator": "~1.0"
             },
             "require-dev": {
@@ -3075,8 +3075,9 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev",
-                    "dev-develop": "2.8-dev"
+                    "dev-release-2.7": "2.7-dev",
+                    "dev-master": "3.0-dev",
+                    "dev-develop": "3.1-dev"
                 }
             },
             "autoload": {
@@ -3093,7 +3094,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2015-10-15 15:57:32"
+            "time": "2016-02-16 18:25:48"
         },
         {
             "name": "zendframework/zend-validator",
@@ -4495,18 +4496,9 @@
             "time": "2016-02-02 13:44:19"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.1",
-            "alias_normalized": "0.1.0.0",
-            "version": "dev-feature/III-698",
-            "package": "cultuurnet/udb3"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cultuurnet/udb3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
