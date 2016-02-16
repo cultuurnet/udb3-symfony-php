@@ -66,4 +66,68 @@ class EditOfferRestController
 
         return new JsonResponse(['commandId' => $commandId]);
     }
+
+    /**
+     * @param Request $request
+     * @param $cdbid
+     * @param $lang
+     * @return JsonResponse
+     */
+    public function translateTitle(Request $request, $cdbid, $lang)
+    {
+        $response = new JsonResponse();
+
+        // TODO json decode this
+        $title = $request->request->get('title');
+        if (!$title) {
+            return new JsonResponse(['error' => "title required"], 400);
+        }
+
+        try {
+            $commandId = $this->editService->translateTitle(
+                $cdbid,
+                new \CultuurNet\UDB3\Language($lang),
+                new \ValueObjects\String\String($title)
+            );
+
+            $response->setData(['commandId' => $commandId]);
+        } catch (\Exception $e) {
+            $response->setStatusCode(400);
+            $response->setData(['error' => $e->getMessage()]);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param $cdbid
+     * @param $lang
+     * @return JsonResponse
+     */
+    public function translateDescription(Request $request, $cdbid, $lang)
+    {
+        $response = new JsonResponse();
+
+        // TODO json decode this
+        $description = $request->request->get('description');
+        if (!$description) {
+            return new JsonResponse(['error' => "description required"], 400);
+        }
+
+        try {
+            $commandId = $this->editService->translateDescription(
+                $cdbid,
+                new \CultuurNet\UDB3\Language($lang),
+                new \ValueObjects\String\String($request->get('description'))
+            );
+
+            $response->setData(['commandId' => $commandId]);
+        } catch (\Exception $e) {
+            $response->setStatusCode(400);
+            $response->setData(['error' => $e->getMessage()]);
+        }
+
+        return $response;
+    }
 }
