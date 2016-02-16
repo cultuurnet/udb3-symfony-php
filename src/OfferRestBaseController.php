@@ -39,6 +39,19 @@ abstract class OfferRestBaseController
     protected $mediaManager;
 
     /**
+     * OfferRestBaseController constructor.
+     * @param EventEditingServiceInterface|PlaceEditingServiceInterface $editor
+     * @param MediaManagerInterface $mediaManager
+     */
+    public function __construct(
+        $editor,
+        MediaManagerInterface $mediaManager
+    ) {
+        $this->editor = $editor;
+        $this->mediaManager = $mediaManager;
+    }
+
+    /**
      * Update the description property.
      *
      * @param Request $request

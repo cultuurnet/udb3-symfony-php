@@ -67,7 +67,7 @@ class EditEventRestController extends OfferRestBaseController
      *
      * @param EventServiceInterface $event_service
      *   The event service.
-     * @param EventEditingServiceInterface $event_editor
+     * @param EventEditingServiceInterface $eventEditor
      *   The event editor.
      * @param DefaultUsedLabelsMemoryService $used_labels_memory
      *   The event labeller.
@@ -79,18 +79,17 @@ class EditEventRestController extends OfferRestBaseController
      */
     public function __construct(
         EventServiceInterface $event_service,
-        EventEditingServiceInterface $event_editor,
+        EventEditingServiceInterface $eventEditor,
         DefaultUsedLabelsMemoryService $used_labels_memory,
         CultureFeed_User $user,
         MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator,
         SecurityInterface $security
     ) {
+        parent::__construct($eventEditor, $mediaManager);
         $this->eventService = $event_service;
-        $this->editor = $event_editor;
         $this->usedLabelsMemory = $used_labels_memory;
         $this->user = $user;
-        $this->mediaManager = $mediaManager;
         $this->iriGenerator = $iriGenerator;
         $this->calendarDeserializer = new CalendarDeserializer();
         $this->security = $security;
