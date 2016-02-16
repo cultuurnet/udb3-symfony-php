@@ -231,9 +231,9 @@ abstract class OfferRestBaseController
      * Add an image.
      *
      * @param Request $request
-     * @param string $eventId
+     * @param string $itemId
      */
-    public function addImage(Request $request, $eventId)
+    public function addImage(Request $request, $itemId)
     {
         $body_content = json_decode($request->getContent());
         if (empty($body_content->mediaObjectId)) {
@@ -245,7 +245,7 @@ abstract class OfferRestBaseController
         $image = $this->mediaManager->getImage($mediaObjectId);
 
         $response = new JsonResponse();
-        $commandId = $this->editor->addImage($eventId, $image);
+        $commandId = $this->editor->addImage($itemId, $image);
         $response->setData(['commandId' => $commandId]);
 
         return $response;
@@ -255,10 +255,10 @@ abstract class OfferRestBaseController
      * Update an image.
      *
      * @param Request $request
-     * @param string $eventId
+     * @param string $itemId
      * @param string $mediaObjectId
      */
-    public function updateImage(Request $request, $eventId, $mediaObjectId)
+    public function updateImage(Request $request, $itemId, $mediaObjectId)
     {
         $body_content = json_decode($request->getContent());
         $description = new String($body_content->description);
@@ -267,7 +267,7 @@ abstract class OfferRestBaseController
         $image = $this->mediaManager->getImage($imageId);
 
         $commandId = $this->editor->updateImage(
-            $eventId,
+            $itemId,
             $image,
             $description,
             $copyrightHolder
@@ -283,15 +283,15 @@ abstract class OfferRestBaseController
      * Remove an image from an item by id.
      *
      * @param Request $request
-     * @param string $eventId
+     * @param string $itemId
      * @param string $mediaObjectId
      */
-    public function removeImage($eventId, $mediaObjectId)
+    public function removeImage($itemId, $mediaObjectId)
     {
         $imageId = new UUID($mediaObjectId);
         $image = $this->mediaManager->getImage($imageId);
 
-        $command_id = $this->editor->removeImage($eventId, $image);
+        $command_id = $this->editor->removeImage($itemId, $image);
 
         return new JsonResponse(['commandId' => $command_id]);
     }
