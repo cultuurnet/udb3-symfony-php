@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\Deserializer\DeserializerInterface;
 use CultuurNet\UDB3\Label;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -97,7 +98,7 @@ class EditOfferRestController
 
         $commandId = $this->editService->translateTitle(
             $cdbid,
-            new \CultuurNet\UDB3\Language($lang),
+            new Language($lang),
             $title
         );
 
@@ -120,7 +121,7 @@ class EditOfferRestController
 
         $commandId = $this->editService->translateDescription(
             $cdbid,
-            new \CultuurNet\UDB3\Language($lang),
+            new Language($lang),
             $description
         );
 
