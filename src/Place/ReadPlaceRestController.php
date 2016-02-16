@@ -41,10 +41,7 @@ class ReadPlaceRestController
         $place = $this->service->getEntity($cdbid);
 
         $response = JsonLdResponse::create()
-            ->setContent($place)
-            ->setPublic()
-            ->setClientTtl(60 * 30)
-            ->setTtl(60 * 5);
+            ->setContent($place);
 
         $response->headers->set('Vary', 'Origin');
 
