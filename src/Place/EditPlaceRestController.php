@@ -245,9 +245,6 @@ class EditPlaceRestController extends OfferRestBaseController
     public function updateFacilities(Request $request, $cdbid)
     {
         $body_content = json_decode($request->getContent());
-        if (empty($body_content->facilities)) {
-            return new JsonResponse(['error' => "facilities required"], 400);
-        }
 
         $facilities = array();
         foreach ($body_content->facilities as $facility) {
