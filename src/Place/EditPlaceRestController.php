@@ -31,11 +31,11 @@ use CultuurNet\UDB3\CalendarDeserializer;
 use ValueObjects\String\String;
 
 /**
- * Class PlaceEditingRestController.
+ * Class EditPlaceRestController.
  *
  * @package Drupal\culturefeed_udb3\Controller
  */
-class PlaceEditingRestController extends OfferRestBaseController
+class EditPlaceRestController extends OfferRestBaseController
 {
     /**
      * The entity service.
@@ -96,6 +96,7 @@ class PlaceEditingRestController extends OfferRestBaseController
         $this->user = $user;
         $this->fileUsage = $fileUsage;
         $this->security = $security;
+        $this->calendarDeserializer = new CalendarDeserializer();
     }
 
     /**
@@ -145,9 +146,6 @@ class PlaceEditingRestController extends OfferRestBaseController
             throw new InvalidArgumentException('Required fields are missing');
         }
 
-        $deserializer = new CalendarDeserializer();
-        $calendar = $deserializer->deserialize($body_content);
-
         $theme = null;
         if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
             $theme = new Theme($body_content->theme->id, $body_content->theme->label);
@@ -164,7 +162,7 @@ class PlaceEditingRestController extends OfferRestBaseController
                 $address->addressLocality,
                 $address->addressCountry
             ),
-            $calendar,
+            $this->calendarDeserializer->deserialize($body_content),
             $theme
         );
 
@@ -211,9 +209,6 @@ class PlaceEditingRestController extends OfferRestBaseController
             throw new \InvalidArgumentException('Required fields are missing');
         }
 
-        $deserializer = new CalendarDeserializer();
-        $calendar = $deserializer->deserialize($body_content);
-
         $theme = null;
         if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
             $theme = new Theme($body_content->theme->id, $body_content->theme->label);
@@ -231,7 +226,7 @@ class PlaceEditingRestController extends OfferRestBaseController
                 $address->addressLocality,
                 $address->addressCountry
             ),
-            $calendar,
+            $this->calendarDeserializer->deserialize($body_content),
             $theme
         );
 

@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String;
 
-class EventEditingRestController extends OfferRestBaseController
+class EditEventRestController extends OfferRestBaseController
 {
     /**
      * The event editor

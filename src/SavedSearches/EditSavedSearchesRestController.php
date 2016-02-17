@@ -11,13 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String;
 
-class SavedSearchesRestController
+class EditSavedSearchesRestController
 {
-    /**
-     * @var SavedSearchRepositoryInterface
-     */
-    private $readRepository;
-
     /**
      * @var \CultureFeed_User
      */
@@ -29,28 +24,15 @@ class SavedSearchesRestController
     private $commandBus;
 
     /**
-     * @param SavedSearchRepositoryInterface $readRepository
      * @param \CultureFeed_User $user
      * @param CommandBusInterface $commandBus
      */
     public function __construct(
-        SavedSearchRepositoryInterface $readRepository,
         \CultureFeed_User $user,
         CommandBusInterface $commandBus
     ) {
-        $this->readRepository = $readRepository;
         $this->user = $user;
         $this->commandBus = $commandBus;
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function ownedByCurrentUser()
-    {
-        return JsonResponse::create(
-            $this->readRepository->ownedByCurrentUser()
-        );
     }
 
     /**

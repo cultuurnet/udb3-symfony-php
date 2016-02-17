@@ -16,7 +16,7 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
     const REMOVED_ID = 'removedId';
 
     /**
-     * @var EventRestController
+     * @var ReadEventRestController
      */
     private $eventRestController;
 
@@ -53,7 +53,7 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
          * @var EventServiceInterface $eventServiceInterface
          * @var DocumentRepositoryInterface $documentRepositoryInterface
          */
-        $this->eventRestController = new EventRestController(
+        $this->eventRestController = new ReadEventRestController(
             $eventServiceInterface,
             $documentRepositoryInterface
         );

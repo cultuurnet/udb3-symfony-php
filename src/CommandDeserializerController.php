@@ -14,10 +14,7 @@ use ValueObjects\String\String;
  */
 class CommandDeserializerController
 {
-    /**
-     * @var CommandBusInterface
-     */
-    private $commandBus;
+    use CommandDeserializerControllerTrait;
 
     /**
      * @var DeserializerInterface
@@ -33,7 +30,7 @@ class CommandDeserializerController
         CommandBusInterface $commandBus
     ) {
         $this->deserializer = $commandDeserializer;
-        $this->commandBus = $commandBus;
+        $this->setCommandBus($commandBus);
     }
 
     /**
@@ -42,14 +39,9 @@ class CommandDeserializerController
      */
     public function handle(Request $request)
     {
-        $command = $this->deserializer->deserialize(
-            new String($request->getContent())
-        );
-
-        $commandId = $this->commandBus->dispatch($command);
-
-        return JsonResponse::create(
-            ['commandId' => $commandId]
+        return $this->handleRequestWithDeserializer(
+            $request,
+            $this->deserializer
         );
     }
 }

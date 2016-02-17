@@ -8,7 +8,7 @@ use CultuurNet\UDB3\Place\ReadModel\Lookup\PlaceLookupServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class PlaceRestController
+class ReadPlaceRestController
 {
     /**
      * @var EntityServiceInterface
