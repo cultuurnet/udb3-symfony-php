@@ -219,28 +219,6 @@ abstract class OfferRestBaseController
     }
 
     /**
-     * Update the facilities.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateFacilities(Request $request, $cdbid)
-    {
-        $body_content = json_decode($request->getContent());
-        if (empty($body_content->facilities)) {
-            return new JsonResponse(['error' => "facilities required"], 400);
-        }
-
-        $response = new JsonResponse();
-
-        $command_id = $this->editor->updateFacilities($cdbid, $body_content->facilities);
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
-    }
-
-    /**
      * Add an image.
      *
      * @param Request $request

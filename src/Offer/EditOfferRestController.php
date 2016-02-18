@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\Deserializer\DeserializerInterface;
 use CultuurNet\UDB3\Label;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,16 +23,32 @@ class EditOfferRestController
     private $labelJsonDeserializer;
 
     /**
+     * @var DeserializerInterface
+     */
+    private $titleJsonDeserializer;
+
+    /**
+     * @var DeserializerInterface
+     */
+    private $descriptionJsonDeserializer;
+
+    /**
      * EditOfferRestController constructor.
      * @param OfferEditingServiceInterface $editingServiceInterface
      * @param DeserializerInterface $labelJsonDeserializer
+     * @param DeserializerInterface $titleJsonDeserializer
+     * @param DeserializerInterface $descriptionJsonDeserializer
      */
     public function __construct(
         OfferEditingServiceInterface $editingServiceInterface,
-        DeserializerInterface $labelJsonDeserializer
+        DeserializerInterface $labelJsonDeserializer,
+        DeserializerInterface $titleJsonDeserializer,
+        DeserializerInterface $descriptionJsonDeserializer
     ) {
         $this->editService = $editingServiceInterface;
         $this->labelJsonDeserializer = $labelJsonDeserializer;
+        $this->titleJsonDeserializer = $titleJsonDeserializer;
+        $this->descriptionJsonDeserializer = $descriptionJsonDeserializer;
     }
 
     /**
@@ -65,5 +82,51 @@ class EditOfferRestController
         );
 
         return new JsonResponse(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $cdbid
+     * @param $lang
+     * @return JsonResponse
+     */
+    public function translateTitle(Request $request, $cdbid, $lang)
+    {
+        $title = $this->titleJsonDeserializer->deserialize(
+            new String($request->getContent())
+        );
+
+        $commandId = $this->editService->translateTitle(
+            $cdbid,
+            new Language($lang),
+            $title
+        );
+
+        return new JsonResponse(
+            ['commandId' => $commandId]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param $cdbid
+     * @param $lang
+     * @return JsonResponse
+     */
+    public function translateDescription(Request $request, $cdbid, $lang)
+    {
+        $description = $this->descriptionJsonDeserializer->deserialize(
+            new String($request->getContent())
+        );
+
+        $commandId = $this->editService->translateDescription(
+            $cdbid,
+            new Language($lang),
+            $description
+        );
+
+        return new JsonResponse(
+            ['commandId' => $commandId]
+        );
     }
 }
