@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Address;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
+use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\SecurityInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
@@ -18,9 +19,7 @@ use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use CultuurNet\UDB3\Symfony\type;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
-use Drupal;
 use Drupal\culturefeed_udb3\EventRelationsRepository;
-use Drupal\file\FileUsage\FileUsageInterface;
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -75,26 +74,26 @@ class EditPlaceRestController extends OfferRestBaseController
      *
      * @param EntityServiceInterface       $entity_service
      *   The entity service.
-     * @param PlaceEditingServiceInterface $place_editor
+     * @param PlaceEditingServiceInterface $placeEditor
      * @param RepositoryInterface          $event_relations_repository,
      * @param CultureFeed_User             $user
      *   The culturefeed user.
      * @param SecurityInterface            $security
      * @param FileUsageInterface           $fileUsage
+     * @param MediaManagerInterface        $mediaManager
      */
     public function __construct(
         EntityServiceInterface $entity_service,
-        PlaceEditingServiceInterface $place_editor,
+        PlaceEditingServiceInterface $placeEditor,
         RepositoryInterface $event_relations_repository,
         CultureFeed_User $user,
         SecurityInterface $security,
-        FileUsageInterface $fileUsage = null
+        MediaManagerInterface $mediaManager
     ) {
+        parent::__construct($placeEditor, $mediaManager);
         $this->entityService = $entity_service;
-        $this->editor = $place_editor;
         $this->eventRelationsRepository = $event_relations_repository;
         $this->user = $user;
-        $this->fileUsage = $fileUsage;
         $this->security = $security;
         $this->calendarDeserializer = new CalendarDeserializer();
     }
