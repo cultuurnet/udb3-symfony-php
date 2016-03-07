@@ -243,6 +243,30 @@ abstract class OfferRestBaseController
     }
 
     /**
+     * Select the main image for an item.
+     *
+     * @param Request $request
+     * @param string $itemId
+     */
+    public function selectMainImage(Request $request, $itemId)
+    {
+        $body_content = json_decode($request->getContent());
+        if (empty($body_content->mediaObjectId)) {
+            return new JsonResponse(['error' => "media object id required"], 400);
+        }
+
+        $mediaObjectId = new UUID($body_content->mediaObjectId);
+
+        $image = $this->mediaManager->getImage($mediaObjectId);
+
+        $response = new JsonResponse();
+        $commandId = $this->editor->selectMainImage($itemId, $image);
+        $response->setData(['commandId' => $commandId]);
+
+        return $response;
+    }
+
+    /**
      * Update an image.
      *
      * @param Request $request
