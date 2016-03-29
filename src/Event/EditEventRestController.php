@@ -321,8 +321,8 @@ class EditEventRestController extends OfferRestBaseController
             throw new InvalidArgumentException('Required fields are missing');
         }
 
-        $result = $this->editor->deleteEvent($cdbid);
-        $response->setData(['result' => $result]);
+        $command_id = $this->editor->deleteEvent($cdbid);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
     }
