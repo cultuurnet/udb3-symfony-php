@@ -54,7 +54,7 @@ class DashboardRestController
         $limit = 50;
 
         $items = $this->itemLookupService->findByUser(
-            $this->currentUser,
+            $this->currentUser->id,
             Natural::fromNative($limit),
             Natural::fromNative(--$pageNumber * $limit)
         );
