@@ -63,7 +63,7 @@ abstract class OfferRestBaseController
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
-        if (!isset($body_content->description) || $body_content->description == '') {
+        if (!isset($body_content->description)) {
             return new JsonResponse(['error' => "description required"], 400);
         }
 
