@@ -61,7 +61,7 @@ class ReadVariationsRestController
         $itemsPerPage = 5;
         $pageNumber = intval($request->query->get('page', 0));
 
-        $variationIds = $this->searchRepository->getEventVariations(
+        $variationIds = $this->searchRepository->getOfferVariations(
             $criteria,
             $itemsPerPage,
             $pageNumber
@@ -76,7 +76,7 @@ class ReadVariationsRestController
             }
         }
 
-        $totalItems = $this->searchRepository->countEventVariations(
+        $totalItems = $this->searchRepository->countOfferVariations(
             $criteria
         );
 

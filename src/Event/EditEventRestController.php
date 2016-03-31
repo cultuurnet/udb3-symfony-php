@@ -186,7 +186,7 @@ class EditEventRestController extends OfferRestBaseController
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
-        if (!$body_content->description) {
+        if (!isset($body_content->description)) {
             return new JsonResponse(['error' => "description required"], 400);
         }
 
@@ -321,8 +321,8 @@ class EditEventRestController extends OfferRestBaseController
             throw new InvalidArgumentException('Required fields are missing');
         }
 
-        $result = $this->editor->deleteEvent($cdbid);
-        $response->setData(['result' => $result]);
+        $command_id = $this->editor->deleteEvent($cdbid);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
     }

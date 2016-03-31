@@ -190,8 +190,8 @@ class EditPlaceRestController extends OfferRestBaseController
             throw new InvalidArgumentException('Required fields are missing');
         }
 
-        $result = $this->editor->deletePlace($cdbid);
-        $response->setData(['result' => $result]);
+        $command_id = $this->editor->deletePlace($cdbid);
+        $response->setData(['commandId' => $command_id]);
 
         return $response;
     }

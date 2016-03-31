@@ -6,7 +6,7 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\Symfony\CommandDeserializerControllerTrait;
-use CultuurNet\UDB3\Variations\Command\DeleteEventVariation;
+use CultuurNet\UDB3\Variations\Command\DeleteOfferVariation;
 use CultuurNet\UDB3\Variations\Command\EditDescriptionJSONDeserializer;
 use CultuurNet\UDB3\Variations\Model\Properties\Id;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -62,7 +62,7 @@ class EditVariationsRestController
     {
         $this->guardId($id);
 
-        $command = new DeleteEventVariation(
+        $command = new DeleteOfferVariation(
             new Id($id)
         );
 
