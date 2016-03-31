@@ -278,14 +278,11 @@ class EditPlaceRestController extends OfferRestBaseController
         $events = $this->eventRelationsRepository->getEventsLocatedAtPlace($cdbid);
         if (!empty($events)) {
 
-            $urlGenerator = Drupal::service('url_generator');
-            $iriGenerator = Drupal::service('culturefeed_udb3.iri_generator');
-
             $data = ['events' => []];
 
             foreach ($events as $eventId) {
                 $data['events'][] = [
-                    '@id' => $iriGenerator->iri($eventId),
+                    '@id' => $eventId,
                 ];
             }
 
