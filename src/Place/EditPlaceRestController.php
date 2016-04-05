@@ -268,9 +268,12 @@ class EditPlaceRestController extends OfferRestBaseController
 
     /**
      * Get the events for a given place.
-     * @return type
+     *
+     * @param string $cdbid
+     *
+     * @return JsonResponse
      */
-    public function getEvents(Request $request, $cdbid)
+    public function getEvents($cdbid)
     {
         $response = new JsonResponse();
 
