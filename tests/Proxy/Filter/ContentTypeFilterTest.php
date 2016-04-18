@@ -9,9 +9,18 @@ class ContentTypeFilterTest extends \PHPUnit_Framework_TestCase
 {
     const APPLICATION_XML = 'application/xml';
 
+    /**
+     * @var Request
+     */
+    private $request;
+
     protected function setUp()
     {
-        
+        $this->request = new Request();
+        $this->request->headers->set(
+            ContentTypeFilter::CONTENT_TYPE,
+            self::APPLICATION_XML
+        );
     }
 
     /**
@@ -19,17 +28,11 @@ class ContentTypeFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_match_same_content_type()
     {
-        $request = new Request();
-        $request->headers->set(
-            ContentTypeFilter::CONTENT_TYPE,
-            self::APPLICATION_XML
-        );
-
         $contentTypeFilter = new ContentTypeFilter(
             new StringLiteral(self::APPLICATION_XML)
         );
 
-        $this->assertTrue($contentTypeFilter->matches($request));
+        $this->assertTrue($contentTypeFilter->matches($this->request));
     }
 
     /**
@@ -37,17 +40,11 @@ class ContentTypeFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_not_match_for_different_content_type()
     {
-        $request = new Request();
-        $request->headers->set(
-            ContentTypeFilter::CONTENT_TYPE,
-            'application/xmls'
-        );
-
         $contentTypeFilter = new ContentTypeFilter(
-            new StringLiteral(self::APPLICATION_XML)
+            new StringLiteral("application/xmls")
         );
 
-        $this->assertFalse($contentTypeFilter->matches($request));
+        $this->assertFalse($contentTypeFilter->matches($this->request));
     }
 
     /**
