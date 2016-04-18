@@ -18,7 +18,8 @@ class AndFilterTest extends \PHPUnit_Framework_TestCase
     {
         $this->request = new Request();
         $this->request->headers->set(
-            ContentTypeFilter::CONTENT_TYPE, self::APPLICATION_XML
+            ContentTypeFilter::CONTENT_TYPE,
+            self::APPLICATION_XML
         );
         $this->request->setMethod(Request::METHOD_POST);
     }
