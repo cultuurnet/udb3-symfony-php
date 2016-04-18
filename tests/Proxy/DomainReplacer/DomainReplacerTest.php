@@ -8,10 +8,9 @@ use ValueObjects\Web\Url;
 
 class DomainReplacerTest extends \PHPUnit_Framework_TestCase
 {
-    const HTTPS = 'https';
+    const BING_SCHEME = 'https';
     const BING_PATH = '/path/subPath';
     const BING_QUERY = '?param=value';
-    const BING = self::HTTPS . '://' . 'www.bing.be' . self::BING_PATH . self::BING_QUERY;
 
     const GOOGLE = 'www.google.be';
 
@@ -25,7 +24,8 @@ class DomainReplacerTest extends \PHPUnit_Framework_TestCase
         /** @var Hostname $redirectDomain */
         $redirectDomain = Hostname::fromNative(self::GOOGLE);
 
-        $request = Request::create(self::BING);
+        $bing = self::BING_SCHEME . '://' . 'www.bing.be' . self::BING_PATH . self::BING_QUERY;
+        $request = Request::create($bing);
 
         $domainReplacer = new DomainReplacer();
 
@@ -64,6 +64,6 @@ class DomainReplacerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_keep_the_scheme_of_an_url()
     {
-        $this->assertEquals(self::HTTPS, $this->replacedUrl->getScheme());
+        $this->assertEquals(self::BING_SCHEME, $this->replacedUrl->getScheme());
     }
 }
