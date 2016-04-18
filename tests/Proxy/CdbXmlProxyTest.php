@@ -6,12 +6,13 @@ use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Redirect\RedirectInterface;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String as StringLiteral;
-use ValueObjects\Web\Url;
+use ValueObjects\Web\Domain;
+use ValueObjects\Web\Hostname;
 
 class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
 {
     const APPLICATION_XML = 'application/xml';
-    const REDIRECT_URL = 'http://www.google.be';
+    const REDIRECT_DOMAIN = 'www.bing.be';
 
     /**
      * @var RedirectInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -27,9 +28,12 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
     {
         $this->redirect = $this->getMock(RedirectInterface::class);
 
+        /** @var Hostname $redirectDomain */
+        $redirectDomain = Hostname::fromNative(self::REDIRECT_DOMAIN);
+        
         $this->cdbXmlProxy = new CdbXmlProxy(
             new StringLiteral(self::APPLICATION_XML),
-            Url::fromNative(self::REDIRECT_URL),
+            $redirectDomain,
             $this->redirect
         );
     }
@@ -119,7 +123,7 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
      */
     private function createRequest($method, $accept)
     {
-        $request = new Request();
+        $request = Request::create('http://www.google.be');
         $request->setMethod($method);
         $request->headers->set(AcceptFilter::ACCEPT, $accept);
 
