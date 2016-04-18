@@ -6,7 +6,6 @@ use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Redirect\RedirectInterface;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String as StringLiteral;
-use ValueObjects\Web\Domain;
 use ValueObjects\Web\Hostname;
 
 class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
