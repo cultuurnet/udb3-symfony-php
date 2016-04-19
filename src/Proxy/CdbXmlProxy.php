@@ -6,7 +6,7 @@ use CultuurNet\UDB3\Symfony\Proxy\DomainReplacer\DomainReplacer;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AndFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\MethodFilter;
-use CultuurNet\UDB3\Symfony\Proxy\Redirect\RedirectInterface;
+use CultuurNet\UDB3\Symfony\Proxy\Responder\ResponderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\String\String as StringLiteral;
@@ -25,20 +25,20 @@ class CdbXmlProxy
     private $cdbXmlFilter;
 
     /**
-     * @var RedirectInterface
+     * @var ResponderInterface
      */
-    private $redirect;
+    private $responder;
 
     /**
      * CdbXmlProxy constructor.
      * @param StringLiteral $accept
      * @param Domain $redirectDomain
-     * @param RedirectInterface $redirect
+     * @param ResponderInterface $responder
      */
     public function __construct(
         StringLiteral $accept,
         Domain $redirectDomain,
-        RedirectInterface $redirect
+        ResponderInterface $responder
     ) {
         $acceptFilter = new AcceptFilter($accept);
         $methodFilter = new MethodFilter(new StringLiteral(Request::METHOD_GET));
@@ -50,7 +50,7 @@ class CdbXmlProxy
 
         $this->redirectDomain = $redirectDomain;
 
-        $this->redirect = $redirect;
+        $this->responder = $responder;
     }
 
     /**
@@ -66,7 +66,7 @@ class CdbXmlProxy
                 $request
             );
 
-            return $this->redirect->getRedirectResponse($replacedUrl);
+            return $this->responder->getResponse($replacedUrl);
         } else {
             return null;
         }

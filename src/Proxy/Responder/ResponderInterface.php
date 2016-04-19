@@ -1,15 +1,15 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony\Proxy\Redirect;
+namespace CultuurNet\UDB3\Symfony\Proxy\Responder;
 
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Web\Url;
 
-interface RedirectInterface
+interface ResponderInterface
 {
     /**
      * @param Url $url
      * @return Response
      */
-    public function getRedirectResponse(Url $url);
+    public function getResponse(Url $url);
 }

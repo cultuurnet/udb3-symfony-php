@@ -1,12 +1,12 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony\Proxy\Redirect;
+namespace CultuurNet\UDB3\Symfony\Proxy\Responder;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Web\Url;
 
-class SimpleRedirectTest extends \PHPUnit_Framework_TestCase
+class RedirectResponderTest extends \PHPUnit_Framework_TestCase
 {
     const REDIRECT_URL = 'https://udb-cdbxml.uitdatabank.be/event/uuid';
 
@@ -18,9 +18,9 @@ class SimpleRedirectTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $url = Url::fromNative(self::REDIRECT_URL);
-        $simpleRedirect = new SimpleRedirect();
+        $redirectResponder = new RedirectResponder();
         
-        $this->redirectResponse = $simpleRedirect->getRedirectResponse($url);
+        $this->redirectResponse = $redirectResponder->getResponse($url);
     }
     
     /**

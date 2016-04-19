@@ -3,7 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Proxy;
 
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
-use CultuurNet\UDB3\Symfony\Proxy\Redirect\RedirectInterface;
+use CultuurNet\UDB3\Symfony\Proxy\Responder\ResponderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String as StringLiteral;
 use ValueObjects\Web\Hostname;
@@ -14,7 +14,7 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
     const REDIRECT_DOMAIN = 'www.bing.be';
 
     /**
-     * @var RedirectInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResponderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $redirect;
 
@@ -25,7 +25,7 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->redirect = $this->getMock(RedirectInterface::class);
+        $this->redirect = $this->getMock(ResponderInterface::class);
 
         /** @var Hostname $redirectDomain */
         $redirectDomain = Hostname::fromNative(self::REDIRECT_DOMAIN);
@@ -40,7 +40,7 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_calls_getRedirectResponse_when_filters_match()
+    public function it_calls_getResponse_when_filters_match()
     {
         $request = $this->createRequest(
             Request::METHOD_GET,
@@ -48,7 +48,7 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->redirect->expects($this->once())
-            ->method('getRedirectResponse');
+            ->method('getResponse');
 
         $this->cdbXmlProxy->handle($request);
     }
@@ -79,7 +79,7 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
         );
         
         $this->redirect->expects($this->never())
-            ->method('getRedirectResponse');
+            ->method('getResponse');
 
         $this->cdbXmlProxy->handle($request);
     }
@@ -110,7 +110,7 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->redirect->expects($this->never())
-            ->method('getRedirectResponse');
+            ->method('getResponse');
 
         $this->cdbXmlProxy->handle($request);
     }
