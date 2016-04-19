@@ -55,6 +55,7 @@ class Proxy
         $this->filter = $filter;
         $this->diactorosFactory = $diactorosFactory;
         $this->requestTransformer = $requestTransformer;
+        $this->httpFoundationFactory = $httpFoundationFactory;
         $this->client = $client;
     }
 
