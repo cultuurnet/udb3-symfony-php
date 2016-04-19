@@ -1,8 +1,7 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony\Proxy\DomainReplacer;
+namespace CultuurNet\UDB3\Symfony\Proxy\RequestTransformer;
 
-use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\RequestTransformerInterface;
 use Psr\Http\Message\RequestInterface;
 use ValueObjects\Web\Domain;
 
