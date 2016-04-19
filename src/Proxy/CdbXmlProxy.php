@@ -6,7 +6,7 @@ use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AndFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\MethodFilter;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\DomainReplacer;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use ValueObjects\String\String as StringLiteral;
@@ -19,7 +19,7 @@ class CdbXmlProxy extends Proxy
         Domain $domain,
         DiactorosFactory $diactorosFactory,
         HttpFoundationFactory $httpFoundationFactory,
-        Client $client
+        ClientInterface $client
     ) {
         $cdbXmlFilter = $this->createFilter($accept);
 
