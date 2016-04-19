@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Web\Url;
 
-class SilexRedirectTest extends \PHPUnit_Framework_TestCase
+class SimpleRedirectTest extends \PHPUnit_Framework_TestCase
 {
     const REDIRECT_URL = 'https://udb-cdbxml.uitdatabank.be/event/uuid';
 
@@ -18,9 +18,9 @@ class SilexRedirectTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $url = Url::fromNative(self::REDIRECT_URL);
-        $silexRedirect = new SilexRedirect();
+        $simpleRedirect = new SimpleRedirect();
         
-        $this->redirectResponse = $silexRedirect->getRedirectResponse($url);
+        $this->redirectResponse = $simpleRedirect->getRedirectResponse($url);
     }
     
     /**

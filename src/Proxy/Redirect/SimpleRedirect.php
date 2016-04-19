@@ -5,7 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Proxy\Redirect;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use ValueObjects\Web\Url;
 
-class SilexRedirect implements RedirectInterface
+class SimpleRedirect implements RedirectInterface
 {
     /**
      * @return RedirectResponse
