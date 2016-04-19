@@ -2,15 +2,15 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\RequestInterface;
 
 interface FilterInterface
 {
     /**
      * Check if the request matches a certain pattern.
      *
-     * @param Request $request
+     * @param RequestInterface $request
      * @return bool
      */
-    public function matches(Request $request);
+    public function matches(RequestInterface $request);
 }

@@ -2,7 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\RequestInterface;
 
 class AndFilter implements FilterInterface
 {
@@ -23,7 +23,7 @@ class AndFilter implements FilterInterface
     /**
      * @inheritdoc
      */
-    public function matches(Request $request)
+    public function matches(RequestInterface $request)
     {
         $matches = false;
 

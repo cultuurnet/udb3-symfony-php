@@ -2,12 +2,13 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\RequestInterface;
 use ValueObjects\String\String as StringLiteral;
 
 class AcceptFilter implements FilterInterface
 {
     const ACCEPT = 'Accept';
+
     /**
      * @var StringLiteral
      */
@@ -21,9 +22,9 @@ class AcceptFilter implements FilterInterface
     /**
      * @inheritdoc
      */
-    public function matches(Request $request)
+    public function matches(RequestInterface $request)
     {
-        $accept = $request->headers->get(self::ACCEPT);
+        $accept = $request->getHeaderLine(self::ACCEPT);
         return ($accept === $this->accept->toNative());
     }
 }

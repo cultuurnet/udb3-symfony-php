@@ -2,7 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\RequestInterface;
 use ValueObjects\String\String as StringLiteral;
 
 class MethodFilter implements FilterInterface
@@ -20,7 +20,7 @@ class MethodFilter implements FilterInterface
     /**
      * @inheritdoc
      */
-    public function matches(Request $request)
+    public function matches(RequestInterface $request)
     {
         $method = $request->getMethod();
         return ($method === $this->method->toNative());

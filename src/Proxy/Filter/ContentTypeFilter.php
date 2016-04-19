@@ -2,7 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\RequestInterface;
 use ValueObjects\String\String as StringLiteral;
 
 class ContentTypeFilter implements FilterInterface
@@ -21,9 +21,9 @@ class ContentTypeFilter implements FilterInterface
     /**
      * @inheritdoc
      */
-    public function matches(Request $request)
+    public function matches(RequestInterface $request)
     {
-        $contentType = $request->headers->get(self::CONTENT_TYPE);
+        $contentType = $request->getHeaderLine(self::CONTENT_TYPE);
         return ($contentType === $this->contentType->toNative());
     }
 }
