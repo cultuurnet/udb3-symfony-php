@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Proxy;
 
 use CultuurNet\UDB3\Symfony\Proxy\Filter\FilterInterface;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\RequestTransformerInterface;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,12 +16,12 @@ class Proxy
      * @var FilterInterface
      */
     private $filter;
-    
+
     /**
      * @var RequestTransformerInterface
      */
     private $requestTransformer;
-    
+
     /**
      * @var DiactorosFactory
      */
@@ -33,7 +33,7 @@ class Proxy
     private $httpFoundationFactory;
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     private $client;
 
@@ -43,14 +43,14 @@ class Proxy
      * @param RequestTransformerInterface $requestTransformer
      * @param DiactorosFactory $diactorosFactory
      * @param HttpFoundationFactory $httpFoundationFactory
-     * @param Client $client
+     * @param ClientInterface $client
      */
     public function __construct(
         FilterInterface $filter,
         RequestTransformerInterface $requestTransformer,
         DiactorosFactory $diactorosFactory,
         HttpFoundationFactory $httpFoundationFactory,
-        Client $client
+        ClientInterface $client
     ) {
         $this->filter = $filter;
 
@@ -79,7 +79,7 @@ class Proxy
 
             $response = $this->httpFoundationFactory->createResponse($psr7Response);
         }
-        
+
         return $response;
     }
 }
