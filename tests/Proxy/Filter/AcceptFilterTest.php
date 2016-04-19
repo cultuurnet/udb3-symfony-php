@@ -2,7 +2,8 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
-use Symfony\Component\HttpFoundation\Request;
+use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\RequestInterface;
 use ValueObjects\String\String as StringLiteral;
 
 class AcceptFilterTest extends \PHPUnit_Framework_TestCase
@@ -10,16 +11,16 @@ class AcceptFilterTest extends \PHPUnit_Framework_TestCase
     const APPLICATION_XML = 'application/xml';
 
     /**
-     * @var Request
+     * @var RequestInterface
      */
     private $request;
 
     protected function setUp()
     {
-        $this->request = new Request();
-        $this->request->headers->set(
-            AcceptFilter::ACCEPT,
-            self::APPLICATION_XML
+        $this->request = new Request(
+            'GET',
+            'http://www.foo.bar',
+            [AcceptFilter::ACCEPT => self::APPLICATION_XML]
         );
     }
 
@@ -52,7 +53,7 @@ class AcceptFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_not_match_when_accept_header_is_missing()
     {
-        $request = new Request();
+        $request = $this->request->withoutHeader(AcceptFilter::ACCEPT );
 
         $acceptFilter = new AcceptFilter(
             new StringLiteral(self::APPLICATION_XML)

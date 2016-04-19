@@ -2,7 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
-use Symfony\Component\HttpFoundation\Request;
+use GuzzleHttp\Psr7\Request;
 use ValueObjects\String\String as StringLiteral;
 
 class ContentTypeFilterTest extends \PHPUnit_Framework_TestCase
@@ -16,10 +16,10 @@ class ContentTypeFilterTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->request = new Request();
-        $this->request->headers->set(
-            ContentTypeFilter::CONTENT_TYPE,
-            self::APPLICATION_XML
+        $this->request = new Request(
+            'GET',
+            'http://www.foo.bar',
+            [ContentTypeFilter::CONTENT_TYPE => self::APPLICATION_XML]
         );
     }
 
@@ -52,7 +52,7 @@ class ContentTypeFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_not_match_when_content_type_is_missing()
     {
-        $request = new Request();
+        $request = $this->request->withoutHeader(ContentTypeFilter::CONTENT_TYPE);
 
         $contentTypeFilter = new ContentTypeFilter(
             new StringLiteral(self::APPLICATION_XML)
