@@ -53,8 +53,8 @@ class Proxy
         ClientInterface $client
     ) {
         $this->filter = $filter;
-        $this->diactorosFactory = $diactorosFactory;
         $this->requestTransformer = $requestTransformer;
+        $this->diactorosFactory = $diactorosFactory;
         $this->httpFoundationFactory = $httpFoundationFactory;
         $this->client = $client;
     }
