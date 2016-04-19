@@ -19,8 +19,8 @@ class CdbXmlProxy extends Proxy
         Domain $domain,
         DiactorosFactory $diactorosFactory,
         HttpFoundationFactory $httpFoundationFactory,
-        Client $client)
-    {
+        Client $client
+    ) {
         $cdbXmlFilter = $this->createFilter($accept);
 
         $requestTransformer = new DomainReplacer($domain);
@@ -30,7 +30,8 @@ class CdbXmlProxy extends Proxy
             $requestTransformer,
             $diactorosFactory,
             $httpFoundationFactory,
-            $client);
+            $client
+        );
     }
 
     private function createFilter(StringLiteral $accept)

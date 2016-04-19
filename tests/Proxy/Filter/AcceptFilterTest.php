@@ -53,7 +53,7 @@ class AcceptFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_not_match_when_accept_header_is_missing()
     {
-        $request = $this->request->withoutHeader(AcceptFilter::ACCEPT );
+        $request = $this->request->withoutHeader(AcceptFilter::ACCEPT);
 
         $acceptFilter = new AcceptFilter(
             new StringLiteral(self::APPLICATION_XML)

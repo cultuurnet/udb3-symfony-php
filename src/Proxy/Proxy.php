@@ -72,7 +72,6 @@ class Proxy
         $psr7Request = $this->diactorosFactory->createRequest($request);
 
         if ($this->filter->matches($psr7Request)) {
-
             $psr7Request = $this->requestTransformer->transform($psr7Request);
 
             $psr7Response = $this->client->send($psr7Request);
