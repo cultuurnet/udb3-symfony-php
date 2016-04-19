@@ -53,11 +53,8 @@ class Proxy
         ClientInterface $client
     ) {
         $this->filter = $filter;
-
         $this->diactorosFactory = $diactorosFactory;
-
         $this->requestTransformer = $requestTransformer;
-
         $this->client = $client;
     }
 
@@ -72,10 +69,11 @@ class Proxy
         $psr7Request = $this->diactorosFactory->createRequest($request);
 
         if ($this->filter->matches($psr7Request)) {
+            // Transform the request before re-sending it so we don't send the
+            // exact same request and end up in an infinite loop.
             $psr7Request = $this->requestTransformer->transform($psr7Request);
 
             $psr7Response = $this->client->send($psr7Request);
-
             $response = $this->httpFoundationFactory->createResponse($psr7Response);
         }
 
