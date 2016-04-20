@@ -280,7 +280,6 @@ class EditPlaceRestController extends OfferRestBaseController
         // Load all event relations from the database.
         $events = $this->eventRelationsRepository->getEventsLocatedAtPlace($cdbid);
         if (!empty($events)) {
-
             $data = ['events' => []];
 
             foreach ($events as $eventId) {
