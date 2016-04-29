@@ -67,7 +67,9 @@ class Proxy
     {
         $response = null;
 
-        $psr7Request = $this->diactorosFactory->createRequest($request);
+        $psr7Request = $this->diactorosFactory->createRequest(
+            $request->duplicate()
+        );
 
         if ($this->filter->matches($psr7Request)) {
             // Transform the request before re-sending it so we don't send the

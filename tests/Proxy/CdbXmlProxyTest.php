@@ -72,4 +72,25 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($response);
     }
+
+    /**
+     * @test
+     */
+    public function is_does_not_modify_original_request()
+    {
+        $request = Request::create(
+            'http://www.2dotstwice.be',
+            'POST',
+            [],
+            [],
+            [],
+            [],
+            '{"label":"demo"}'
+        );
+        $expectedRequest = $request->duplicate();
+
+        $this->cdbXmlProxy->handle($request);
+
+        $this->assertEquals($expectedRequest, $request);
+    }
 }
