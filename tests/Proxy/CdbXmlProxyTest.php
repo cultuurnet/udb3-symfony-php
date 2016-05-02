@@ -9,6 +9,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String as StringLiteral;
 use ValueObjects\Web\Hostname;
+use ValueObjects\Web\PortNumber;
 
 class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,13 +30,14 @@ class CdbXmlProxyTest extends \PHPUnit_Framework_TestCase
         $this->cdbXmlProxy = new CdbXmlProxy(
             new StringLiteral(self::APPLICATION_XML),
             new Hostname('www.google.be'),
+            new PortNumber(80),
             new DiactorosFactory(),
             new HttpFoundationFactory(),
             new Client()
         );
 
         $this->request = Request::create(
-            'http://www.2dotstwice.be',
+            'http://www.2dotstwice.be:666',
             'GET'
         );
         $this->request->headers->set('Accept', self::APPLICATION_XML);
