@@ -80,6 +80,10 @@ class Proxy
                 'http_errors' => false,
             ]);
             $response = $this->httpFoundationFactory->createResponse($psr7Response);
+
+            // Without removing the transfer encoding the consuming client would
+            // get an error. (Both curl and Postman)
+            $response->headers->remove('Transfer-Encoding');
         }
 
         return $response;
