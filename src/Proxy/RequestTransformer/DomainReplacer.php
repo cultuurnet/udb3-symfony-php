@@ -23,7 +23,7 @@ class DomainReplacer implements RequestTransformerInterface
     public function transform(RequestInterface $request)
     {
         return $request->withUri(
-            $request->getUri()->withHost($this->domain->toNative())->withPort('80')
+            $request->getUri()->withHost($this->domain->toNative())
         );
     }
 }
