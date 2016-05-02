@@ -5,7 +5,6 @@ namespace CultuurNet\UDB3\Symfony\Dashboard;
 use CultuurNet\Hydra\PagedCollection;
 use CultuurNet\Hydra\Symfony\PageUrlGenerator;
 use CultuurNet\UDB3\Dashboard\DashboardItemLookupServiceInterface;
-use CultuurNet\UiTIDProvider\User\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -39,7 +38,7 @@ class DashboardRestController
         UrlGenerator $urlGenerator
     ) {
         $this->itemLookupService = $lookupService;
-        $this->currentUser = User::fromCultureFeedUser($currentUser);
+        $this->currentUser = $currentUser;
         $this->urlGenerator = $urlGenerator;
     }
 
