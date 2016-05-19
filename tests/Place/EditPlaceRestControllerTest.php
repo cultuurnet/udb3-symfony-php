@@ -14,7 +14,6 @@ use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 
-
 class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
 {
     /**
@@ -69,11 +68,11 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
 
         $this->placeRestController = new EditPlaceRestController(
             $this->entityService,
-            $this->placeEditingService ,
-            $this->relationsRepository ,
-            $this->user ,
-            $this->security ,
-            $this->mediaManager ,
+            $this->placeEditingService,
+            $this->relationsRepository,
+            $this->user,
+            $this->security,
+            $this->mediaManager,
             $this->iriGenerator
         );
     }
