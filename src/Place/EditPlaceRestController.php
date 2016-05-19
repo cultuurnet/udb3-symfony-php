@@ -1,7 +1,4 @@
 <?php
-/**
- * @file
- */
 
 namespace CultuurNet\UDB3\Symfony\Place;
 
@@ -10,6 +7,7 @@ use CultuurNet\UDB3\Address;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
+use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\SecurityInterface;
 use CultuurNet\UDB3\Facility;
@@ -70,6 +68,16 @@ class EditPlaceRestController extends OfferRestBaseController
     protected $security;
 
     /**
+     * @var IriGeneratorInterface
+     */
+    protected $iriGenerator;
+
+    /**
+     * @var CalendarDeserializer
+     */
+    protected $calendarDeserializer;
+
+    /**
      * Constructs a RestController.
      *
      * @param EntityServiceInterface       $entity_service
@@ -79,8 +87,8 @@ class EditPlaceRestController extends OfferRestBaseController
      * @param CultureFeed_User             $user
      *   The culturefeed user.
      * @param SecurityInterface            $security
-     * @param FileUsageInterface           $fileUsage
      * @param MediaManagerInterface        $mediaManager
+     * @param IriGeneratorInterface        $iriGenerator
      */
     public function __construct(
         EntityServiceInterface $entity_service,
@@ -88,7 +96,8 @@ class EditPlaceRestController extends OfferRestBaseController
         RepositoryInterface $event_relations_repository,
         CultureFeed_User $user,
         SecurityInterface $security,
-        MediaManagerInterface $mediaManager
+        MediaManagerInterface $mediaManager,
+        IriGeneratorInterface $iriGenerator
     ) {
         parent::__construct($placeEditor, $mediaManager);
         $this->entityService = $entity_service;
@@ -96,6 +105,7 @@ class EditPlaceRestController extends OfferRestBaseController
         $this->user = $user;
         $this->security = $security;
         $this->calendarDeserializer = new CalendarDeserializer();
+        $this->iriGenerator = $iriGenerator;
     }
 
     /**
@@ -168,11 +178,7 @@ class EditPlaceRestController extends OfferRestBaseController
         $response->setData(
             [
                 'placeId' => $place_id,
-                /*'url' => $this->getUrlGenerator()->generateFromRoute(
-                    'culturefeed_udb3.place',
-                    ['cdbid' => $place_id],
-                    ['absolute' => TRUE]
-                ),*/
+                'url' => $this->iriGenerator->iri($place_id),
             ]
         );
 
@@ -279,6 +285,7 @@ class EditPlaceRestController extends OfferRestBaseController
 
         // Load all event relations from the database.
         $events = $this->eventRelationsRepository->getEventsLocatedAtPlace($cdbid);
+
         if (!empty($events)) {
             $data = ['events' => []];
 
