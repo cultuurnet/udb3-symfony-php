@@ -76,6 +76,11 @@ class EditPlaceRestController extends OfferRestBaseController
     protected $iriGenerator;
 
     /**
+     * @var CalendarDeserializer
+     */
+    protected $calendarDeserializer;
+
+    /**
      * Constructs a RestController.
      *
      * @param EntityServiceInterface       $entity_service
