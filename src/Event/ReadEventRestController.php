@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
-use CultuurNet\UDB3\EventServiceInterface;
+use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 

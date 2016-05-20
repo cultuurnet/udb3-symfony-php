@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Event;
 
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Response;
-use CultuurNet\UDB3\EventServiceInterface;
+use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
