@@ -2,9 +2,12 @@
 
 namespace CultuurNet\UDB3\Symfony\Label;
 
+use Crell\ApiProblem\ApiProblem;
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Entity;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
+use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
 
 class ReadRestController
@@ -13,7 +16,7 @@ class ReadRestController
     const NAME = 'name';
     const VISIBILITY = 'visibility';
     const PRIVACY = 'privacy';
-    
+
     /**
      * @var ReadServiceInterface
      */
@@ -32,7 +35,14 @@ class ReadRestController
     {
         $entity = $this->readService->getByUuid(new UUID($uuid));
 
-        return new JsonResponse($this->entityAsArray($entity));
+        if ($entity) {
+            return new JsonResponse($this->entityAsArray($entity));
+        } else {
+            $apiProblem = new ApiProblem('No label found with uuid: ' . $uuid);
+            $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
+
+            return new ApiProblemJsonResponse($apiProblem);
+        }
     }
 
     /**
