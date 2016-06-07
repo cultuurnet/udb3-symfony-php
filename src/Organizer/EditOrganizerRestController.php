@@ -36,7 +36,7 @@ class EditOrganizerRestController
      * @param Request $request
      * @return JsonResponse
      */
-    public function createOrganizer(Request $request)
+    public function create(Request $request)
     {
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
@@ -74,7 +74,7 @@ class EditOrganizerRestController
                 }
             }
 
-            $organizer_id = $this->editingService->createOrganizer(
+            $organizer_id = $this->editingService->create(
                 new Title($body_content->name),
                 $addresses,
                 $phones,
