@@ -6,6 +6,7 @@ use CultuurNet\UDB3\Label\Services\WriteResult;
 use CultuurNet\UDB3\Label\Services\WriteServiceInterface;
 use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
+use CultuurNet\UDB3\Symfony\Label\Helper\CommandType;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,28 +55,25 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->contentAsArray = [
             RequestHelper::NAME => 'labelName',
             RequestHelper::VISIBILITY => 'invisible',
-            RequestHelper::PRIVACY => 'private'
+            RequestHelper::PRIVACY => 'private',
         ];
-        $this->request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            json_encode($this->contentAsArray)
-        );
+        $this->request = $this->createRequestWithContent($this->contentAsArray);
 
         $this->commandId = new UUID();
         $this->uuid = new UUID();
 
         $this->writeService = $this->getMock(WriteServiceInterface::class);
         $this->mockCreate();
+        $this->mockMakeVisible();
+        $this->mockMakeInvisible();
+        $this->mockMakePublic();
+        $this->mockMakePrivate();
 
         $this->requestHelper = $this->getMock(RequestHelper::class);
         $this->mockGetName();
         $this->mockGetVisibility();
         $this->mockGetPrivacy();
+        $this->mockGetCommandType();
 
         $this->editRestController = new EditRestController(
             $this->writeService,
@@ -98,6 +96,41 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedJsonResponse, $jsonResponse);
     }
 
+    /**
+     * @test
+     * @dataProvider provider
+     * @param array $contentAsArray
+     * @param $method
+     */
+    public function it_handles_patch(
+        array $contentAsArray,
+        $method
+    ) {
+        $request = $this->createRequestWithContent($contentAsArray);
+
+        $this->writeService->expects($this->once())
+            ->method($method);
+
+        $jsonResponse = $this->editRestController->patch($request, $this->uuid);
+
+        $expectedJsonResponse = new JsonResponse([
+            EditRestController::COMMAND_ID => $this->commandId->toNative(),
+            EditRestController::UUID => $this->uuid->toNative()
+        ]);
+
+        $this->assertEquals($expectedJsonResponse, $jsonResponse);
+    }
+
+    public function provider()
+    {
+        return [
+            [[RequestHelper::COMMAND => 'makeVisible'], 'makeVisible'],
+            [[RequestHelper::COMMAND => 'makeInvisible'], 'makeInvisible'],
+            [[RequestHelper::COMMAND => 'makePublic'], 'makePublic'],
+            [[RequestHelper::COMMAND => 'makePrivate'], 'makePrivate']
+        ];
+    }
+
     private function mockCreate()
     {
         $this->writeService->method('create')
@@ -106,10 +139,35 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
                 Visibility::fromNative($this->contentAsArray[RequestHelper::VISIBILITY]),
                 Privacy::fromNative($this->contentAsArray[RequestHelper::PRIVACY])
             )
-            ->willReturn(new WriteResult(
-                $this->commandId,
-                $this->uuid
-            ));
+            ->willReturn(new WriteResult($this->commandId, $this->uuid));
+    }
+
+    private function mockMakeVisible()
+    {
+        $this->writeService->method('makeVisible')
+            ->with($this->uuid)
+            ->willReturn(new WriteResult($this->commandId, $this->uuid));
+    }
+
+    private function mockMakeInvisible()
+    {
+        $this->writeService->method('makeInvisible')
+            ->with($this->uuid)
+            ->willReturn(new WriteResult($this->commandId, $this->uuid));
+    }
+
+    private function mockMakePublic()
+    {
+        $this->writeService->method('makePublic')
+            ->with($this->uuid)
+            ->willReturn(new WriteResult($this->commandId, $this->uuid));
+    }
+
+    private function mockMakePrivate()
+    {
+        $this->writeService->method('makePrivate')
+            ->with($this->uuid)
+            ->willReturn(new WriteResult($this->commandId, $this->uuid));
     }
 
     private function mockGetName()
@@ -141,5 +199,33 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
                     $this->contentAsArray[RequestHelper::PRIVACY]
                 )
             );
+    }
+
+    private function mockGetCommandType()
+    {
+        $this->requestHelper->method('getCommandType')
+            ->willReturnCallback(
+                function (Request $request) {
+                    $bodyAsArray = json_decode($request->getContent(), true);
+                    return CommandType::fromNative($bodyAsArray['command']);
+                }
+            );
+    }
+
+    /**
+     * @param array $contentAsArray
+     * @return Request
+     */
+    private function createRequestWithContent(array $contentAsArray)
+    {
+        return new Request(
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            json_encode($contentAsArray)
+        );
     }
 }
