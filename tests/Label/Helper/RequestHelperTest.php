@@ -28,7 +28,8 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
         $content = json_encode([
             'name' => self::LABEL_NAME,
             'visibility' => 'invisible',
-            'privacy' => 'private'
+            'privacy' => 'private',
+            'command' => 'makeVisible'
         ]);
 
         $this->request = new Request([], [], [], [], [], [], $content);
@@ -67,6 +68,18 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             Privacy::PRIVACY_PRIVATE(),
             $privacy
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_command_from_request()
+    {
+        $command = $this->requestHelper->getCommandType($this->request);
+        $this->assertEquals(
+            CommandType::MAKE_VISIBLE(),
+            $command
         );
     }
 }

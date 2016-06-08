@@ -12,6 +12,7 @@ class RequestHelper
     const NAME = 'name';
     const VISIBILITY = 'visibility';
     const PRIVACY = 'privacy';
+    const COMMAND = 'command';
 
     /**
      * @param Request $request
@@ -41,6 +42,17 @@ class RequestHelper
     {
         return Privacy::fromNative(
             $this->getByName($request, self::PRIVACY)
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return CommandType
+     */
+    public function getCommandType(Request $request)
+    {
+        return CommandType::fromNative(
+            $this->getByName($request, self::COMMAND)
         );
     }
 
