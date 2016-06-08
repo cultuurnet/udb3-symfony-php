@@ -7,8 +7,10 @@ use CultuurNet\UDB3\Address;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Title;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class EditOrganizerRestController
 {
@@ -94,5 +96,23 @@ class EditOrganizerRestController
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $cdbid
+     * @return Response
+     */
+    public function delete($cdbid)
+    {
+        $cdbid = (string) $cdbid;
+
+        if (empty($cdbid)) {
+            throw new InvalidArgumentException('Required field cdbid is missing');
+        }
+
+        $commandId = $this->editingService->delete($cdbid);
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
     }
 }
