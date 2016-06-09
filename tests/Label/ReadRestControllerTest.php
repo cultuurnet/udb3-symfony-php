@@ -3,11 +3,15 @@
 namespace CultuurNet\UDB3\Symfony\Label;
 
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Entity;
+use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
+use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
+use ValueObjects\Number\Natural;
 use ValueObjects\String\String as StringLiteral;
 
 class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
@@ -18,9 +22,24 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
     private $entity;
 
     /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var Query
+     */
+    private $query;
+
+    /**
      * @var ReadServiceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readService;
+
+    /**
+     * @var RequestHelper|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $requestHelper;
 
     /**
      * @var ReadRestController
@@ -36,10 +55,29 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
             Privacy::PRIVACY_PRIVATE()
         );
 
+        $this->request = new Request([
+            RequestHelper::QUERY => 'label',
+            RequestHelper::START => 5,
+            RequestHelper::LIMIT => 2
+        ]);
+
+        $this->query = new Query(
+            new StringLiteral('label'),
+            new Natural(5),
+            new Natural(2)
+        );
+
         $this->readService = $this->getMock(ReadServiceInterface::class);
         $this->mockGetByUuid();
+        $this->mockSearch();
 
-        $this->readRestController = new ReadRestController($this->readService);
+        $this->requestHelper = $this->getMock(RequestHelper::class);
+        $this->mockGetQuery();
+
+        $this->readRestController = new ReadRestController(
+            $this->readService,
+            $this->requestHelper
+        );
     }
 
     /**
@@ -51,13 +89,25 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
             $this->entity->getUuid()
         );
 
-        $expectedJsonResponse = new JsonResponse([
-            ReadRestController::ID => $this->entity->getUuid()->toNative(),
-            ReadRestController::NAME => $this->entity->getName()->toNative(),
-            ReadRestController::VISIBILITY => $this->entity->getVisibility()->toNative(),
-            ReadRestController::PRIVACY => $this->entity->getPrivacy()->toNative()
-        ]);
+        $expectedJsonResponse = new JsonResponse(
+            $this->entityToArray($this->entity)
+        );
 
+        $this->assertEquals($expectedJsonResponse, $jsonResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_json_response_for_search()
+    {
+        $jsonResponse = $this->readRestController->search($this->request);
+
+        $expectedJsonResponse = new JsonResponse([
+            $this->entityToArray($this->entity),
+            $this->entityToArray($this->entity)
+        ]);
+        
         $this->assertEquals($expectedJsonResponse, $jsonResponse);
     }
 
@@ -66,5 +116,33 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->readService->method('getByUuid')
             ->with($this->entity->getUuid()->toNative())
             ->willReturn($this->entity);
+    }
+
+    private function mockSearch()
+    {
+        $this->readService->method('search')
+            ->with($this->query)
+            ->willReturn([$this->entity, $this->entity]);
+    }
+
+    private function mockGetQuery()
+    {
+        $this->requestHelper->method('getQuery')
+            ->with($this->request)
+            ->willReturn($this->query);
+    }
+
+    /**
+     * @param Entity $entity
+     * @return array
+     */
+    private function entityToArray(Entity $entity)
+    {
+        return [
+            ReadRestController::ID => $entity->getUuid()->toNative(),
+            ReadRestController::NAME => $entity->getName()->toNative(),
+            ReadRestController::VISIBILITY => $entity->getVisibility()->toNative(),
+            ReadRestController::PRIVACY => $entity->getPrivacy()->toNative()
+        ];
     }
 }

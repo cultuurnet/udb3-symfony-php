@@ -6,7 +6,9 @@ use Crell\ApiProblem\ApiProblem;
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Entity;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
+use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
 
@@ -22,9 +24,17 @@ class ReadRestController
      */
     private $readService;
 
-    public function __construct(ReadServiceInterface $readService)
-    {
+    /**
+     * @var RequestHelper
+     */
+    private $requestHelper;
+
+    public function __construct(
+        ReadServiceInterface $readService,
+        RequestHelper $requestHelper
+    ) {
         $this->readService = $readService;
+        $this->requestHelper = $requestHelper;
     }
 
     /**
@@ -46,6 +56,25 @@ class ReadRestController
     }
 
     /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function search(Request $request)
+    {
+        $query = $this->requestHelper->getQuery($request);
+        $entities = $this->readService->search($query);
+
+        if ($entities) {
+            return new JsonResponse($this->entitiesAsArray($entities));
+        } else {
+            $apiProblem = new ApiProblem('No label found for search query.');
+            $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
+
+            return new ApiProblemJsonResponse($apiProblem);
+        }
+    }
+
+    /**
      * @param Entity $entity
      * @return array
      */
@@ -58,5 +87,20 @@ class ReadRestController
             self::VISIBILITY => $entity->getVisibility()->toNative(),
             self::PRIVACY => $entity->getPrivacy()->toNative()
         ];
+    }
+
+    /**
+     * @param Entity[] $entities
+     * @return array
+     */
+    private function entitiesAsArray(array $entities)
+    {
+        $array = null;
+        
+        foreach ($entities as $entity) {
+            $array[] = $this->entityAsArray($entity);
+        }
+        
+        return $array;
     }
 }
