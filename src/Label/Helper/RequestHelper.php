@@ -68,7 +68,8 @@ class RequestHelper
      */
     public function getQuery(Request $request)
     {
-        $value = new StringLiteral($request->query->get(self::QUERY));
+        $value = $request->query->get(self::QUERY) !== null ?
+            new StringLiteral($request->query->get(self::QUERY)) : new StringLiteral('');
 
         $offset = $request->query->get(self::START, null) !== null
             ? new Natural($request->query->get(self::START)) : null;

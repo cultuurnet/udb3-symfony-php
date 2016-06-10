@@ -96,9 +96,21 @@ class ReadRestController
         array $entities,
         Natural $totalEntities
     ) {
+        $pageNumber = 0;
+        $limit = 0;
+        
+        if ($query->getOffset() && $query->getLimit()) {
+            $pageNumber = (int)($query->getOffset()->toNative() / 
+                $query->getLimit()->toNative());
+        }
+        
+        if ($query->getLimit()) {
+            $limit = $query->getLimit()->toNative(); 
+        }
+        
         return new PagedCollection(
-            (int)($query->getOffset()->toNative() / $query->getLimit()->toNative()),
-            $query->getLimit()->toNative(),
+            $pageNumber,
+            $limit,
             $entities,
             $totalEntities->toNative()
         );
