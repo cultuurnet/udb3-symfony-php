@@ -2,6 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Label;
 
+use CultuurNet\Hydra\PagedCollection;
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Entity;
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
@@ -70,6 +71,7 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->readService = $this->getMock(ReadServiceInterface::class);
         $this->mockGetByUuid();
         $this->mockSearch();
+        $this->mockSearchTotalLabels();
 
         $this->requestHelper = $this->getMock(RequestHelper::class);
         $this->mockGetQuery();
@@ -103,11 +105,16 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $jsonResponse = $this->readRestController->search($this->request);
 
-        $expectedJsonResponse = new JsonResponse([
-            $this->entityToArray($this->entity),
-            $this->entityToArray($this->entity)
-        ]);
-        
+        $expectedJsonResponse = new JsonResponse(new PagedCollection(
+            (int)(5/2),
+            2,
+            [
+                $this->entityToArray($this->entity),
+                $this->entityToArray($this->entity)
+            ],
+            2
+        ));
+
         $this->assertEquals($expectedJsonResponse, $jsonResponse);
     }
 
@@ -123,6 +130,13 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->readService->method('search')
             ->with($this->query)
             ->willReturn([$this->entity, $this->entity]);
+    }
+
+    private function mockSearchTotalLabels()
+    {
+        $this->readService->method('searchTotalLabels')
+            ->with($this->query)
+            ->willReturn(new Natural(2));
     }
 
     private function mockGetQuery()

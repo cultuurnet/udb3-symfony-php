@@ -3,7 +3,9 @@
 namespace CultuurNet\UDB3\Symfony\Label;
 
 use Crell\ApiProblem\ApiProblem;
+use CultuurNet\Hydra\PagedCollection;
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Entity;
+use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
@@ -11,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
+use ValueObjects\Number\Natural;
 
 class ReadRestController
 {
@@ -46,7 +49,7 @@ class ReadRestController
         $entity = $this->readService->getByUuid(new UUID($uuid));
 
         if ($entity) {
-            return new JsonResponse($this->entityAsArray($entity));
+            return new JsonResponse($entity);
         } else {
             $apiProblem = new ApiProblem('No label found with uuid: ' . $uuid);
             $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
@@ -62,10 +65,18 @@ class ReadRestController
     public function search(Request $request)
     {
         $query = $this->requestHelper->getQuery($request);
-        $entities = $this->readService->search($query);
 
-        if ($entities) {
-            return new JsonResponse($this->entitiesAsArray($entities));
+        $totalEntities = $this->readService->searchTotalLabels($query);
+
+        if ($totalEntities) {
+            $entities = $this->readService->search($query);
+
+            $pagedCollection = $this->createPagedCollection(
+                $query,
+                $entities,
+                $totalEntities
+            );
+            return new JsonResponse($pagedCollection);
         } else {
             $apiProblem = new ApiProblem('No label found for search query.');
             $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
@@ -75,32 +86,21 @@ class ReadRestController
     }
 
     /**
-     * @param Entity $entity
-     * @return array
-     */
-    private function entityAsArray(Entity $entity)
-    {
-        // TODO: Implement serializable interface on entity?
-        return [
-            self::ID => $entity->getUuid()->toNative(),
-            self::NAME => $entity->getName()->toNative(),
-            self::VISIBILITY => $entity->getVisibility()->toNative(),
-            self::PRIVACY => $entity->getPrivacy()->toNative()
-        ];
-    }
-
-    /**
+     * @param Query $query
      * @param Entity[] $entities
-     * @return array
+     * @param Natural $totalEntities
+     * @return PagedCollection
      */
-    private function entitiesAsArray(array $entities)
-    {
-        $array = null;
-        
-        foreach ($entities as $entity) {
-            $array[] = $this->entityAsArray($entity);
-        }
-        
-        return $array;
+    private function createPagedCollection(
+        Query $query,
+        array $entities,
+        Natural $totalEntities
+    ) {
+        return new PagedCollection(
+            (int)($query->getOffset()->toNative() / $query->getLimit()->toNative()),
+            $query->getLimit()->toNative(),
+            $entities,
+            $totalEntities->toNative()
+        );
     }
 }
