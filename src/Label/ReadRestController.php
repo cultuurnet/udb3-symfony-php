@@ -73,7 +73,7 @@ class ReadRestController
 
             $pagedCollection = $this->createPagedCollection(
                 $query,
-                $entities,
+                $entities !== null ? $entities : [],
                 $totalEntities
             );
             return new JsonResponse($pagedCollection);
@@ -98,16 +98,16 @@ class ReadRestController
     ) {
         $pageNumber = 0;
         $limit = 0;
-        
+
         if ($query->getOffset() && $query->getLimit()) {
-            $pageNumber = (int)($query->getOffset()->toNative() / 
+            $pageNumber = (int)($query->getOffset()->toNative() /
                 $query->getLimit()->toNative());
         }
-        
+
         if ($query->getLimit()) {
-            $limit = $query->getLimit()->toNative(); 
+            $limit = $query->getLimit()->toNative();
         }
-        
+
         return new PagedCollection(
             $pageNumber,
             $limit,
