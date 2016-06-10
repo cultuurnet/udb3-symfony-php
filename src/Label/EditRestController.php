@@ -2,7 +2,6 @@
 
 namespace CultuurNet\UDB3\Symfony\Label;
 
-use CultuurNet\UDB3\Label\Services\WriteResult;
 use CultuurNet\UDB3\Label\Services\WriteServiceInterface;
 use CultuurNet\UDB3\Symfony\Label\Helper\CommandType;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
@@ -50,7 +49,7 @@ class EditRestController
             $this->requestHelper->getPrivacy($request)
         );
 
-        return new JsonResponse($this->writeResultAsArray($writeResult));
+        return new JsonResponse($writeResult);
     }
 
     /**
@@ -78,19 +77,6 @@ class EditRestController
                 break;
         }
 
-        return new JsonResponse($this->writeResultAsArray($writeResult));
-    }
-
-    /**
-     * @param WriteResult $writeResult
-     * @return array
-     */
-    private function writeResultAsArray(WriteResult $writeResult)
-    {
-        // TODO: Implement serializable interface on write result?
-        return [
-            self::COMMAND_ID => $writeResult->getCommandId()->toNative(),
-            self::UUID => $writeResult->getUuid()->toNative()
-        ];
+        return new JsonResponse($writeResult);
     }
 }
