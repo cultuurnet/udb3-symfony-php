@@ -2,21 +2,23 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
-use Crell\ApiProblem\ApiProblem;
+use CultuurNet\UDB3\Symfony\ApiProblemJsonResponseTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
-use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 
 class ReadEventRestController
 {
     const HISTORY_ERROR_NOT_FOUND = 'An error occurred while getting the history of the event with id %s!';
     const HISTORY_ERROR_GONE = 'An error occurred while getting the history of the event with id %s which was removed!';
+    const GET_ERROR_NOT_FOUND = 'An error occurred while getting the event with id %s!';
+    const GET_ERROR_GONE = 'An error occurred while getting the event with id %s which was removed!';
 
-        /**
+    use ApiProblemJsonResponseTrait;
+
+    /**
      * @var EventServiceInterface
      */
     private $service;
@@ -44,12 +46,22 @@ class ReadEventRestController
      */
     public function get($cdbid)
     {
-        $event = $this->service->getEvent($cdbid);
+        $response = null;
 
-        $response = JsonLdResponse::create()
-            ->setContent($event);
+        try {
+            $event = $this->service->getEvent($cdbid);
 
-        $response->headers->set('Vary', 'Origin');
+            if ($event) {
+                $response = JsonLdResponse::create()
+                    ->setContent($event);
+
+                $response->headers->set('Vary', 'Origin');
+            } else {
+                $response = $this->createApiProblemJsonResponseNotFound(self::GET_ERROR_NOT_FOUND, $cdbid);
+            }
+        } catch (DocumentGoneException $documentGoneException) {
+            $response = $this->createApiProblemJsonResponseGone(self::GET_ERROR_GONE, $cdbid);
+        }
 
         return $response;
     }
@@ -71,57 +83,12 @@ class ReadEventRestController
 
                 $response->headers->set('Vary', 'Origin');
             } else {
-                $response = $this->createApiProblemJsonResponseNotFound($cdbid);
+                $response = $this->createApiProblemJsonResponseNotFound(self::HISTORY_ERROR_NOT_FOUND, $cdbid);
             }
         } catch (DocumentGoneException $documentGoneException) {
-            $response = $this->createApiProblemJsonResponseGone($cdbid);
+            $response = $this->createApiProblemJsonResponseGone(self::HISTORY_ERROR_GONE, $cdbid);
         }
 
         return $response;
-    }
-
-    /**
-     * @param string $cdbid
-     * @return ApiProblemJsonResponse
-     */
-    private function createApiProblemJsonResponseNotFound($cdbid)
-    {
-        return $this->createApiProblemJsonResponse(
-            self::HISTORY_ERROR_NOT_FOUND,
-            $cdbid,
-            Response::HTTP_NOT_FOUND
-        );
-    }
-
-    /**
-     * @param string $cdbid
-     * @return ApiProblemJsonResponse
-     */
-    private function createApiProblemJsonResponseGone($cdbid)
-    {
-        return $this->createApiProblemJsonResponse(
-            self::HISTORY_ERROR_GONE,
-            $cdbid,
-            Response::HTTP_GONE
-        );
-    }
-
-    /**
-     * @param string $message
-     * @param string $cdbid
-     * @param int $statusCode
-     * @return ApiProblemJsonResponse
-     */
-    private function createApiProblemJsonResponse($message, $cdbid, $statusCode)
-    {
-        $apiProblem = new ApiProblem(
-            sprintf(
-                $message,
-                $cdbid
-            )
-        );
-        $apiProblem->setStatus($statusCode);
-
-        return new ApiProblemJsonResponse($apiProblem);
     }
 }
