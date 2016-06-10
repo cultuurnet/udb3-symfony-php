@@ -176,4 +176,26 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedQuery, $query);
     }
+
+    /**
+     * @test
+     */
+    public function it_can_get_query_from_request_with_zero_start_and_zero_limit()
+    {
+        $request = new Request([
+            'query' => self::QUERY,
+            'start' => 0,
+            'limit' => 0
+        ]);
+
+        $query = $this->requestHelper->getQuery($request);
+
+        $expectedQuery = new Query(
+            new StringLiteral(self::QUERY),
+            new Natural(0),
+            new Natural(0)
+        );
+
+        $this->assertEquals($expectedQuery, $query);
+    }
 }
