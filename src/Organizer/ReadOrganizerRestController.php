@@ -3,6 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
 use CultuurNet\Hydra\PagedCollection;
+use CultuurNet\UDB3\EntityNotFoundException;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\Organizer\ReadModel\Lookup\OrganizerLookupServiceInterface;
@@ -47,23 +48,19 @@ class ReadOrganizerRestController
     public function get($cdbid)
     {
         $response = null;
-        
-        try {
-            $organizer = $this->service->getEntity($cdbid);
 
-            if ($organizer) {
-                $response = JsonLdResponse::create()
-                    ->setContent($organizer)
-                    ->setPublic()
-                    ->setClientTtl(60 * 30)
-                    ->setTtl(60 * 5);
+        $organizer = $this->service->getEntity($cdbid);
 
-                $response->headers->set('Vary', 'Origin');
-            } else {
-                $response = $this->createApiProblemJsonResponseNotFound(self::GET_ERROR_NOT_FOUND, $cdbid);
-            }
-        } catch (DocumentGoneException $documentGoneException) {
-            $response = $this->createApiProblemJsonResponseGone(self::GET_ERROR_GONE, $cdbid);
+        if ($organizer) {
+            $response = JsonLdResponse::create()
+                ->setContent($organizer)
+                ->setPublic()
+                ->setClientTtl(60 * 30)
+                ->setTtl(60 * 5);
+
+            $response->headers->set('Vary', 'Origin');
+        } else {
+            $response = $this->createApiProblemJsonResponseNotFound(self::GET_ERROR_NOT_FOUND, $cdbid);
         }
 
         return $response;
