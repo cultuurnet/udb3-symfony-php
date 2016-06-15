@@ -47,19 +47,15 @@ class ReadPlaceRestController
     {
         $response = null;
 
-        try {
-            $place = $this->service->getEntity($cdbid);
+        $place = $this->service->getEntity($cdbid);
 
-            if ($place) {
-                $response = JsonLdResponse::create()
-                    ->setContent($place);
+        if ($place) {
+            $response = JsonLdResponse::create()
+                ->setContent($place);
 
-                $response->headers->set('Vary', 'Origin');
-            } else {
-                $response = $this->createApiProblemJsonResponseNotFound(self::GET_ERROR_NOT_FOUND, $cdbid);
-            }
-        } catch (DocumentGoneException $documentGoneException) {
-            $response = $this->createApiProblemJsonResponseGone(self::GET_ERROR_GONE, $cdbid);
+            $response->headers->set('Vary', 'Origin');
+        } else {
+            $response = $this->createApiProblemJsonResponseNotFound(self::GET_ERROR_NOT_FOUND, $cdbid);
         }
 
         return $response;

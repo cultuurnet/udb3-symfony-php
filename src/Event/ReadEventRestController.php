@@ -48,19 +48,15 @@ class ReadEventRestController
     {
         $response = null;
 
-        try {
-            $event = $this->service->getEvent($cdbid);
+        $event = $this->service->getEvent($cdbid);
 
-            if ($event) {
-                $response = JsonLdResponse::create()
-                    ->setContent($event);
+        if ($event) {
+            $response = JsonLdResponse::create()
+                ->setContent($event);
 
-                $response->headers->set('Vary', 'Origin');
-            } else {
-                $response = $this->createApiProblemJsonResponseNotFound(self::GET_ERROR_NOT_FOUND, $cdbid);
-            }
-        } catch (DocumentGoneException $documentGoneException) {
-            $response = $this->createApiProblemJsonResponseGone(self::GET_ERROR_GONE, $cdbid);
+            $response->headers->set('Vary', 'Origin');
+        } else {
+            $response = $this->createApiProblemJsonResponseNotFound(self::GET_ERROR_NOT_FOUND, $cdbid);
         }
 
         return $response;
