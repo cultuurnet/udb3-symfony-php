@@ -86,14 +86,4 @@ class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
     }
-
-    /**
-     * @test
-     */
-    public function it_returns_a_http_response_with_error_HTTP_GONE_for_a_removed_organizer()
-    {
-        $jsonResponse = $this->organizerController->get(self::REMOVED_ID);
-
-        $this->assertEquals(Response::HTTP_GONE, $jsonResponse->getStatusCode());
-    }
 }
