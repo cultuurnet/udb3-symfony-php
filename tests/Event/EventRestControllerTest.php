@@ -49,6 +49,20 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
                 }
             );
 
+        $eventServiceInterface->method('getEvent')
+            ->willReturnCallback(
+                function ($id) {
+                    switch ($id) {
+                        case self::EXISTING_ID:
+                            return $this->jsonDocument->getRawBody();
+                        case self::REMOVED_ID:
+                            throw new DocumentGoneException();
+                        default:
+                            return null;
+                    }
+                }
+            );
+
         /**
          * @var EventServiceInterface $eventServiceInterface
          * @var DocumentRepositoryInterface $documentRepositoryInterface
@@ -88,5 +102,26 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
         $jsonResponse = $this->eventRestController->history(self::REMOVED_ID);
 
         $this->assertEquals(Response::HTTP_GONE, $jsonResponse->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_http_response_with_json_get_for_an_event()
+    {
+        $jsonResponse = $this->eventRestController->get(self::EXISTING_ID);
+
+        $this->assertEquals(Response::HTTP_OK, $jsonResponse->getStatusCode());
+        $this->assertEquals($this->jsonDocument->getRawBody(), $jsonResponse->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_http_response_with_error_NOT_FOUND_for_getting_a_non_existing_event()
+    {
+        $jsonResponse = $this->eventRestController->get(self::NON_EXISTING_ID);
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
     }
 }
