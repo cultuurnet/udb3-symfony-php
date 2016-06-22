@@ -70,6 +70,7 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->readService = $this->getMock(ReadServiceInterface::class);
         $this->mockGetByUuid();
+        $this->mockGetByName();
         $this->mockSearch();
         $this->mockSearchTotalLabels();
 
@@ -87,8 +88,28 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_json_response_for_get_by_uuid()
     {
-        $jsonResponse = $this->readRestController->getByUuid(
-            $this->entity->getUuid()
+        $jsonResponse = $this->readRestController->get(
+            (string) $this->entity->getUuid()
+        );
+
+        $expectedJsonResponse = new JsonResponse(
+            $this->entityToArray($this->entity)
+        );
+
+        $this->assertEquals($expectedJsonResponse, $jsonResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_return_a_json_response_when_you_get_a_label_by_name()
+    {
+        $this->readService
+            ->expects($this->never())
+            ->method('getByUuid');
+
+        $jsonResponse = $this->readRestController->get(
+            (string) $this->entity->getName()
         );
 
         $expectedJsonResponse = new JsonResponse(
@@ -122,6 +143,13 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->readService->method('getByUuid')
             ->with($this->entity->getUuid()->toNative())
+            ->willReturn($this->entity);
+    }
+
+    private function mockGetByName()
+    {
+        $this->readService->method('getByName')
+            ->with($this->entity->getName()->toNative())
             ->willReturn($this->entity);
     }
 

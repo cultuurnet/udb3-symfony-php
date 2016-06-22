@@ -12,8 +12,10 @@ use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Identity\UUID;
 use ValueObjects\Number\Natural;
+use ValueObjects\String\String as StringLiteral;
 
 class ReadRestController
 {
@@ -41,17 +43,22 @@ class ReadRestController
     }
 
     /**
-     * @param string $uuid
+     * @param string $identifier
+     *  The uuid or unique name of a label.
      * @return JsonResponse
      */
-    public function getByUuid($uuid)
+    public function get($identifier)
     {
-        $entity = $this->readService->getByUuid(new UUID($uuid));
+        try {
+            $entity = $this->readService->getByUuid(new UUID($identifier));
+        } catch (InvalidNativeArgumentException $exception) {
+            $entity = $this->readService->getByName(new StringLiteral($identifier));
+        }
 
         if ($entity) {
             return new JsonResponse($entity);
         } else {
-            $apiProblem = new ApiProblem('No label found with uuid: ' . $uuid);
+            $apiProblem = new ApiProblem('There is no label with identifier: ' . $identifier);
             $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
 
             return new ApiProblemJsonResponse($apiProblem);
