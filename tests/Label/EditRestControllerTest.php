@@ -124,10 +124,10 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
     public function provider()
     {
         return [
-            [[RequestHelper::COMMAND => 'makeVisible'], 'makeVisible'],
-            [[RequestHelper::COMMAND => 'makeInvisible'], 'makeInvisible'],
-            [[RequestHelper::COMMAND => 'makePublic'], 'makePublic'],
-            [[RequestHelper::COMMAND => 'makePrivate'], 'makePrivate']
+            [[RequestHelper::COMMAND => 'MakeVisible'], 'MakeVisible'],
+            [[RequestHelper::COMMAND => 'MakeInvisible'], 'MakeInvisible'],
+            [[RequestHelper::COMMAND => 'MakePublic'], 'MakePublic'],
+            [[RequestHelper::COMMAND => 'MakePrivate'], 'MakePrivate']
         ];
     }
 
@@ -144,28 +144,28 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
 
     private function mockMakeVisible()
     {
-        $this->writeService->method('makeVisible')
+        $this->writeService->method('MakeVisible')
             ->with($this->uuid)
             ->willReturn(new WriteResult($this->commandId, $this->uuid));
     }
 
     private function mockMakeInvisible()
     {
-        $this->writeService->method('makeInvisible')
+        $this->writeService->method('MakeInvisible')
             ->with($this->uuid)
             ->willReturn(new WriteResult($this->commandId, $this->uuid));
     }
 
     private function mockMakePublic()
     {
-        $this->writeService->method('makePublic')
+        $this->writeService->method('MakePublic')
             ->with($this->uuid)
             ->willReturn(new WriteResult($this->commandId, $this->uuid));
     }
 
     private function mockMakePrivate()
     {
-        $this->writeService->method('makePrivate')
+        $this->writeService->method('MakePrivate')
             ->with($this->uuid)
             ->willReturn(new WriteResult($this->commandId, $this->uuid));
     }

@@ -54,26 +54,26 @@ class EditRestController
 
     /**
      * @param Request $request
-     * @param string $uuid
+     * @param string $id
      * @return JsonResponse
      */
-    public function patch(Request $request, $uuid)
+    public function patch(Request $request, $id)
     {
         $commandType = $this->requestHelper->getCommandType($request);
-        $uuid = new UUID($uuid);
+        $id = new UUID($id);
 
         switch ($commandType) {
             case CommandType::MAKE_VISIBLE():
-                $writeResult = $this->writeService->makeVisible($uuid);
+                $writeResult = $this->writeService->makeVisible($id);
                 break;
             case CommandType::MAKE_INVISIBLE():
-                $writeResult = $this->writeService->makeInvisible($uuid);
+                $writeResult = $this->writeService->makeInvisible($id);
                 break;
             case CommandType::MAKE_PUBLIC():
-                $writeResult = $this->writeService->makePublic($uuid);
+                $writeResult = $this->writeService->makePublic($id);
                 break;
             case CommandType::MAKE_PRIVATE():
-                $writeResult = $this->writeService->makePrivate($uuid);
+                $writeResult = $this->writeService->makePrivate($id);
                 break;
         }
 

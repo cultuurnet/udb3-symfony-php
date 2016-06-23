@@ -14,8 +14,8 @@ use ValueObjects\Enum\Enum;
  */
 class CommandType extends Enum
 {
-    const MAKE_VISIBLE = 'makeVisible';
-    const MAKE_INVISIBLE = 'makeInvisible';
-    const MAKE_PUBLIC = 'makePublic';
-    const MAKE_PRIVATE = 'makePrivate';
+    const MAKE_VISIBLE = 'MakeVisible';
+    const MAKE_INVISIBLE = 'MakeInvisible';
+    const MAKE_PUBLIC = 'MakePublic';
+    const MAKE_PRIVATE = 'MakePrivate';
 }

@@ -43,22 +43,22 @@ class ReadRestController
     }
 
     /**
-     * @param string $identifier
+     * @param string $id
      *  The uuid or unique name of a label.
      * @return JsonResponse
      */
-    public function get($identifier)
+    public function get($id)
     {
         try {
-            $entity = $this->readService->getByUuid(new UUID($identifier));
+            $entity = $this->readService->getByUuid(new UUID($id));
         } catch (InvalidNativeArgumentException $exception) {
-            $entity = $this->readService->getByName(new StringLiteral($identifier));
+            $entity = $this->readService->getByName(new StringLiteral($id));
         }
 
         if ($entity) {
             return new JsonResponse($entity);
         } else {
-            $apiProblem = new ApiProblem('There is no label with identifier: ' . $identifier);
+            $apiProblem = new ApiProblem('There is no label with identifier: ' . $id);
             $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
 
             return new ApiProblemJsonResponse($apiProblem);
