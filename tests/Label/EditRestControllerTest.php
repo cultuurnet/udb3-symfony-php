@@ -124,10 +124,10 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
     public function provider()
     {
         return [
-            [[RequestHelper::COMMAND => 'makeVisible'], 'makeVisible'],
-            [[RequestHelper::COMMAND => 'makeInvisible'], 'makeInvisible'],
-            [[RequestHelper::COMMAND => 'makePublic'], 'makePublic'],
-            [[RequestHelper::COMMAND => 'makePrivate'], 'makePrivate']
+            [[RequestHelper::COMMAND => 'MakeVisible'], 'makeVisible'],
+            [[RequestHelper::COMMAND => 'MakeInvisible'], 'makeInvisible'],
+            [[RequestHelper::COMMAND => 'MakePublic'], 'makePublic'],
+            [[RequestHelper::COMMAND => 'MakePrivate'], 'makePrivate']
         ];
     }
 

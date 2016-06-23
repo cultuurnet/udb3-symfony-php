@@ -41,7 +41,7 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
             'name' => self::LABEL_NAME,
             'visibility' => 'invisible',
             'privacy' => 'private',
-            'command' => 'makeVisible'
+            'command' => 'MakeVisible'
         ]);
 
         $this->request = new Request($query, [], [], [], [], [], $content);
