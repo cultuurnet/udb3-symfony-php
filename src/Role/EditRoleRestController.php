@@ -49,7 +49,7 @@ class EditRoleRestController
         }
 
         $roleId = $this->service->create(
-            new StringLiteral($body_content->name->nl)
+            new StringLiteral($body_content->name)
         );
 
         $response->setData(
