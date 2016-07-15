@@ -6,8 +6,10 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Role\Commands\AbstractCommand;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
 
 class EditRoleRestController
@@ -73,6 +75,24 @@ class EditRoleRestController
         $command = $requestDeserializer->deserialize($request, $roleId);
 
         return $this->commandResponse($command);
+    }
+
+    /**
+     * @param $roleId
+     * @return JsonResponse
+     */
+    public function delete($roleId)
+    {
+        $roleId = (string) $roleId;
+
+        if (empty($roleId)) {
+            throw new InvalidArgumentException('Required field roleId is missing');
+        }
+
+        $commandId = $this->service->delete(new UUID($roleId));
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
     }
 
     /**
