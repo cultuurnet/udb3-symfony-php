@@ -25,14 +25,24 @@ class EditRoleRestController
     private $commandBus;
 
     /**
+     * @var UpdateRoleRequestDeserializer
+     */
+    private $updateRoleRequestDeserializer;
+
+    /**
      * EditRoleRestController constructor.
      * @param RoleEditingServiceInterface $service
      * @param CommandBusInterface $commandBus
+     * @param UpdateRoleRequestDeserializer $updateRoleRequestDeserializer
      */
-    public function __construct(RoleEditingServiceInterface $service, CommandBusInterface $commandBus)
-    {
+    public function __construct(
+        RoleEditingServiceInterface $service,
+        CommandBusInterface $commandBus,
+        UpdateRoleRequestDeserializer $updateRoleRequestDeserializer
+    ) {
         $this->service = $service;
         $this->commandBus = $commandBus;
+        $this->updateRoleRequestDeserializer = $updateRoleRequestDeserializer;
     }
 
     /**
@@ -70,9 +80,7 @@ class EditRoleRestController
      */
     public function update(Request $request, $roleId)
     {
-        $requestDeserializer = new UpdateRoleRequestDeserializer();
-        
-        $command = $requestDeserializer->deserialize($request, $roleId);
+        $command = $this->updateRoleRequestDeserializer->deserialize($request, $roleId);
 
         return $this->commandResponse($command);
     }
