@@ -3,7 +3,11 @@
 namespace CultuurNet\UDB3\Symfony\Role;
 
 use Broadway\Repository\RepositoryInterface;
+use CultuurNet\UDB3\EntityServiceInterface;
+use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
+use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,9 +32,11 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->jsonDocument = new JsonDocument('id', 'role');
 
-        $roleRepository = $this->getMock(RepositoryInterface::class);
+        $entityServiceInterface = $this->getMock(EntityServiceInterface::class);
 
-        $roleRepository->method('get')
+        $roleService = $this->getMock(RoleReadingServiceInterface::class);
+
+        $entityServiceInterface->method('getEntity')
             ->willReturnCallback(
                 function ($id) {
                     switch ($id) {
@@ -46,20 +52,20 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         /**
          * @var EntityServiceInterface $entityServiceInterface
-         * @var PlaceLookupServiceInterface $lookupService
+         * @var RoleReadingServiceInterface $roleService
          */
-        $this->placeRestController = new ReadPlaceRestController(
+        $this->roleRestController = new ReadRoleRestController(
             $entityServiceInterface,
-            $lookupService
+            $roleService
         );
     }
 
     /**
      * @test
      */
-    public function it_returns_a_http_response_with_json_get_for_an_event()
+    public function it_returns_a_http_response_with_json_get_for_a_role()
     {
-        $jsonResponse = $this->placeRestController->get(self::EXISTING_ID);
+        $jsonResponse = $this->roleRestController->get(self::EXISTING_ID);
 
         $this->assertEquals(Response::HTTP_OK, $jsonResponse->getStatusCode());
         $this->assertEquals($this->jsonDocument->getRawBody(), $jsonResponse->getContent());
@@ -68,9 +74,9 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_returns_a_http_response_with_error_NOT_FOUND_for_getting_a_non_existing_event()
+    public function it_returns_a_http_response_with_error_NOT_FOUND_for_getting_a_non_existing_role()
     {
-        $jsonResponse = $this->placeRestController->get(self::NON_EXISTING_ID);
+        $jsonResponse = $this->roleRestController->get(self::NON_EXISTING_ID);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
     }
