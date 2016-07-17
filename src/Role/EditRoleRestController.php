@@ -6,6 +6,7 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Role\Commands\AbstractCommand;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
+use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -98,6 +99,62 @@ class EditRoleRestController
         }
 
         $commandId = $this->service->delete(new UUID($roleId));
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $roleId
+     * @param string $permissionKey
+     * @return JsonResponse
+     */
+    public function addPermission($roleId, $permissionKey)
+    {
+        $roleId = (string) $roleId;
+
+        if (empty($roleId)) {
+            throw new InvalidArgumentException('Required field roleId is missing');
+        }
+
+        $permissionKey = (string) $permissionKey;
+
+        if (!Permission::has($permissionKey)) {
+            throw new InvalidArgumentException('Field permission is invalid.');
+        }
+
+        $commandId = $this->service->addPermission(
+            new UUID($roleId),
+            Permission::get($permissionKey)
+        );
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $roleId
+     * @param string $permissionKey
+     * @return JsonResponse
+     */
+    public function removePermission($roleId, $permissionKey)
+    {
+        $roleId = (string) $roleId;
+
+        if (empty($roleId)) {
+            throw new InvalidArgumentException('Required field roleId is missing');
+        }
+
+        $permissionKey = (string) $permissionKey;
+
+        if (!Permission::has($permissionKey)) {
+            throw new InvalidArgumentException('Field permission is invalid.');
+        }
+
+        $commandId = $this->service->removePermission(
+            new UUID($roleId),
+            Permission::get($permissionKey)
+        );
 
         return (new JsonResponse())
             ->setData(['commandId' => $commandId]);

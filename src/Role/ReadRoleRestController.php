@@ -72,8 +72,9 @@ class ReadRoleRestController
 
         if ($document) {
             // Return Permissions, even if it is an empty array.
+            $body = $document->getBody();
             $response = JsonResponse::create()
-                ->setContent($document);
+                ->setContent(json_encode($body->permissions));
 
             $response->headers->set('Vary', 'Origin');
         } else {
