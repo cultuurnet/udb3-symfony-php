@@ -2,7 +2,6 @@
 
 namespace CultuurNet\UDB3\Symfony\Role;
 
-use Broadway\Repository\RepositoryInterface;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\ReadModel\JsonDocument;

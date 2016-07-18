@@ -6,8 +6,11 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Role\Commands\AbstractCommand;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
+use CultuurNet\UDB3\Role\ValueObjects\Permission;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
 
 class EditRoleRestController
@@ -23,14 +26,24 @@ class EditRoleRestController
     private $commandBus;
 
     /**
+     * @var UpdateRoleRequestDeserializer
+     */
+    private $updateRoleRequestDeserializer;
+
+    /**
      * EditRoleRestController constructor.
      * @param RoleEditingServiceInterface $service
      * @param CommandBusInterface $commandBus
+     * @param UpdateRoleRequestDeserializer $updateRoleRequestDeserializer
      */
-    public function __construct(RoleEditingServiceInterface $service, CommandBusInterface $commandBus)
-    {
+    public function __construct(
+        RoleEditingServiceInterface $service,
+        CommandBusInterface $commandBus,
+        UpdateRoleRequestDeserializer $updateRoleRequestDeserializer
+    ) {
         $this->service = $service;
         $this->commandBus = $commandBus;
+        $this->updateRoleRequestDeserializer = $updateRoleRequestDeserializer;
     }
 
     /**
@@ -68,11 +81,83 @@ class EditRoleRestController
      */
     public function update(Request $request, $roleId)
     {
-        $requestDeserializer = new UpdateRoleRequestDeserializer();
-        
-        $command = $requestDeserializer->deserialize($request, $roleId);
+        $command = $this->updateRoleRequestDeserializer->deserialize($request, $roleId);
 
         return $this->commandResponse($command);
+    }
+
+    /**
+     * @param $roleId
+     * @return JsonResponse
+     */
+    public function delete($roleId)
+    {
+        $roleId = (string) $roleId;
+
+        if (empty($roleId)) {
+            throw new InvalidArgumentException('Required field roleId is missing');
+        }
+
+        $commandId = $this->service->delete(new UUID($roleId));
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $roleId
+     * @param string $permissionKey
+     * @return JsonResponse
+     */
+    public function addPermission($roleId, $permissionKey)
+    {
+        $roleId = (string) $roleId;
+
+        if (empty($roleId)) {
+            throw new InvalidArgumentException('Required field roleId is missing');
+        }
+
+        $permissionKey = (string) $permissionKey;
+
+        if (!Permission::has($permissionKey)) {
+            throw new InvalidArgumentException('Field permission is invalid.');
+        }
+
+        $commandId = $this->service->addPermission(
+            new UUID($roleId),
+            Permission::get($permissionKey)
+        );
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $roleId
+     * @param string $permissionKey
+     * @return JsonResponse
+     */
+    public function removePermission($roleId, $permissionKey)
+    {
+        $roleId = (string) $roleId;
+
+        if (empty($roleId)) {
+            throw new InvalidArgumentException('Required field roleId is missing');
+        }
+
+        $permissionKey = (string) $permissionKey;
+
+        if (!Permission::has($permissionKey)) {
+            throw new InvalidArgumentException('Field permission is invalid.');
+        }
+
+        $commandId = $this->service->removePermission(
+            new UUID($roleId),
+            Permission::get($permissionKey)
+        );
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
     }
 
     /**
