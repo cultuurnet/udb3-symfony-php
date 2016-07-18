@@ -70,7 +70,6 @@ class MediaController
         $response->setData(['commandId' => $commandId]);
 
         return $response;
-
     }
 
     public function get(Request $request, $id)
