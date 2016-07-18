@@ -76,10 +76,10 @@ class EditRoleRestController
 
     /**
      * @param Request $request
-     * @param $roleId
+     * @param $id
      * @return JsonResponse
      */
-    public function update(Request $request, $roleId)
+    public function update(Request $request, $id)
     {
         $command = $this->updateRoleRequestDeserializer->deserialize($request, $roleId);
 
