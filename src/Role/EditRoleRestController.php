@@ -81,7 +81,7 @@ class EditRoleRestController
      */
     public function update(Request $request, $id)
     {
-        $command = $this->updateRoleRequestDeserializer->deserialize($request, $roleId);
+        $command = $this->updateRoleRequestDeserializer->deserialize($request, $id);
 
         return $this->commandResponse($command);
     }
