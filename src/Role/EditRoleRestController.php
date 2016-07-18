@@ -119,13 +119,13 @@ class EditRoleRestController
 
         $permissionKey = (string) $permissionKey;
 
-        if (!Permission::has($permissionKey)) {
+        if (!in_array($permissionKey, array_keys(Permission::getConstants()))) {
             throw new InvalidArgumentException('Field permission is invalid.');
         }
 
         $commandId = $this->service->addPermission(
             new UUID($roleId),
-            Permission::get($permissionKey)
+            Permission::getByName($permissionKey)
         );
 
         return (new JsonResponse())
@@ -147,13 +147,13 @@ class EditRoleRestController
 
         $permissionKey = (string) $permissionKey;
 
-        if (!Permission::has($permissionKey)) {
+        if (!in_array($permissionKey, array_keys(Permission::getConstants()))) {
             throw new InvalidArgumentException('Field permission is invalid.');
         }
 
         $commandId = $this->service->removePermission(
             new UUID($roleId),
-            Permission::get($permissionKey)
+            Permission::getByName($permissionKey)
         );
 
         return (new JsonResponse())
