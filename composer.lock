@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6df60b20be4b17f8209372190ca03c9f",
-    "content-hash": "8e18159111afdc724e2b00c6acbfc35f",
+    "hash": "3bed04b50a1d4081e5feab3b1a829d5d",
+    "content-hash": "5e04f6e5d0a8173a94dfb345d09f38ac",
     "packages": [
         {
             "name": "2dotstwice/collection",
@@ -932,16 +932,16 @@
         },
         {
             "name": "cultuurnet/udb3",
-            "version": "dev-feature/III-940",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "1168bcddd25a1e2fb448d78c1f2fcde5446d18d1"
+                "reference": "3699090a7fffd786836b7e8ee7e4e220c0075491"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/1168bcddd25a1e2fb448d78c1f2fcde5446d18d1",
-                "reference": "1168bcddd25a1e2fb448d78c1f2fcde5446d18d1",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/3699090a7fffd786836b7e8ee7e4e220c0075491",
+                "reference": "3699090a7fffd786836b7e8ee7e4e220c0075491",
                 "shasum": ""
             },
             "require": {
@@ -1014,7 +1014,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-07-15 13:03:24"
+            "time": "2016-07-18 11:29:36"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -2113,7 +2113,7 @@
                 {
                     "name": "Luís Otávio Cobucci Oblonczyk",
                     "email": "lcobucci@gmail.com",
-                    "role": "Developer"
+                    "role": "developer"
                 }
             ],
             "description": "A simple library to work with JSON Web Token and JSON Web Signature",
@@ -5547,18 +5547,9 @@
             "time": "2015-08-24 13:29:44"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.1",
-            "alias_normalized": "0.1.0.0",
-            "version": "dev-feature/III-940",
-            "package": "cultuurnet/udb3"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cultuurnet/udb3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
