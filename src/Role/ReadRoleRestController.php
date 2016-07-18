@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Role;
 
 use Crell\ApiProblem\ApiProblem;
 use CultuurNet\UDB3\EntityServiceInterface;
-use CultuurNet\UDB3\Role\ReadModel\Search\DBALRepository;
+use CultuurNet\UDB3\Role\ReadModel\Search\Doctrine\DBALRepository;
 use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
