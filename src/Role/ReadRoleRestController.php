@@ -104,7 +104,7 @@ class ReadRoleRestController
     {
         $list = [];
 
-        if(in_array(
+        if (in_array(
             $this->currentUser->id,
             $this->authorizationList['allow_all']
         )) {
@@ -120,7 +120,7 @@ class ReadRoleRestController
     {
         $list = [];
 
-        foreach($permissions as $key => $name) {
+        foreach ($permissions as $key => $name) {
             $item = new \StdClass();
             $item->key = $key;
             $item->name = $name;
