@@ -55,7 +55,9 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
          */
         $this->roleRestController = new ReadRoleRestController(
             $entityServiceInterface,
-            $roleService
+            $roleService,
+            new \CultureFeed_User(),
+            array()
         );
     }
 

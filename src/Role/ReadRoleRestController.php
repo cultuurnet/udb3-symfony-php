@@ -9,6 +9,7 @@ use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
+use CultuurNet\UDB3\Role\ValueObjects\Permission;
 
 class ReadRoleRestController
 {
@@ -23,16 +24,25 @@ class ReadRoleRestController
     private $roleService;
 
     /**
+     * @var \CultureFeed_User
+     */
+    private $currentUser;
+
+    /**
      * ReadRoleRestController constructor.
      * @param EntityServiceInterface $service
      * @param RoleReadingServiceInterface $roleService
      */
     public function __construct(
         EntityServiceInterface $service,
-        RoleReadingServiceInterface $roleService
+        RoleReadingServiceInterface $roleService,
+        \CultureFeed_User $currentUser,
+        $authorizationList
     ) {
         $this->service = $service;
         $this->roleService = $roleService;
+        $this->currentUser = $currentUser;
+        $this->authorizationList = $authorizationList;
     }
 
     /**
@@ -85,5 +95,50 @@ class ReadRoleRestController
         }
 
         return $response;
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getUserPermissions()
+    {
+        $list = [];
+
+        if(in_array(
+            $this->currentUser->id,
+            $this->authorizationList['allow_all']
+        )) {
+            $list = $this->createPermissionsList(Permission::getConstants());
+        }
+
+        return (new JsonResponse())
+            ->setData($list)
+            ->setPrivate();
+    }
+
+    private function createPermissionsList($permissions)
+    {
+        $list = [];
+
+        foreach($permissions as $key => $name) {
+            $item = new \StdClass();
+            $item->key = $key;
+            $item->name = $name;
+            $list[] = $item;
+        }
+
+        return $list;
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getPermissions()
+    {
+        $list = $this->createPermissionsList(Permission::getConstants());
+
+        return (new JsonResponse())
+            ->setData($list)
+            ->setPrivate();
     }
 }
