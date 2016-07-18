@@ -108,13 +108,34 @@ class ReadRoleRestController
             $this->currentUser->id,
             $this->authorizationList['allow_all']
         )) {
-            foreach(Permission::getConstants() as $key => $name) {
-                $item = new \StdClass();
-                $item->key = $key;
-                $item->name = $name;
-                $list[] = $item;
-            }
+            $list = $this->createPermissionsList(Permission::getConstants());
         }
+
+        return (new JsonResponse())
+            ->setData($list)
+            ->setPrivate();
+    }
+
+    private function createPermissionsList($permissions)
+    {
+        $list = [];
+
+        foreach($permissions as $key => $name) {
+            $item = new \StdClass();
+            $item->key = $key;
+            $item->name = $name;
+            $list[] = $item;
+        }
+
+        return $list;
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getPermissions()
+    {
+        $list = $this->createPermissionsList(Permission::getConstants());
 
         return (new JsonResponse())
             ->setData($list)
