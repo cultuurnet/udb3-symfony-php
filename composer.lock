@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a8448c564f718814bb4b3555c5ecf32e",
-    "content-hash": "fe35cefaacc94fe5b7981a7d6ab7ddb9",
+    "hash": "3bed04b50a1d4081e5feab3b1a829d5d",
+    "content-hash": "5e04f6e5d0a8173a94dfb345d09f38ac",
     "packages": [
         {
             "name": "2dotstwice/collection",
@@ -932,16 +932,16 @@
         },
         {
             "name": "cultuurnet/udb3",
-            "version": "dev-feature/III-913",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "5d01bad5b5ea3d22c98c5df9208b0dd4cb8d9bcb"
+                "reference": "690dc407b0a4cf54c655f9bf0d80856f8488d1c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/5d01bad5b5ea3d22c98c5df9208b0dd4cb8d9bcb",
-                "reference": "5d01bad5b5ea3d22c98c5df9208b0dd4cb8d9bcb",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/690dc407b0a4cf54c655f9bf0d80856f8488d1c2",
+                "reference": "690dc407b0a4cf54c655f9bf0d80856f8488d1c2",
                 "shasum": ""
             },
             "require": {
@@ -1014,7 +1014,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-07-18 22:10:18"
+            "time": "2016-07-19 12:43:29"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -5549,9 +5549,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cultuurnet/udb3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
