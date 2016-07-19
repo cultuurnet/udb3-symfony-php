@@ -5,7 +5,10 @@ namespace CultuurNet\UDB3\Symfony\Role;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
+use CultuurNet\UDB3\Role\ReadModel\Search\RepositoryInterface;
+use CultuurNet\UDB3\Role\ReadModel\Search\Results;
 use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
@@ -23,6 +26,11 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
      * @var JsonDocument
      */
     private $jsonDocument;
+
+    /**
+     * @var RepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $roleSearchRepository;
 
     /**
      * @inheritdoc
@@ -49,6 +57,8 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
                 }
             );
 
+        $this->roleSearchRepository = $this->getMock(RepositoryInterface::class);
+
         /**
          * @var EntityServiceInterface $entityServiceInterface
          * @var RoleReadingServiceInterface $roleService
@@ -57,7 +67,8 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             $entityServiceInterface,
             $roleService,
             new \CultureFeed_User(),
-            array()
+            array(),
+            $this->roleSearchRepository
         );
     }
 
@@ -80,5 +91,27 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $jsonResponse = $this->roleRestController->get(self::NON_EXISTING_ID);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_search()
+    {
+        $request = new Request();
+        $results = new Results('10', array(), 0);
+        $expectedResults = json_encode((object) array(
+            'itemsPerPage' => "10",
+            'member' => array(),
+            'totalItems' => 0,
+        ));
+
+        $this->roleSearchRepository
+            ->expects($this->once())
+            ->method('search')
+            ->willReturn($results);
+
+        $actualResult = $this->roleRestController->search($request);
+        $this->assertEquals($expectedResults, $actualResult->getContent());
     }
 }
