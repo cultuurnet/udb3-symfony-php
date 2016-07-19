@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Role;
 
 use Crell\ApiProblem\ApiProblem;
 use CultuurNet\UDB3\EntityServiceInterface;
-use CultuurNet\UDB3\Role\ReadModel\Search\Doctrine\DBALRepository;
+use CultuurNet\UDB3\Role\ReadModel\Search\RepositoryInterface;
 use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +16,7 @@ use CultuurNet\UDB3\Role\ValueObjects\Permission;
 class ReadRoleRestController
 {
     /**
-     * @var DBALRepository
+     * @var RepositoryInterface
      */
     private $roleSearchRepository;
 
@@ -41,14 +41,14 @@ class ReadRoleRestController
      * @param RoleReadingServiceInterface $roleService
      * @param \CultureFeed_User $currentUser
      * @param $authorizationList
-     * @param DBALRepository $roleSearchRepository
+     * @param RepositoryInterface $roleSearchRepository
      */
     public function __construct(
         EntityServiceInterface $service,
         RoleReadingServiceInterface $roleService,
         \CultureFeed_User $currentUser,
         $authorizationList,
-        DBALRepository $roleSearchRepository
+        RepositoryInterface $roleSearchRepository
     ) {
         $this->service = $service;
         $this->roleService = $roleService;
