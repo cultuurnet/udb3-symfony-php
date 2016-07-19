@@ -133,7 +133,7 @@ class ReadRoleRestController
         $list = [];
 
         foreach ($permissions as $key => $name) {
-            $item = new \StdClass();
+            $item = new \stdClass();
             $item->key = $key;
             $item->name = $name;
             $list[] = $item;
@@ -160,11 +160,11 @@ class ReadRoleRestController
      */
     public function search(Request $request)
     {
-        $name = $request->query->get('name') ?: '';
+        $query = $request->query->get('query') ?: '';
         $itemsPerPage = $request->query->get('limit') ?: 10;
         $start = $request->query->get('start') ?: 0;
 
-        $result = $this->roleSearchRepository->search($name, $itemsPerPage, $start);
+        $result = $this->roleSearchRepository->search($query, $itemsPerPage, $start);
 
         $data = (object) array(
             'itemsPerPage' => $result->getItemsPerPage(),
