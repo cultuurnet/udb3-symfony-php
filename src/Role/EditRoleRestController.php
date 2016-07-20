@@ -87,12 +87,12 @@ class EditRoleRestController
     }
 
     /**
-     * @param $roleId
+     * @param $id
      * @return JsonResponse
      */
-    public function delete($roleId)
+    public function delete($id)
     {
-        $roleId = (string) $roleId;
+        $roleId = (string) $id;
 
         if (empty($roleId)) {
             throw new InvalidArgumentException('Required field roleId is missing');
