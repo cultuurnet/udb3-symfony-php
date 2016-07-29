@@ -12,7 +12,7 @@ use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\String\String as StringLiteral;
 use ValueObjects\Web\EmailAddress;
 
-class UiTIDUserController
+class UserIdentityController
 {
     /**
      * @var \ICultureFeed
