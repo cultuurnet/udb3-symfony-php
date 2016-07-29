@@ -7,6 +7,8 @@ use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\UiTID\UsersInterface;
 use CultuurNet\UDB3\User\CultureFeedUserIdentityDetailsFactoryInterface;
+use CultuurNet\UDB3\User\UserIdentityDetails;
+use CultuurNet\UDB3\User\UserIdentityResolverInterface;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\String\String as StringLiteral;
@@ -15,28 +17,17 @@ use ValueObjects\Web\EmailAddress;
 class UserIdentityController
 {
     /**
-     * @var \ICultureFeed
+     * @var UserIdentityResolverInterface
      */
-    private $cultureFeed;
+    private $userIdentityResolver;
 
     /**
-     * @var UsersInterface
-     */
-    private $userIdResolver;
-
-    /**
-     * @param \ICultureFeed $cultureFeed
-     * @param UsersInterface $userIdResolver
-     * @param CultureFeedUserIdentityDetailsFactoryInterface $cfUserIdentityFactory
+     * @param UserIdentityResolverInterface $userIdentityResolver
      */
     public function __construct(
-        \ICultureFeed $cultureFeed,
-        UsersInterface $userIdResolver,
-        CultureFeedUserIdentityDetailsFactoryInterface $cfUserIdentityFactory
+        UserIdentityResolverInterface $userIdentityResolver
     ) {
-        $this->cultureFeed = $cultureFeed;
-        $this->userIdResolver = $userIdResolver;
-        $this->cfUserIdentityFactory = $cfUserIdentityFactory;
+        $this->userIdentityResolver = $userIdentityResolver;
     }
 
     /**
@@ -46,7 +37,10 @@ class UserIdentityController
     public function getByUserId($userId)
     {
         $userId = new StringLiteral((string) $userId);
-        return $this->getUserIdentityResponse($userId);
+
+        $userIdentity = $this->userIdentityResolver->getUserById($userId);
+
+        return $this->getUserIdentityResponse($userIdentity);
     }
 
     /**
@@ -61,33 +55,23 @@ class UserIdentityController
             return $this->getUserNotFoundResponse();
         }
 
-        $userId = $this->userIdResolver->byEmail($emailAddress);
+        $userIdentity = $this->userIdentityResolver->getUserByEmail($emailAddress);
 
-        if (is_null($userId)) {
-            return $this->getUserNotFoundResponse();
-        }
-
-        return $this->getUserIdentityResponse($userId);
+        return $this->getUserIdentityResponse($userIdentity);
     }
 
     /**
-     * @param StringLiteral $userId
+     * @param UserIdentityDetails|null $userIdentityDetails
      * @return Response
      */
-    private function getUserIdentityResponse(StringLiteral $userId)
+    public function getUserIdentityResponse(UserIdentityDetails $userIdentityDetails = null)
     {
-        $cfUser = $this->cultureFeed->getUser($userId->toNative());
-
-        if (is_null($cfUser)) {
+        if (is_null($userIdentityDetails)) {
             return $this->getUserNotFoundResponse();
         }
 
-        $userIdentity = $this->cfUserIdentityFactory->fromCultureFeedUser(
-            $cfUser
-        );
-
         return (new JsonLdResponse())
-            ->setData($userIdentity)
+            ->setData($userIdentityDetails)
             ->setPrivate();
     }
 
