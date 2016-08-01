@@ -124,15 +124,23 @@ class ReadRoleRestController
         // create an empty document of roles.
         // @todo Should we check if the user exists using culturefeed?
         if ($document) {
-            $body = $document->getBody();
+            $body = json_decode($document->getRawBody(), true);
         } else {
             $body = [];
         }
 
         $response = JsonResponse::create()
-            ->setContent(json_encode($body));
+            ->setContent(
+                json_encode(
+                    array_values(
+                        $body
+                    )
+                )
+            );
 
         $response->headers->set('Vary', 'Origin');
+
+        return $response;
     }
 
     /**
