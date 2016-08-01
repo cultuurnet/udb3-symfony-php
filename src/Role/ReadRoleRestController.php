@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
+use ValueObjects\String\String as StringLiteral;
 
 class ReadRoleRestController
 {
@@ -107,6 +108,31 @@ class ReadRoleRestController
         }
 
         return $response;
+    }
+
+    /**
+     * @param $userId
+     * @return Response
+     */
+    public function getUserRoles($userId)
+    {
+        $userId = new StringLiteral((string) $userId);
+        $document = $this->roleService->getRolesByUserId($userId);
+
+        // It's possible the document does not exist if the user exists but has
+        // no roles, since we don't have a "UserCreated" event to listen to and
+        // create an empty document of roles.
+        // @todo Should we check if the user exists using culturefeed?
+        if ($document) {
+            $body = $document->getBody();
+        } else {
+            $body = [];
+        }
+
+        $response = JsonResponse::create()
+            ->setContent(json_encode($body));
+
+        $response->headers->set('Vary', 'Origin');
     }
 
     /**
