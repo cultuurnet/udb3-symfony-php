@@ -6,12 +6,28 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Role\Commands\RenameRole;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
 
 class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var string
+     */
+    private $roleId;
+
+    /**
+     * @var string
+     */
+    private $commandId;
+
+    /**
+     * @var string
+     */
+    private $labelId;
+
     /**
      * @var RoleEditingServiceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -34,6 +50,10 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->roleId = (new UUID())->toNative();
+        $this->commandId = (new UUID())->toNative();
+        $this->labelId = (new UUID())->toNative();
+
         $this->editService = $this->getMock(RoleEditingServiceInterface::class);
         $this->commandBus = $this->getMock(CommandBusInterface::class);
         $this->updateRoleRequestDeserializer = $this->getMock(UpdateRoleRequestDeserializer::class);
@@ -125,6 +145,82 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(\InvalidArgumentException::class, 'Required field roleId is missing');
         $this->controller->delete('');
+    }
+
+    /**
+     * @test
+     */
+    public function it_adds_a_label()
+    {
+        $this->editService->expects($this->once())
+            ->method('addLabel')
+            ->with(
+                new UUID($this->roleId),
+                new UUID($this->labelId)
+            )
+            ->willReturn($this->commandId);
+
+        $response = $this->controller->addLabel($this->roleId, $this->labelId);
+
+        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
+
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_exception_when_adding_label_with_invalid_role_uuid()
+    {
+        $this->setExpectedException(InvalidArgumentException::class, 'Required field roleId is not a valid uuid.');
+        $this->controller->addLabel('foo', $this->labelId);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_exception_when_adding_label_with_invalid_label_uuid()
+    {
+        $this->setExpectedException(InvalidArgumentException::class, 'Required field labelId is not a valid uuid.');
+        $this->controller->addLabel($this->roleId, 'foo');
+    }
+
+    /**
+     * @test
+     */
+    public function it_removes_a_label()
+    {
+        $this->editService->expects($this->once())
+            ->method('removeLabel')
+            ->with(
+                new UUID($this->roleId),
+                new UUID($this->labelId)
+            )
+            ->willReturn($this->commandId);
+
+        $response = $this->controller->removeLabel($this->roleId, $this->labelId);
+
+        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
+
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_exception_when_removing_label_with_invalid_role_uuid()
+    {
+        $this->setExpectedException(InvalidArgumentException::class, 'Required field roleId is not a valid uuid.');
+        $this->controller->removeLabel('foo', $this->labelId);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_exception_when_removing_label_with_invalid_label_uuid()
+    {
+        $this->setExpectedException(InvalidArgumentException::class, 'Required field labelId is not a valid uuid.');
+        $this->controller->removeLabel($this->roleId, 'foo');
     }
 
     public function makeRequest($method, $file_name)

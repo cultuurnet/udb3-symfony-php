@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
 
@@ -155,6 +156,64 @@ class EditRoleRestController
             new UUID($roleId),
             Permission::getByName($permissionKey)
         );
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param string $roleId
+     * @param string $labelId
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
+    public function addLabel($roleId, $labelId)
+    {
+        $roleId = (string) $roleId;
+        $labelId = (string) $labelId;
+
+        try {
+            $roleId = new UUID($roleId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
+        }
+
+        try {
+            $labelId = new UUID($labelId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field labelId is not a valid uuid.');
+        }
+
+        $commandId = $this->service->addLabel($roleId, $labelId);
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param string $roleId
+     * @param string $labelId
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
+    public function removeLabel($roleId, $labelId)
+    {
+        $roleId = (string) $roleId;
+        $labelId = (string) $labelId;
+
+        try {
+            $roleId = new UUID($roleId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
+        }
+
+        try {
+            $labelId = new UUID($labelId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field labelId is not a valid uuid.');
+        }
+
+        $commandId = $this->service->removeLabel($roleId, $labelId);
 
         return (new JsonResponse())
             ->setData(['commandId' => $commandId]);
