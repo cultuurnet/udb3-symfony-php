@@ -111,6 +111,32 @@ class ReadRoleRestController
     }
 
     /**
+     * @param string $roleId
+     * @return Response
+     */
+    public function getRoleUsers($roleId)
+    {
+        $response = null;
+
+        $document = $this->roleService->getUsersByRoleUuid(new UUID($roleId));
+
+        $body = json_decode($document->getRawBody(), true);
+
+        $response = JsonResponse::create()
+            ->setContent(
+                json_encode(
+                    array_values(
+                        $body
+                    )
+                )
+            );
+
+        $response->headers->set('Vary', 'Origin');
+
+        return $response;
+    }
+
+    /**
      * @param $userId
      * @return Response
      */
