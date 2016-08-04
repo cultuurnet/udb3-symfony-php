@@ -9,7 +9,9 @@ use CultuurNet\UDB3\Role\ReadModel\Search\RepositoryInterface;
 use CultuurNet\UDB3\Role\ReadModel\Search\Results;
 use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Response;
+use ValueObjects\Identity\UUID;
 
 class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,12 +25,17 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $roleRestController;
 
     /**
+     * @var RoleReadingServiceInterface|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $roleService;
+
+    /**
      * @var JsonDocument
      */
     private $jsonDocument;
 
     /**
-     * @var RepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $roleSearchRepository;
 
@@ -41,7 +48,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $entityServiceInterface = $this->getMock(EntityServiceInterface::class);
 
-        $roleService = $this->getMock(RoleReadingServiceInterface::class);
+        $this->roleService = $this->getMock(RoleReadingServiceInterface::class);
 
         $entityServiceInterface->method('getEntity')
             ->willReturnCallback(
@@ -65,7 +72,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
          */
         $this->roleRestController = new ReadRoleRestController(
             $entityServiceInterface,
-            $roleService,
+            $this->roleService,
             new \CultureFeed_User(),
             array(),
             $this->roleSearchRepository
@@ -91,6 +98,29 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $jsonResponse = $this->roleRestController->get(self::NON_EXISTING_ID);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_labels()
+    {
+        $roleId = new UUID();
+
+        $this->roleService
+            ->expects($this->once())
+            ->method('getLabelsByRoleUuid')
+            ->with($roleId)
+            ->willReturn(
+                new JsonDocument(
+                    $roleId,
+                    json_encode([])
+                )
+            );
+
+        $response = $this->roleRestController->getRoleLabels($roleId->toNative());
+
+        $this->assertEquals($response->getContent(), '[]');
     }
 
     /**
