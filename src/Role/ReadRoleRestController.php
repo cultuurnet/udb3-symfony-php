@@ -89,25 +89,24 @@ class ReadRoleRestController
      */
     public function getRolePermissions($id)
     {
-        $response = null;
-
         $document = $this->roleService->getPermissionsByRoleUuid(new UUID($id));
 
         if ($document) {
             // Return Permissions, even if it is an empty array.
             $body = $document->getBody();
+            
             $response = JsonResponse::create()
                 ->setContent(json_encode($body->permissions));
 
             $response->headers->set('Vary', 'Origin');
+
+            return $response;
         } else {
             $apiProblem = new ApiProblem('There is no role with identifier: ' . $id);
             $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
 
             return new ApiProblemJsonResponse($apiProblem);
         }
-
-        return $response;
     }
 
     /**
@@ -116,8 +115,6 @@ class ReadRoleRestController
      */
     public function getRoleUsers($roleId)
     {
-        $response = null;
-
         $document = $this->roleService->getUsersByRoleUuid(new UUID($roleId));
 
         $body = json_decode($document->getRawBody(), true);
@@ -147,7 +144,7 @@ class ReadRoleRestController
 
         // It's possible the document does not exist if the user exists but has
         // no roles, since we don't have a "UserCreated" event to listen to and
-        // create an empty document of roles.
+        // we can't create an empty document of roles in the projector.
         // @todo Should we check if the user exists using culturefeed?
         if ($document) {
             $body = json_decode($document->getRawBody(), true);
