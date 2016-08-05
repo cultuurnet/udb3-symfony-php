@@ -118,8 +118,8 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with($roleId)
             ->willReturn(
                 new JsonDocument(
-                   $roleId,
-                   json_encode([])
+                    $roleId,
+                    json_encode([])
                 )
             );
 
