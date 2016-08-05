@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Role\ReadModel\Search\Results;
 use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
 use CultuurNet\UDB3\Symfony\Assert\JsonEquals;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
@@ -36,7 +37,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $jsonDocument;
 
     /**
-     * @var RepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $roleSearchRepository;
 
@@ -102,6 +103,29 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $jsonResponse = $this->roleRestController->get(self::NON_EXISTING_ID);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_labels()
+    {
+        $roleId = new UUID();
+
+        $this->roleService
+            ->expects($this->once())
+            ->method('getLabelsByRoleUuid')
+            ->with($roleId)
+            ->willReturn(
+                new JsonDocument(
+                    $roleId,
+                    json_encode([])
+                )
+            );
+
+        $response = $this->roleRestController->getRoleLabels($roleId->toNative());
+
+        $this->assertEquals($response->getContent(), '[]');
     }
 
     /**

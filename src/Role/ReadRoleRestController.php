@@ -201,6 +201,28 @@ class ReadRoleRestController
     }
 
     /**
+     * @param $roleId
+     * @return Response
+     */
+    public function getRoleLabels($roleId)
+    {
+        $document = $this->roleService->getLabelsByRoleUuid(new UUID($roleId));
+        $body = json_decode($document->getRawBody(), true);
+        $response = JsonResponse::create()
+            ->setContent(
+                json_encode(
+                    array_values(
+                        $body
+                    )
+                )
+            );
+
+        $response->headers->set('Vary', 'Origin');
+
+        return $response;
+    }
+
+    /**
      * @return JsonResponse
      */
     public function getPermissions()

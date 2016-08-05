@@ -529,12 +529,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/culturefeed-php.git",
-                "reference": "8c7414d8230ad886990f687581003b045d2e73aa"
+                "reference": "929b2580b21ad67882c061dbf694cc547205fd9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/8c7414d8230ad886990f687581003b045d2e73aa",
-                "reference": "8c7414d8230ad886990f687581003b045d2e73aa",
+                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/929b2580b21ad67882c061dbf694cc547205fd9d",
+                "reference": "929b2580b21ad67882c061dbf694cc547205fd9d",
                 "shasum": ""
             },
             "require": {
@@ -547,8 +547,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "1.2.x-dev",
-                    "dev-feature/III-1189": "1.5.x-dev"
+                    "dev-master": "1.6.x-dev",
+                    "dev-develop": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -589,7 +589,7 @@
                 }
             ],
             "description": "Culturefeed PHP library",
-            "time": "2016-08-05 09:35:06"
+            "time": "2016-08-05 11:22:45"
         },
         {
             "name": "cultuurnet/deserializer",
@@ -943,12 +943,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "1f0ac823eae5db042756f44bee86c01a88b1c823"
+                "reference": "bc4e208357e1ace21efa32a77441f36de4ada38b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/1f0ac823eae5db042756f44bee86c01a88b1c823",
-                "reference": "1f0ac823eae5db042756f44bee86c01a88b1c823",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/bc4e208357e1ace21efa32a77441f36de4ada38b",
+                "reference": "bc4e208357e1ace21efa32a77441f36de4ada38b",
                 "shasum": ""
             },
             "require": {
@@ -1021,7 +1021,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-08-05 09:51:48"
+            "time": "2016-08-05 11:36:33"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -1790,6 +1790,7 @@
                 "rest",
                 "web service"
             ],
+            "abandoned": "guzzlehttp/guzzle",
             "time": "2015-03-18 18:23:50"
         },
         {
