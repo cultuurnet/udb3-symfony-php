@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a369c9972a757bc8458f39e1f73b4f2f",
-    "content-hash": "06a17d3ea1f88d35cae7e399a5fd2b88",
+    "hash": "3bed04b50a1d4081e5feab3b1a829d5d",
+    "content-hash": "5e04f6e5d0a8173a94dfb345d09f38ac",
     "packages": [
         {
             "name": "2dotstwice/collection",
@@ -529,12 +529,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/culturefeed-php.git",
-                "reference": "8c7414d8230ad886990f687581003b045d2e73aa"
+                "reference": "929b2580b21ad67882c061dbf694cc547205fd9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/8c7414d8230ad886990f687581003b045d2e73aa",
-                "reference": "8c7414d8230ad886990f687581003b045d2e73aa",
+                "url": "https://api.github.com/repos/cultuurnet/culturefeed-php/zipball/929b2580b21ad67882c061dbf694cc547205fd9d",
+                "reference": "929b2580b21ad67882c061dbf694cc547205fd9d",
                 "shasum": ""
             },
             "require": {
@@ -547,8 +547,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "1.2.x-dev",
-                    "dev-feature/III-1189": "1.5.x-dev"
+                    "dev-master": "1.6.x-dev",
+                    "dev-develop": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -589,7 +589,7 @@
                 }
             ],
             "description": "Culturefeed PHP library",
-            "time": "2016-08-05 09:35:06"
+            "time": "2016-08-05 11:22:45"
         },
         {
             "name": "cultuurnet/deserializer",
@@ -939,16 +939,16 @@
         },
         {
             "name": "cultuurnet/udb3",
-            "version": "dev-feature/III-1174",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "558852fc9c1e30fe4f667c664b1c15d73df75eee"
+                "reference": "bc4e208357e1ace21efa32a77441f36de4ada38b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/558852fc9c1e30fe4f667c664b1c15d73df75eee",
-                "reference": "558852fc9c1e30fe4f667c664b1c15d73df75eee",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/bc4e208357e1ace21efa32a77441f36de4ada38b",
+                "reference": "bc4e208357e1ace21efa32a77441f36de4ada38b",
                 "shasum": ""
             },
             "require": {
@@ -1021,7 +1021,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-08-05 11:07:34"
+            "time": "2016-08-05 11:36:33"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -5554,18 +5554,9 @@
             "time": "2015-08-24 13:29:44"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.1",
-            "alias_normalized": "0.1.0.0",
-            "version": "dev-feature/III-1174",
-            "package": "cultuurnet/udb3"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cultuurnet/udb3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
