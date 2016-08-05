@@ -13,8 +13,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class PermissionsVoterTest extends PHPUnit_Framework_TestCase
 {
+    use TokenMockingTrait;
+
     /**
-     * @var PermissionsVoter
+     * @var UserPermissionsVoter
      */
     private $voter;
 
@@ -66,36 +68,5 @@ class PermissionsVoterTest extends PHPUnit_Framework_TestCase
         $access = $this->voter->vote($peasantToken, $request, Permission::getConstants());
 
         $this->assertEquals(VoterInterface::ACCESS_DENIED, $access);
-    }
-
-    /**
-     * @param string $userId
-     *
-     * @return JwtUserToken|PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getMockToken($userId)
-    {
-        $token = $this->getMock(
-            JwtUserToken::class,
-            ['isAuthenticated', 'getCredentials'],
-            array(),
-            'JwtUserToken',
-            false
-        );
-
-        $jwtCredentials = new JwtToken(
-            ['alg' => 'none'],
-            ['uid' => new BasicClaim('uid', $userId)]
-        );
-
-        $token
-            ->method('isAuthenticated')
-            ->willReturn(true);
-
-        $token
-            ->method('getCredentials')
-            ->willReturn($jwtCredentials);
-
-        return $token;
     }
 }
