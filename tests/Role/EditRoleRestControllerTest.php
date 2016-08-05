@@ -3,9 +3,14 @@
 namespace CultuurNet\UDB3\Symfony\Role;
 
 use Broadway\CommandHandling\CommandBusInterface;
+use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Entity;
+use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
+use CultuurNet\UDB3\Label\ValueObjects\Privacy;
+use CultuurNet\UDB3\Label\ValueObjects\Visibility;
 use CultuurNet\UDB3\Role\Commands\RenameRole;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
@@ -44,6 +49,11 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $updateRoleRequestDeserializer;
 
     /**
+     * @var ReadServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $labelService;
+
+    /**
      * @var EditRoleRestController
      */
     private $controller;
@@ -57,10 +67,13 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->editService = $this->getMock(RoleEditingServiceInterface::class);
         $this->commandBus = $this->getMock(CommandBusInterface::class);
         $this->updateRoleRequestDeserializer = $this->getMock(UpdateRoleRequestDeserializer::class);
+        $this->labelService = $this->getMock(ReadServiceInterface::class);
+
         $this->controller = new EditRoleRestController(
             $this->editService,
             $this->commandBus,
-            $this->updateRoleRequestDeserializer
+            $this->updateRoleRequestDeserializer,
+            $this->labelService
         );
     }
 
@@ -170,19 +183,52 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_throws_an_exception_when_adding_label_with_invalid_role_uuid()
+    public function it_adds_a_label_by_name()
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'Required field roleId is not a valid uuid.');
-        $this->controller->addLabel('foo', $this->labelId);
+        $labelName = 'foo';
+
+        $label = new Entity(
+            new UUID($this->labelId),
+            new StringLiteral($labelName),
+            Visibility::VISIBLE(),
+            Privacy::PRIVACY_PUBLIC()
+        );
+
+        $this->labelService->expects($this->once())
+            ->method('getByName')
+            ->with(new StringLiteral($labelName))
+            ->willReturn($label);
+
+        $this->editService->expects($this->once())
+            ->method('addLabel')
+            ->with(
+                new UUID($this->roleId),
+                new UUID($this->labelId)
+            )
+            ->willReturn($this->commandId);
+
+        $response = $this->controller->addLabel($this->roleId, $labelName);
+
+        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
+
+        $this->assertEquals($expectedJson, $response->getContent());
     }
 
     /**
      * @test
      */
-    public function it_throws_an_exception_when_adding_label_with_invalid_label_uuid()
+    public function it_returns_an_error_response_when_adding_an_unknown_label()
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'Required field labelId is not a valid uuid.');
-        $this->controller->addLabel($this->roleId, 'foo');
+        $labelName = 'foo';
+
+        $this->labelService->expects($this->once())
+            ->method('getByName')
+            ->with(new StringLiteral($labelName))
+            ->willReturn(null);
+
+        $response = $this->controller->addLabel($this->roleId, $labelName);
+
+        $this->assertInstanceOf(ApiProblemJsonResponse::class, $response);
     }
 
     /**
@@ -208,19 +254,52 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_throws_an_exception_when_removing_label_with_invalid_role_uuid()
+    public function it_removes_a_label_by_name()
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'Required field roleId is not a valid uuid.');
-        $this->controller->removeLabel('foo', $this->labelId);
+        $labelName = 'foo';
+
+        $label = new Entity(
+            new UUID($this->labelId),
+            new StringLiteral($labelName),
+            Visibility::VISIBLE(),
+            Privacy::PRIVACY_PUBLIC()
+        );
+
+        $this->labelService->expects($this->once())
+            ->method('getByName')
+            ->with(new StringLiteral($labelName))
+            ->willReturn($label);
+
+        $this->editService->expects($this->once())
+            ->method('removeLabel')
+            ->with(
+                new UUID($this->roleId),
+                new UUID($this->labelId)
+            )
+            ->willReturn($this->commandId);
+
+        $response = $this->controller->removeLabel($this->roleId, $labelName);
+
+        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
+
+        $this->assertEquals($expectedJson, $response->getContent());
     }
 
     /**
      * @test
      */
-    public function it_throws_an_exception_when_removing_label_with_invalid_label_uuid()
+    public function it_returns_an_error_response_when_removing_an_unknown_label()
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'Required field labelId is not a valid uuid.');
-        $this->controller->removeLabel($this->roleId, 'foo');
+        $labelName = 'foo';
+
+        $this->labelService->expects($this->once())
+            ->method('getByName')
+            ->with(new StringLiteral($labelName))
+            ->willReturn(null);
+
+        $response = $this->controller->removeLabel($this->roleId, $labelName);
+
+        $this->assertInstanceOf(ApiProblemJsonResponse::class, $response);
     }
 
     public function makeRequest($method, $file_name)

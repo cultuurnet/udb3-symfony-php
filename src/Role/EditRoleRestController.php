@@ -3,13 +3,17 @@
 namespace CultuurNet\UDB3\Symfony\Role;
 
 use Broadway\CommandHandling\CommandBusInterface;
+use Crell\ApiProblem\ApiProblem;
+use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Role\Commands\AbstractCommand;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
+use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
@@ -32,19 +36,27 @@ class EditRoleRestController
     private $updateRoleRequestDeserializer;
 
     /**
+     * @var ReadServiceInterface
+     */
+    private $labelEntityService;
+
+    /**
      * EditRoleRestController constructor.
      * @param RoleEditingServiceInterface $service
      * @param CommandBusInterface $commandBus
      * @param UpdateRoleRequestDeserializer $updateRoleRequestDeserializer
+     * @param ReadServiceInterface $labelEntityService
      */
     public function __construct(
         RoleEditingServiceInterface $service,
         CommandBusInterface $commandBus,
-        UpdateRoleRequestDeserializer $updateRoleRequestDeserializer
+        UpdateRoleRequestDeserializer $updateRoleRequestDeserializer,
+        ReadServiceInterface $labelEntityService
     ) {
         $this->service = $service;
         $this->commandBus = $commandBus;
         $this->updateRoleRequestDeserializer = $updateRoleRequestDeserializer;
+        $this->labelEntityService = $labelEntityService;
     }
 
     /**
@@ -163,25 +175,25 @@ class EditRoleRestController
 
     /**
      * @param string $roleId
-     * @param string $labelId
+     * @param string $labelIdentifier
      * @return JsonResponse
      * @throws InvalidArgumentException
      */
-    public function addLabel($roleId, $labelId)
+    public function addLabel($roleId, $labelIdentifier)
     {
         $roleId = (string) $roleId;
-        $labelId = (string) $labelId;
+        $labelId = $this->getLabelId($labelIdentifier);
+
+        if (is_null($labelId)) {
+            $apiProblem = new ApiProblem('There is no label with identifier: ' . $labelIdentifier);
+            $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
+            return new ApiProblemJsonResponse($apiProblem);
+        }
 
         try {
             $roleId = new UUID($roleId);
         } catch (InvalidNativeArgumentException $e) {
             throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
-        }
-
-        try {
-            $labelId = new UUID($labelId);
-        } catch (InvalidNativeArgumentException $e) {
-            throw new InvalidArgumentException('Required field labelId is not a valid uuid.');
         }
 
         $commandId = $this->service->addLabel($roleId, $labelId);
@@ -190,6 +202,34 @@ class EditRoleRestController
             ->setData(['commandId' => $commandId]);
     }
 
+    /**
+     * @param string $roleId
+     * @param string $labelIdentifier
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
+    public function removeLabel($roleId, $labelIdentifier)
+    {
+        $roleId = (string) $roleId;
+        $labelId = $this->getLabelId($labelIdentifier);
+
+        if (is_null($labelId)) {
+            $apiProblem = new ApiProblem('There is no label with identifier: ' . $labelIdentifier);
+            $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
+            return new ApiProblemJsonResponse($apiProblem);
+        }
+
+        try {
+            $roleId = new UUID($roleId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
+        }
+
+        $commandId = $this->service->removeLabel($roleId, $labelId);
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
 
     /**
      * @param $roleId
@@ -215,35 +255,6 @@ class EditRoleRestController
         $userId = new StringLiteral($userId);
 
         $commandId = $this->service->addUser($roleId, $userId);
-
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
-    }
-
-    /**
-     * @param string $roleId
-     * @param string $labelId
-     * @return JsonResponse
-     * @throws InvalidArgumentException
-     */
-    public function removeLabel($roleId, $labelId)
-    {
-        $roleId = (string) $roleId;
-        $labelId = (string) $labelId;
-
-        try {
-            $roleId = new UUID($roleId);
-        } catch (InvalidNativeArgumentException $e) {
-            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
-        }
-
-        try {
-            $labelId = new UUID($labelId);
-        } catch (InvalidNativeArgumentException $e) {
-            throw new InvalidArgumentException('Required field labelId is not a valid uuid.');
-        }
-
-        $commandId = $this->service->removeLabel($roleId, $labelId);
 
         return (new JsonResponse())
             ->setData(['commandId' => $commandId]);
@@ -292,5 +303,22 @@ class EditRoleRestController
         return JsonResponse::create(
             ['commandId' => $commandId]
         );
+    }
+
+    /**
+     * @param string $labelIdentifier
+     * @return UUID|null
+     */
+    private function getLabelId($labelIdentifier)
+    {
+        try {
+            return new UUID($labelIdentifier);
+        } catch (InvalidNativeArgumentException $exception) {
+            $entity = $this->labelEntityService->getByName(
+                new StringLiteral($labelIdentifier)
+            );
+
+            return is_null($entity) ? null : $entity->getUuid();
+        }
     }
 }
