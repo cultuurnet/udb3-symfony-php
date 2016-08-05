@@ -1,0 +1,18 @@
+{
+  "@context": "http://www.w3.org/ns/hydra/context.jsonld",
+  "@type": "PagedCollection",
+  "itemsPerPage": 30,
+  "totalItems": 2,
+  "member": [
+    {
+      "uuid": "1",
+      "email": "john.doe@example.com",
+      "username": "john.doe"
+    },
+    {
+      "uuid": "2",
+      "email": "jane.doe@example.com",
+      "username": "jane.doe"
+    }
+  ]
+}

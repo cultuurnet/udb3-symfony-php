@@ -4,54 +4,71 @@ namespace CultuurNet\UDB3\Symfony\User;
 
 use CultuurNet\Hydra\PagedCollection;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
+use CultuurNet\UDB3\User\CultureFeedUserIdentityDetailsFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\Web\EmailAddress;
+use Symfony\Component\HttpFoundation\Response;
 
 class SearchUserController
 {
+    /**
+     * @var \ICultureFeed
+     */
+    private $cultureFeed;
+
+    /**
+     * @var SearchQueryFactoryInterface
+     */
+    private $searchQueryFactory;
+
+    /**
+     * @var CultureFeedUserIdentityDetailsFactoryInterface
+     */
+    private $cfUserIdentityFactory;
+
+    /**
+     * @param \ICultureFeed $cultureFeed
+     * @param SearchQueryFactoryInterface $searchQueryFactory
+     * @param CultureFeedUserIdentityDetailsFactoryInterface $cfUserIdentityFactory
+     */
     public function __construct(
-        \ICultureFeed $cultureFeed
+        \ICultureFeed $cultureFeed,
+        SearchQueryFactoryInterface $searchQueryFactory,
+        CultureFeedUserIdentityDetailsFactoryInterface $cfUserIdentityFactory
     ) {
         $this->cultureFeed = $cultureFeed;
+        $this->searchQueryFactory = $searchQueryFactory;
+        $this->cfUserIdentityFactory = $cfUserIdentityFactory;
     }
 
     /**
      * @param Request $request
-     * @return JsonLdResponse
+     * @return Response
      */
     public function search(Request $request)
     {
-        $start = (int) $request->query->get('start', 0);
-        $limit = (int) $request->query->get('start', 30);
+        $searchQuery = $this->searchQueryFactory->createSearchQueryfromRequest($request);
+        $pageNumber = $this->searchQueryFactory->createPageNumberFromRequest($request);
+        $limit = $this->searchQueryFactory->getLimitFromRequest($request);
 
-        $searchQuery = new \CultureFeed_SearchUsersQuery();
-        $searchQuery->start = $start;
-        $searchQuery->max = $limit;
-
-        if ($request->query->get('email', false)) {
-            $email = new EmailAddress($request->query->get('email'));
-            $searchQuery->mbox = $email->toNative();
-            $searchQuery->mboxIncludePrivate = true;
-        }
-
-        /** @var \CultureFeed_ResultSet $results */
+        /* @var \CultureFeed_ResultSet $results */
         $results = $this->cultureFeed->searchUsers($searchQuery);
 
-        /** @var \CultureFeed_SearchUser $user */
-        $users = $results->objects;
-        $total = $results->total;
-
-        $pageNumber = (int) ceil($start / $limit);
-
-        $pagedCollection = new PagedCollection(
-            $pageNumber,
-            $limit,
-            $users,
-            $total
+        $users = array_map(
+            function (\CultureFeed_SearchUser $cfSearchUser) {
+                return $this->cfUserIdentityFactory->fromCultureFeedUserSearchResult($cfSearchUser);
+            },
+            $results->objects
         );
 
         return JsonLdResponse::create()
-            ->setData($pagedCollection)
+            ->setData(
+                new PagedCollection(
+                    $pageNumber,
+                    $limit,
+                    $users,
+                    $results->total
+                )
+            )
             ->setPublic()
             ->setClientTtl(60 * 1)
             ->setTtl(60 * 5);
