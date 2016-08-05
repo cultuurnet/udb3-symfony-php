@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
+use ValueObjects\String\String as StringLiteral;
 
 class ReadRoleRestController
 {
@@ -88,23 +89,80 @@ class ReadRoleRestController
      */
     public function getRolePermissions($id)
     {
-        $response = null;
-
         $document = $this->roleService->getPermissionsByRoleUuid(new UUID($id));
 
         if ($document) {
             // Return Permissions, even if it is an empty array.
             $body = $document->getBody();
+
             $response = JsonResponse::create()
                 ->setContent(json_encode($body->permissions));
 
             $response->headers->set('Vary', 'Origin');
+
+            return $response;
         } else {
             $apiProblem = new ApiProblem('There is no role with identifier: ' . $id);
             $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
 
             return new ApiProblemJsonResponse($apiProblem);
         }
+    }
+
+    /**
+     * @param string $roleId
+     * @return Response
+     */
+    public function getRoleUsers($roleId)
+    {
+        $document = $this->roleService->getUsersByRoleUuid(new UUID($roleId));
+
+        $body = json_decode($document->getRawBody(), true);
+
+        $response = JsonResponse::create()
+            ->setContent(
+                json_encode(
+                    array_values(
+                        $body
+                    )
+                )
+            );
+
+        $response->headers->set('Vary', 'Origin');
+
+        return $response;
+    }
+
+    /**
+     * @param $userId
+     * @return Response
+     */
+    public function getUserRoles($userId)
+    {
+        $userId = new StringLiteral((string) $userId);
+        $document = $this->roleService->getRolesByUserId($userId);
+
+        // It's possible the document does not exist if the user exists but has
+        // no roles, since we don't have a "UserCreated" event to listen to and
+        // we can't create an empty document of roles in the projector.
+        // @todo Should we check if the user exists using culturefeed?
+        // @see https://jira.uitdatabank.be/browse/III-1292
+        if ($document) {
+            $body = json_decode($document->getRawBody(), true);
+        } else {
+            $body = [];
+        }
+
+        $response = JsonResponse::create()
+            ->setContent(
+                json_encode(
+                    array_values(
+                        $body
+                    )
+                )
+            );
+
+        $response->headers->set('Vary', 'Origin');
 
         return $response;
     }

@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
 
@@ -155,6 +156,64 @@ class EditRoleRestController
             new UUID($roleId),
             Permission::getByName($permissionKey)
         );
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $roleId
+     * @param $userId
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
+    public function addUser($roleId, $userId)
+    {
+        $roleId = (string) $roleId;
+        $userId = (string) $userId;
+
+        try {
+            $roleId = new UUID($roleId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
+        }
+
+        if (empty($userId)) {
+            throw new InvalidArgumentException('Required field userId is missing');
+        }
+
+        $userId = new StringLiteral($userId);
+
+        $commandId = $this->service->addUser($roleId, $userId);
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $roleId
+     * @param $userId
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
+    public function removeUser($roleId, $userId)
+    {
+        $roleId = (string) $roleId;
+        $userId = (string) $userId;
+
+        try {
+            $roleId = new UUID($roleId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
+        }
+
+        if (empty($userId)) {
+            throw new InvalidArgumentException('Required field userId is missing');
+        }
+
+        $userId = new StringLiteral($userId);
+
+        $commandId = $this->service->removeUser($roleId, $userId);
 
         return (new JsonResponse())
             ->setData(['commandId' => $commandId]);
