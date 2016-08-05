@@ -40,7 +40,7 @@ class UserIdentityController
 
         $userIdentity = $this->userIdentityResolver->getUserById($userId);
 
-        return $this->getUserIdentityResponse($userIdentity);
+        return $this->createUserIdentityResponse($userIdentity);
     }
 
     /**
@@ -52,22 +52,22 @@ class UserIdentityController
         try {
             $emailAddress = new EmailAddress((string) $emailAddress);
         } catch (InvalidNativeArgumentException $e) {
-            return $this->getUserNotFoundResponse();
+            return $this->createUserNotFoundResponse();
         }
 
         $userIdentity = $this->userIdentityResolver->getUserByEmail($emailAddress);
 
-        return $this->getUserIdentityResponse($userIdentity);
+        return $this->createUserIdentityResponse($userIdentity);
     }
 
     /**
      * @param UserIdentityDetails|null $userIdentityDetails
      * @return Response
      */
-    public function getUserIdentityResponse(UserIdentityDetails $userIdentityDetails = null)
+    private function createUserIdentityResponse(UserIdentityDetails $userIdentityDetails = null)
     {
         if (is_null($userIdentityDetails)) {
-            return $this->getUserNotFoundResponse();
+            return $this->createUserNotFoundResponse();
         }
 
         return (new JsonLdResponse())
@@ -78,7 +78,7 @@ class UserIdentityController
     /**
      * @return ApiProblemJsonResponse
      */
-    private function getUserNotFoundResponse()
+    private function createUserNotFoundResponse()
     {
         return new ApiProblemJsonResponse(
             new ApiProblem('User not found.')
