@@ -190,6 +190,36 @@ class EditRoleRestController
             ->setData(['commandId' => $commandId]);
     }
 
+
+    /**
+     * @param $roleId
+     * @param $userId
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
+    public function addUser($roleId, $userId)
+    {
+        $roleId = (string) $roleId;
+        $userId = (string) $userId;
+
+        try {
+            $roleId = new UUID($roleId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
+        }
+
+        if (empty($userId)) {
+            throw new InvalidArgumentException('Required field userId is missing');
+        }
+
+        $userId = new StringLiteral($userId);
+
+        $commandId = $this->service->addUser($roleId, $userId);
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
     /**
      * @param string $roleId
      * @param string $labelId
@@ -214,6 +244,35 @@ class EditRoleRestController
         }
 
         $commandId = $this->service->removeLabel($roleId, $labelId);
+
+        return (new JsonResponse())
+            ->setData(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $roleId
+     * @param $userId
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
+    public function removeUser($roleId, $userId)
+    {
+        $roleId = (string) $roleId;
+        $userId = (string) $userId;
+
+        try {
+            $roleId = new UUID($roleId);
+        } catch (InvalidNativeArgumentException $e) {
+            throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
+        }
+
+        if (empty($userId)) {
+            throw new InvalidArgumentException('Required field userId is missing');
+        }
+
+        $userId = new StringLiteral($userId);
+
+        $commandId = $this->service->removeUser($roleId, $userId);
 
         return (new JsonResponse())
             ->setData(['commandId' => $commandId]);
