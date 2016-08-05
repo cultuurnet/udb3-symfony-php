@@ -94,7 +94,7 @@ class ReadRoleRestController
         if ($document) {
             // Return Permissions, even if it is an empty array.
             $body = $document->getBody();
-            
+
             $response = JsonResponse::create()
                 ->setContent(json_encode($body->permissions));
 
@@ -146,6 +146,7 @@ class ReadRoleRestController
         // no roles, since we don't have a "UserCreated" event to listen to and
         // we can't create an empty document of roles in the projector.
         // @todo Should we check if the user exists using culturefeed?
+        // @see https://jira.uitdatabank.be/browse/III-1292
         if ($document) {
             $body = json_decode($document->getRawBody(), true);
         } else {
