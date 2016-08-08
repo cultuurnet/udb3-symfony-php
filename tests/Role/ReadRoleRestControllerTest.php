@@ -8,8 +8,12 @@ use CultuurNet\UDB3\ReadModel\JsonDocument;
 use CultuurNet\UDB3\Role\ReadModel\Search\RepositoryInterface;
 use CultuurNet\UDB3\Role\ReadModel\Search\Results;
 use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
+use CultuurNet\UDB3\Symfony\Assert\JsonEquals;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Response;
+use ValueObjects\Identity\UUID;
+use ValueObjects\String\String as StringLiteral;
 
 class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,14 +27,24 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $roleRestController;
 
     /**
+     * @var RoleReadingServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $roleService;
+
+    /**
      * @var JsonDocument
      */
     private $jsonDocument;
 
     /**
-     * @var RepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $roleSearchRepository;
+
+    /**
+     * @var JsonEquals
+     */
+    private $jsonEquals;
 
     /**
      * @inheritdoc
@@ -41,7 +55,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $entityServiceInterface = $this->getMock(EntityServiceInterface::class);
 
-        $roleService = $this->getMock(RoleReadingServiceInterface::class);
+        $this->roleService = $this->getMock(RoleReadingServiceInterface::class);
 
         $entityServiceInterface->method('getEntity')
             ->willReturnCallback(
@@ -59,17 +73,15 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->roleSearchRepository = $this->getMock(RepositoryInterface::class);
 
-        /**
-         * @var EntityServiceInterface $entityServiceInterface
-         * @var RoleReadingServiceInterface $roleService
-         */
         $this->roleRestController = new ReadRoleRestController(
             $entityServiceInterface,
-            $roleService,
+            $this->roleService,
             new \CultureFeed_User(),
             array(),
             $this->roleSearchRepository
         );
+
+        $this->jsonEquals = new JsonEquals($this);
     }
 
     /**
@@ -91,6 +103,99 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $jsonResponse = $this->roleRestController->get(self::NON_EXISTING_ID);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_labels()
+    {
+        $roleId = new UUID();
+
+        $this->roleService
+            ->expects($this->once())
+            ->method('getLabelsByRoleUuid')
+            ->with($roleId)
+            ->willReturn(
+                new JsonDocument(
+                    $roleId,
+                    json_encode([])
+                )
+            );
+
+        $response = $this->roleRestController->getRoleLabels($roleId->toNative());
+
+        $this->assertEquals($response->getContent(), '[]');
+    }
+
+    /**
+     * @test
+     */
+    public function it_responds_with_an_array_of_users_for_a_given_role_id()
+    {
+        $roleId = new UUID('57791495-93D0-45CE-8D02-D716EC38972A');
+
+        $readmodelJson = file_get_contents(__DIR__ . '/samples/role_users_readmodel.json');
+        $expectedResponseJson = file_get_contents(__DIR__ . '/samples/role_users_response.json');
+
+        $readmodelDocument = new JsonDocument(
+            $roleId->toNative(),
+            $readmodelJson
+        );
+
+        $this->roleService->expects($this->once())
+            ->method('getUsersByRoleUuid')
+            ->with($roleId)
+            ->willReturn($readmodelDocument);
+
+        $response = $this->roleRestController->getRoleUsers($roleId->toNative());
+        $actualResponseJson = $response->getContent();
+
+        $this->jsonEquals->assert($expectedResponseJson, $actualResponseJson);
+    }
+
+    /**
+     * @test
+     */
+    public function it_responds_with_an_array_of_roles_for_a_given_user_id()
+    {
+        $userId = new StringLiteral('12345');
+
+        $readmodelJson = file_get_contents(__DIR__ . '/samples/role_users_readmodel.json');
+        $expectedResponseJson = file_get_contents(__DIR__ . '/samples/role_users_response.json');
+
+        $readmodelDocument = new JsonDocument(
+            $userId->toNative(),
+            $readmodelJson
+        );
+
+        $this->roleService->expects($this->once())
+            ->method('getRolesByUserId')
+            ->with($userId)
+            ->willReturn($readmodelDocument);
+
+        $response = $this->roleRestController->getUserRoles($userId->toNative());
+        $actualResponseJson = $response->getContent();
+
+        $this->jsonEquals->assert($expectedResponseJson, $actualResponseJson);
+    }
+
+    /**
+     * @test
+     */
+    public function it_responds_with_an_empty_array_if_no_roles_document_is_found_for_a_given_user_id()
+    {
+        $userId = new StringLiteral('12345');
+
+        $this->roleService->expects($this->once())
+            ->method('getRolesByUserId')
+            ->with($userId)
+            ->willReturn(null);
+
+        $response = $this->roleRestController->getUserRoles($userId->toNative());
+        $responseJson = $response->getContent();
+
+        $this->jsonEquals->assert('[]', $responseJson);
     }
 
     /**
