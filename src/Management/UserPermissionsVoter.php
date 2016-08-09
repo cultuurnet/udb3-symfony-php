@@ -4,7 +4,6 @@ namespace CultuurNet\UDB3\Symfony\Management;
 
 use CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken;
 use CultuurNet\UDB3\Role\ReadModel\Permissions\UserPermissionsReadRepositoryInterface;
-use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -27,16 +26,25 @@ class UserPermissionsVoter implements VoterInterface
         $this->permissionsRepository = $permissionsRepository;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function supportsAttribute($attribute)
     {
         return Permission::has($attribute);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function supportsClass($class)
     {
         return true;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function vote(TokenInterface $token, $object, array $attributes)
     {
         $result = self::ACCESS_ABSTAIN;

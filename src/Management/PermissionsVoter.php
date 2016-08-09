@@ -24,16 +24,25 @@ class PermissionsVoter implements VoterInterface
         $this->authorizationList = $authorizationList;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function supportsAttribute($attribute)
     {
         return Permission::has($attribute);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function supportsClass($class)
     {
         return true;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function vote(TokenInterface $token, $object, array $attributes)
     {
         $result = self::ACCESS_ABSTAIN;
@@ -54,10 +63,7 @@ class PermissionsVoter implements VoterInterface
                 continue;
             }
 
-            if (in_array(
-                $userUuid,
-                $this->authorizationList['allow_all']
-            )) {
+            if (in_array($userUuid, $this->authorizationList['allow_all'])) {
                 $result = self::ACCESS_GRANTED;
             } else {
                 $result = self::ACCESS_DENIED;

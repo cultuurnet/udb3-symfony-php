@@ -3,7 +3,6 @@
 namespace CultuurNet\UDB3\Symfony\Role;
 
 use Crell\ApiProblem\ApiProblem;
-use CultuurNet\Entry\String;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Role\ReadModel\Permissions\UserPermissionsReadRepositoryInterface;
 use CultuurNet\UDB3\Role\ReadModel\Search\RepositoryInterface;
@@ -50,6 +49,7 @@ class ReadRoleRestController
      * @param \CultureFeed_User $currentUser
      * @param $authorizationList
      * @param RepositoryInterface $roleSearchRepository
+     * @param UserPermissionsReadRepositoryInterface $permissionsRepository
      */
     public function __construct(
         EntityServiceInterface $service,
@@ -181,13 +181,9 @@ class ReadRoleRestController
      */
     public function getUserPermissions()
     {
-        $list = [];
         $userId = new StringLiteral($this->currentUser->id);
 
-        if (in_array(
-            (string) $userId,
-            $this->authorizationList['allow_all']
-        )) {
+        if (in_array((string) $userId, $this->authorizationList['allow_all'])) {
             $list = $this->createPermissionsList(Permission::getConstants());
         } else {
             $list = array_map(
