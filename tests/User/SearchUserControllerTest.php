@@ -50,12 +50,12 @@ class SearchUserControllerTest extends \PHPUnit_Framework_TestCase
         $query->mboxIncludePrivate = true;
 
         $firstUser = new \CultureFeed_SearchUser();
-        $firstUser->id = 1;
+        $firstUser->id = '07e68513-5b59-46a2-aa33-91459c1116f3';
         $firstUser->nick = 'john.doe';
         $firstUser->mbox = 'john.doe@example.com';
 
         $secondUser = new \CultureFeed_SearchUser();
-        $secondUser->id = 2;
+        $secondUser->id = 'e649f113-f44b-4832-89e3-a3693264f8f8';
         $secondUser->nick = 'jane.doe';
         $secondUser->mbox = 'jane.doe@example.com';
 

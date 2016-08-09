@@ -55,7 +55,6 @@ class SearchUserController
 
         $users = array_map(
             function (\CultureFeed_SearchUser $cfSearchUser) {
-                $cfSearchUser->id = (string)$cfSearchUser->id;
                 return $this->cfUserIdentityFactory->fromCultureFeedUserSearchResult($cfSearchUser);
             },
             $results->objects
