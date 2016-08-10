@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Role;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
+use CultuurNet\UDB3\Role\ReadModel\Permissions\UserPermissionsReadRepositoryInterface;
 use CultuurNet\UDB3\Role\ReadModel\Search\RepositoryInterface;
 use CultuurNet\UDB3\Role\ReadModel\Search\Results;
 use CultuurNet\UDB3\Role\Services\RoleReadingServiceInterface;
@@ -57,6 +58,8 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->roleService = $this->getMock(RoleReadingServiceInterface::class);
 
+        $permissionsRepository = $this->getMock(UserPermissionsReadRepositoryInterface::class);
+
         $entityServiceInterface->method('getEntity')
             ->willReturnCallback(
                 function ($id) {
@@ -78,7 +81,8 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             $this->roleService,
             new \CultureFeed_User(),
             array(),
-            $this->roleSearchRepository
+            $this->roleSearchRepository,
+            $permissionsRepository
         );
 
         $this->jsonEquals = new JsonEquals($this);
