@@ -3,6 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Label\Query;
 
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
+use CultuurNet\UDB3\Symfony\Management\User\UserIdentificationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Number\Natural;
 use ValueObjects\String\String as StringLiteral;
@@ -10,8 +11,14 @@ use ValueObjects\String\String as StringLiteral;
 class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 {
     const QUERY_VALUE = 'label';
+    const USER_ID_VALUE = 'userId';
     const START_VALUE = 5;
     const LIMIT_VALUE = 10;
+
+    /**
+     * @var UserIdentificationInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $userIdentification;
 
     /**
      * @var QueryFactory
@@ -20,7 +27,13 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->queryFactory = new QueryFactory();
+        $this->userIdentification = $this->getMock(UserIdentificationInterface::class);
+        $this->userIdentification->method('isGodUser')
+            ->willReturn(false);
+        $this->userIdentification->method('getId')
+            ->willReturn(new StringLiteral(self::USER_ID_VALUE));
+
+        $this->queryFactory = new QueryFactory($this->userIdentification);
     }
 
     /**
@@ -38,6 +51,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
         $expectedQuery = new Query(
             new StringLiteral(self::QUERY_VALUE),
+            new StringLiteral(self::USER_ID_VALUE),
             new Natural(self::START_VALUE),
             new Natural(self::LIMIT_VALUE)
         );
@@ -59,6 +73,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
         $expectedQuery = new Query(
             new StringLiteral(self::QUERY_VALUE),
+            new StringLiteral(self::USER_ID_VALUE),
             null,
             new Natural(self::LIMIT_VALUE)
         );
@@ -80,6 +95,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
         $expectedQuery = new Query(
             new StringLiteral(self::QUERY_VALUE),
+            new StringLiteral(self::USER_ID_VALUE),
             new Natural(self::START_VALUE),
             null
         );
@@ -100,6 +116,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
         $expectedQuery = new Query(
             new StringLiteral(self::QUERY_VALUE),
+            new StringLiteral(self::USER_ID_VALUE),
             null,
             null
         );
@@ -122,6 +139,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
         $expectedQuery = new Query(
             new StringLiteral(self::QUERY_VALUE),
+            new StringLiteral(self::USER_ID_VALUE),
             new Natural(0),
             new Natural(0)
         );

@@ -20,7 +20,7 @@ use ValueObjects\String\String as StringLiteral;
 
 class ReadRestController
 {
-    const ID = 'id';
+    const ID = 'uuid';
     const NAME = 'name';
     const VISIBILITY = 'visibility';
     const PRIVACY = 'privacy';

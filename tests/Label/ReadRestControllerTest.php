@@ -11,6 +11,7 @@ use CultuurNet\UDB3\Label\ValueObjects\Visibility;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use CultuurNet\UDB3\Symfony\Label\Query\QueryFactory;
 use CultuurNet\UDB3\Symfony\Label\Query\QueryFactoryInterface;
+use CultuurNet\UDB3\Symfony\Management\User\UserIdentificationInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
@@ -38,6 +39,11 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
      * @var ReadServiceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readService;
+
+    /**
+     * @var UserIdentificationInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $userIdentification;
 
     /**
      * @var QueryFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -71,6 +77,7 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->query = new Query(
             new StringLiteral('label'),
+            new StringLiteral('userId'),
             new Natural(5),
             new Natural(2)
         );
@@ -81,7 +88,15 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->mockSearch();
         $this->mockSearchTotalLabels();
 
-        $this->queryFactory = $this->getMock(QueryFactory::class);
+        $this->userIdentification = $this->getMock(UserIdentificationInterface::class);
+        $this->mockIsGodUser();
+        $this->mockGetId();
+
+        $this->queryFactory = $this->getMock(
+            QueryFactory::class,
+            null,
+            [$this->userIdentification]
+        );
         $this->mockCreateQuery();
 
         $this->requestHelper = $this->getMock(RequestHelper::class);
@@ -176,6 +191,18 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->readService->method('searchTotalLabels')
             ->with($this->query)
             ->willReturn(new Natural(2));
+    }
+
+    private function mockIsGodUser()
+    {
+        $this->userIdentification->method('isGodUser')
+            ->willReturn(false);
+    }
+
+    private function mockGetId()
+    {
+        $this->userIdentification->method('getId')
+            ->willReturn(new StringLiteral('userId'));
     }
 
     private function mockCreateQuery()
