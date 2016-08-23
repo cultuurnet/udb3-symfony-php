@@ -9,6 +9,8 @@ use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
+use CultuurNet\UDB3\Symfony\Label\Query\QueryFactory;
+use CultuurNet\UDB3\Symfony\Label\Query\QueryFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
@@ -38,6 +40,11 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
     private $readService;
 
     /**
+     * @var QueryFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $queryFactory;
+
+    /**
      * @var RequestHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestHelper;
@@ -57,9 +64,9 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->request = new Request([
-            RequestHelper::QUERY => 'label',
-            RequestHelper::START => 5,
-            RequestHelper::LIMIT => 2
+            QueryFactory::QUERY => 'label',
+            QueryFactory::START => 5,
+            QueryFactory::LIMIT => 2
         ]);
 
         $this->query = new Query(
@@ -74,11 +81,15 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->mockSearch();
         $this->mockSearchTotalLabels();
 
+        $this->queryFactory = $this->getMock(QueryFactory::class);
+        $this->mockCreateQuery();
+
         $this->requestHelper = $this->getMock(RequestHelper::class);
         $this->mockGetQuery();
 
         $this->readRestController = new ReadRestController(
             $this->readService,
+            $this->queryFactory,
             $this->requestHelper
         );
     }
@@ -165,6 +176,13 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->readService->method('searchTotalLabels')
             ->with($this->query)
             ->willReturn(new Natural(2));
+    }
+
+    private function mockCreateQuery()
+    {
+        $this->queryFactory->method('createFromRequest')
+            ->with($this->request)
+            ->willReturn($this->query);
     }
 
     private function mockGetQuery()
