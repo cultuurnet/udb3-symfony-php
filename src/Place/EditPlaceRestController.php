@@ -311,7 +311,7 @@ class EditPlaceRestController extends OfferRestBaseController
      */
     public function hasPermission($cdbid)
     {
-        $has_permission = $this->security->allowsUpdates(new String($cdbid));
+        $has_permission = $this->security->isAuthorized(new String($cdbid));
 
         return JsonResponse::create(['hasPermission' => $has_permission]);
     }
