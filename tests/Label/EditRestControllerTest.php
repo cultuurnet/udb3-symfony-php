@@ -6,6 +6,7 @@ use CultuurNet\UDB3\Label\Services\WriteResult;
 use CultuurNet\UDB3\Label\Services\WriteServiceInterface;
 use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
+use CultuurNet\UDB3\Label\ValueObjects\LabelName;
 use CultuurNet\UDB3\Symfony\Label\Helper\CommandType;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -135,7 +136,7 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->writeService->method('create')
             ->with(
-                new StringLiteral($this->contentAsArray[RequestHelper::NAME]),
+                new LabelName($this->contentAsArray[RequestHelper::NAME]),
                 Visibility::fromNative($this->contentAsArray[RequestHelper::VISIBILITY]),
                 Privacy::fromNative($this->contentAsArray[RequestHelper::PRIVACY])
             )
@@ -175,7 +176,7 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->requestHelper->method('getName')
             ->with($this->request)
             ->willReturn(
-                new StringLiteral($this->contentAsArray[RequestHelper::NAME])
+                new LabelName($this->contentAsArray[RequestHelper::NAME])
             );
     }
 
