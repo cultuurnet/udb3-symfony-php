@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Label\Helper;
 use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
+use CultuurNet\UDB3\Label\ValueObjects\LabelName;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Number\Natural;
 use ValueObjects\String\String as StringLiteral;
@@ -26,7 +27,7 @@ class RequestHelper
      */
     public function getName(Request $request)
     {
-        return new StringLiteral($this->getByName($request, self::NAME));
+        return new LabelName($this->getByName($request, self::NAME));
     }
 
     /**
