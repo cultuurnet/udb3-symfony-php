@@ -943,12 +943,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "2d62b68e3b81dd9a5ac52b6350bff5c3431d6a1d"
+                "reference": "c7bfe9afbb13d788c7d76900011b2c63cbb525b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/2d62b68e3b81dd9a5ac52b6350bff5c3431d6a1d",
-                "reference": "2d62b68e3b81dd9a5ac52b6350bff5c3431d6a1d",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/c7bfe9afbb13d788c7d76900011b2c63cbb525b7",
+                "reference": "c7bfe9afbb13d788c7d76900011b2c63cbb525b7",
                 "shasum": ""
             },
             "require": {
@@ -1021,7 +1021,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-08-30 15:28:09"
+            "time": "2016-08-31 12:37:22"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -2626,16 +2626,16 @@
         },
         {
             "name": "php-http/httplug",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/httplug.git",
-                "reference": "2061047ca53a08a6b8f52e997b2a76f386b397dd"
+                "reference": "1c6381726c18579c4ca2ef1ec1498fdae8bdf018"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/httplug/zipball/2061047ca53a08a6b8f52e997b2a76f386b397dd",
-                "reference": "2061047ca53a08a6b8f52e997b2a76f386b397dd",
+                "url": "https://api.github.com/repos/php-http/httplug/zipball/1c6381726c18579c4ca2ef1ec1498fdae8bdf018",
+                "reference": "1c6381726c18579c4ca2ef1ec1498fdae8bdf018",
                 "shasum": ""
             },
             "require": {
@@ -2678,7 +2678,7 @@
                 "client",
                 "http"
             ],
-            "time": "2016-01-26 14:34:50"
+            "time": "2016-08-31 08:30:17"
         },
         {
             "name": "php-http/promise",

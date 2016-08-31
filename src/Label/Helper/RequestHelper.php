@@ -2,12 +2,10 @@
 
 namespace CultuurNet\UDB3\Symfony\Label\Helper;
 
-use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
 use CultuurNet\UDB3\Label\ValueObjects\LabelName;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\Number\Natural;
 use ValueObjects\String\String as StringLiteral;
 
 class RequestHelper
@@ -16,10 +14,6 @@ class RequestHelper
     const VISIBILITY = 'visibility';
     const PRIVACY = 'privacy';
     const COMMAND = 'command';
-
-    const QUERY = 'query';
-    const START = 'start';
-    const LIMIT = 'limit';
 
     /**
      * @param Request $request
@@ -60,28 +54,6 @@ class RequestHelper
     {
         return CommandType::fromNative(
             $this->getByName($request, self::COMMAND)
-        );
-    }
-
-    /**
-     * @param Request $request
-     * @return Query
-     */
-    public function getQuery(Request $request)
-    {
-        $value = $request->query->get(self::QUERY) !== null ?
-            new StringLiteral($request->query->get(self::QUERY)) : new StringLiteral('');
-
-        $offset = $request->query->get(self::START, null) !== null
-            ? new Natural($request->query->get(self::START)) : null;
-
-        $limit = $request->query->get(self::LIMIT, null) !== null
-            ? new Natural($request->query->get(self::LIMIT)) : null;
-
-        return new Query(
-            $value,
-            $offset,
-            $limit
         );
     }
 
