@@ -3,7 +3,10 @@
 namespace CultuurNet\UDB3\Symfony\Place;
 
 use CultureFeed_User;
-use CultuurNet\UDB3\Address;
+use CultuurNet\UDB3\Address\Address;
+use CultuurNet\UDB3\Address\PostalCode;
+use CultuurNet\UDB3\Address\Street;
+use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
@@ -25,6 +28,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Exception\Exception;
 use CultuurNet\UDB3\CalendarDeserializer;
+use ValueObjects\Geography\Country;
 use ValueObjects\String\String;
 
 /**
@@ -160,17 +164,10 @@ class EditPlaceRestController extends OfferRestBaseController
             $theme = new Theme($body_content->theme->id, $body_content->theme->label);
         }
 
-        $address = !empty($body_content->location->address) ? $body_content->location->address : $body_content->address;
-
         $place_id = $this->editor->createPlace(
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Address(
-                $address->streetAddress,
-                $address->postalCode,
-                $address->addressLocality,
-                $address->addressCountry
-            ),
+            $this->addressFromJSONRequest($request),
             $this->calendarDeserializer->deserialize($body_content),
             $theme
         );
@@ -219,18 +216,11 @@ class EditPlaceRestController extends OfferRestBaseController
             $theme = new Theme($body_content->theme->id, $body_content->theme->label);
         }
 
-        $address = !empty($body_content->location->address) ? $body_content->location->address : $body_content->address;
-
         $command_id = $this->editor->updateMajorInfo(
             $cdbid,
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Address(
-                $address->streetAddress,
-                $address->postalCode,
-                $address->addressLocality,
-                $address->addressCountry
-            ),
+            $this->addressFromJSONRequest($request),
             $this->calendarDeserializer->deserialize($body_content),
             $theme
         );
@@ -314,5 +304,19 @@ class EditPlaceRestController extends OfferRestBaseController
         $has_permission = $this->security->allowsUpdates(new String($cdbid));
 
         return JsonResponse::create(['hasPermission' => $has_permission]);
+    }
+
+    /**
+     * @param Request $request
+     *  A request with JSON content
+     *
+     * @return Address
+     */
+    private function addressFromJSONRequest(Request $request)
+    {
+        $content = json_decode($request->getContent(), true);
+        $address = !empty($content['location']['address']) ? $content['location']['address'] : $content['address'];
+
+        return Address::deserialize($address);
     }
 }

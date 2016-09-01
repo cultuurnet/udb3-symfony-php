@@ -3,6 +3,10 @@
 namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultureFeed_User;
+use CultuurNet\UDB3\Address\Address;
+use CultuurNet\UDB3\Address\Locality;
+use CultuurNet\UDB3\Address\PostalCode;
+use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
@@ -19,11 +23,13 @@ use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
+use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\String\String;
+use ValueObjects\Geography\Country;
+use ValueObjects\String\String as StringLiteral;
 
 class EditEventRestController extends OfferRestBaseController
 {
@@ -69,7 +75,7 @@ class EditEventRestController extends OfferRestBaseController
      *   The event service.
      * @param EventEditingServiceInterface $eventEditor
      *   The event editor.
-     * @param DefaultUsedLabelsMemoryService $used_labels_memory
+     * @param UsedLabelsMemoryServiceInterface $used_labels_memory
      *   The event labeller.
      * @param CultureFeed_User $user
      *   The culturefeed user.
@@ -80,7 +86,7 @@ class EditEventRestController extends OfferRestBaseController
     public function __construct(
         EventServiceInterface $event_service,
         EventEditingServiceInterface $eventEditor,
-        DefaultUsedLabelsMemoryService $used_labels_memory,
+        UsedLabelsMemoryServiceInterface $used_labels_memory,
         CultureFeed_User $user,
         MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator,
@@ -272,7 +278,6 @@ class EditEventRestController extends OfferRestBaseController
         $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
-
         if (empty($body_content->name) ||
             empty($body_content->type) ||
             empty($body_content->location) ||
@@ -288,14 +293,7 @@ class EditEventRestController extends OfferRestBaseController
         $event_id = $this->editor->createEvent(
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Location(
-                $body_content->location->id,
-                $body_content->location->name,
-                $body_content->location->address->addressCountry,
-                $body_content->location->address->addressLocality,
-                $body_content->location->address->postalCode,
-                $body_content->location->address->streetAddress
-            ),
+            $this->locationFromJSONRequest($request),
             $this->calendarDeserializer->deserialize($body_content),
             $theme
         );
@@ -332,7 +330,6 @@ class EditEventRestController extends OfferRestBaseController
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
-        $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
         if (empty($body_content->name) || empty($body_content->type)) {
@@ -348,14 +345,7 @@ class EditEventRestController extends OfferRestBaseController
             $cdbid,
             new Title($body_content->name->nl),
             new EventType($body_content->type->id, $body_content->type->label),
-            new Location(
-                $body_content->location->id,
-                $body_content->location->name,
-                $body_content->location->address->addressCountry,
-                $body_content->location->address->addressLocality,
-                $body_content->location->address->postalCode,
-                $body_content->location->address->streetAddress
-            ),
+            $this->locationFromJSONRequest($request),
             $this->calendarDeserializer->deserialize($body_content),
             $theme
         );
@@ -371,7 +361,7 @@ class EditEventRestController extends OfferRestBaseController
      */
     public function hasPermission($cdbid)
     {
-        $has_permission = $this->security->allowsUpdates(new String($cdbid));
+        $has_permission = $this->security->allowsUpdates(new StringLiteral($cdbid));
 
         return JsonResponse::create(['hasPermission' => $has_permission]);
     }
@@ -382,5 +372,19 @@ class EditEventRestController extends OfferRestBaseController
     public function getItem($id)
     {
         return $this->eventService->getEvent($id);
+    }
+
+    /**
+     * @param Request $request
+     *  A request with JSON content
+     *
+     * @return Location
+     */
+    private function locationFromJSONRequest(Request $request)
+    {
+        $content = json_decode($request->getContent(), true);
+        $location = $content['location'];
+        $location['cdbid'] = $location['id'];
+        return Location::deserialize($location);
     }
 }
