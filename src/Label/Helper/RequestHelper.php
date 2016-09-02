@@ -6,7 +6,6 @@ use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
 use CultuurNet\UDB3\Label\ValueObjects\LabelName;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\String\String as StringLiteral;
 
 class RequestHelper
 {
@@ -17,7 +16,7 @@ class RequestHelper
 
     /**
      * @param Request $request
-     * @return StringLiteral
+     * @return LabelName
      */
     public function getName(Request $request)
     {
