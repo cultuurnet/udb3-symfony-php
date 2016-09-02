@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "900b124367e2a8dc3010542552533eb0",
-    "content-hash": "3065b3f3a1e1518490806c5ad5813ce7",
+    "hash": "3bed04b50a1d4081e5feab3b1a829d5d",
+    "content-hash": "5e04f6e5d0a8173a94dfb345d09f38ac",
     "packages": [
         {
             "name": "2dotstwice/collection",
@@ -939,16 +939,16 @@
         },
         {
             "name": "cultuurnet/udb3",
-            "version": "dev-feature/III-1137",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "446d30d98cfc2613c63f6f54b1725f4e79f3c84b"
+                "reference": "08a1c20cc85101bb929c703f8bf2fc856b26324b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/446d30d98cfc2613c63f6f54b1725f4e79f3c84b",
-                "reference": "446d30d98cfc2613c63f6f54b1725f4e79f3c84b",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/08a1c20cc85101bb929c703f8bf2fc856b26324b",
+                "reference": "08a1c20cc85101bb929c703f8bf2fc856b26324b",
                 "shasum": ""
             },
             "require": {
@@ -1021,7 +1021,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-08-31 12:59:19"
+            "time": "2016-09-02 10:51:09"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -3251,16 +3251,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.7.16",
+            "version": "v2.7.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "8ea4e8784404851b18c828e92140eaaab1f61719"
+                "reference": "91161d0d725579eee0b61c68d7de143d177cecaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/8ea4e8784404851b18c828e92140eaaab1f61719",
-                "reference": "8ea4e8784404851b18c828e92140eaaab1f61719",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/91161d0d725579eee0b61c68d7de143d177cecaa",
+                "reference": "91161d0d725579eee0b61c68d7de143d177cecaa",
                 "shasum": ""
             },
             "require": {
@@ -3303,7 +3303,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-30 07:17:26"
+            "time": "2016-08-19 15:01:16"
         },
         {
             "name": "symfony/http-kernel",
@@ -3633,16 +3633,16 @@
         },
         {
             "name": "symfony/security",
-            "version": "v2.7.16",
+            "version": "v2.7.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security.git",
-                "reference": "b6252ab5498bdf1583d06e9da39b444f552d2975"
+                "reference": "66a4782ddd0539e1b4f2ae2b4058a04af5d21aab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security/zipball/b6252ab5498bdf1583d06e9da39b444f552d2975",
-                "reference": "b6252ab5498bdf1583d06e9da39b444f552d2975",
+                "url": "https://api.github.com/repos/symfony/security/zipball/66a4782ddd0539e1b4f2ae2b4058a04af5d21aab",
+                "reference": "66a4782ddd0539e1b4f2ae2b4058a04af5d21aab",
                 "shasum": ""
             },
             "require": {
@@ -3709,7 +3709,7 @@
             ],
             "description": "Symfony Security Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-30 07:17:26"
+            "time": "2016-08-25 17:52:51"
         },
         {
             "name": "symfony/serializer",
@@ -3777,16 +3777,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.24.1",
+            "version": "v1.24.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "3566d311a92aae4deec6e48682dc5a4528c4a512"
+                "reference": "33093f6e310e6976baeac7b14f3a6ec02f2d79b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3566d311a92aae4deec6e48682dc5a4528c4a512",
-                "reference": "3566d311a92aae4deec6e48682dc5a4528c4a512",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/33093f6e310e6976baeac7b14f3a6ec02f2d79b7",
+                "reference": "33093f6e310e6976baeac7b14f3a6ec02f2d79b7",
                 "shasum": ""
             },
             "require": {
@@ -3834,7 +3834,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-05-30 09:11:59"
+            "time": "2016-09-01 17:50:53"
         },
         {
             "name": "willdurand/geocoder",
@@ -5229,16 +5229,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.6.2",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "4edb770cb853def6e60c93abb088ad5ac2010c83"
+                "reference": "571e27b6348e5b3a637b2abc82ac0d01e6d7bbed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/4edb770cb853def6e60c93abb088ad5ac2010c83",
-                "reference": "4edb770cb853def6e60c93abb088ad5ac2010c83",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/571e27b6348e5b3a637b2abc82ac0d01e6d7bbed",
+                "reference": "571e27b6348e5b3a637b2abc82ac0d01e6d7bbed",
                 "shasum": ""
             },
             "require": {
@@ -5303,7 +5303,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2016-07-13 23:29:13"
+            "time": "2016-09-01 23:53:02"
         },
         {
             "name": "symfony/config",
@@ -5556,18 +5556,9 @@
             "time": "2016-08-09 15:02:57"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.1",
-            "alias_normalized": "0.1.0.0",
-            "version": "dev-feature/III-1137",
-            "package": "cultuurnet/udb3"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cultuurnet/udb3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],

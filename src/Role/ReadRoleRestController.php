@@ -93,32 +93,6 @@ class ReadRoleRestController
     }
 
     /**
-     * @param string $id
-     * @return JsonResponse
-     */
-    public function getRolePermissions($id)
-    {
-        $document = $this->roleService->getPermissionsByRoleUuid(new UUID($id));
-
-        if ($document) {
-            // Return Permissions, even if it is an empty array.
-            $body = $document->getBody();
-
-            $response = JsonResponse::create()
-                ->setContent(json_encode($body->permissions));
-
-            $response->headers->set('Vary', 'Origin');
-
-            return $response;
-        } else {
-            $apiProblem = new ApiProblem('There is no role with identifier: ' . $id);
-            $apiProblem->setStatus(Response::HTTP_NOT_FOUND);
-
-            return new ApiProblemJsonResponse($apiProblem);
-        }
-    }
-
-    /**
      * @param string $roleId
      * @return Response
      */
