@@ -9,6 +9,7 @@ use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
+use CultuurNet\UDB3\Symfony\Label\Query\QueryFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ use ValueObjects\String\String as StringLiteral;
 
 class ReadRestController
 {
-    const ID = 'id';
+    const ID = 'uuid';
     const NAME = 'name';
     const VISIBILITY = 'visibility';
     const PRIVACY = 'privacy';
@@ -30,15 +31,28 @@ class ReadRestController
     private $readService;
 
     /**
+     * @var QueryFactoryInterface
+     */
+    private $queryFactory;
+
+    /**
      * @var RequestHelper
      */
     private $requestHelper;
 
+    /**
+     * ReadRestController constructor.
+     * @param ReadServiceInterface $readService
+     * @param QueryFactoryInterface $queryFactory
+     * @param RequestHelper $requestHelper
+     */
     public function __construct(
         ReadServiceInterface $readService,
+        QueryFactoryInterface $queryFactory,
         RequestHelper $requestHelper
     ) {
         $this->readService = $readService;
+        $this->queryFactory = $queryFactory;
         $this->requestHelper = $requestHelper;
     }
 
@@ -71,7 +85,7 @@ class ReadRestController
      */
     public function search(Request $request)
     {
-        $query = $this->requestHelper->getQuery($request);
+        $query = $this->queryFactory->createFromRequest($request);
 
         $totalEntities = $this->readService->searchTotalLabels($query);
 
