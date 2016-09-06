@@ -8,7 +8,7 @@ use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
-use CultuurNet\UDB3\Offer\SecurityInterface;
+use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
@@ -25,7 +25,6 @@ use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\String\String;
 
 class EditEventRestController extends OfferRestBaseController
 {
@@ -374,10 +373,7 @@ class EditEventRestController extends OfferRestBaseController
      */
     public function hasPermission($cdbid)
     {
-        $permissions = [
-            Permission::AANBOD_BEWERKEN()
-        ];
-        $command = new PreflightCommand($cdbid, $permissions);
+        $command = new PreflightCommand($cdbid, Permission::AANBOD_BEWERKEN());
         $has_permission = $this->security->isAuthorized($command);
 
         return JsonResponse::create(['hasPermission' => $has_permission]);
