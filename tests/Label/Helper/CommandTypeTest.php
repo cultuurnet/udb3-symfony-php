@@ -2,8 +2,24 @@
 
 namespace CultuurNet\UDB3\Symfony\Label\Helper;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class CommandTypeTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @test
+     */
+    public function it_can_create_a_command_type_from_a_request()
+    {
+        $expectedCommandType = CommandType::MAKE_PRIVATE();
+        $content = '{"command":"' . $expectedCommandType->toNative() . '"}';
+        $request = new Request([], [], [], [], [], [], $content);
+
+        $commandType = CommandType::createFromRequest($request);
+
+        $this->assertEquals($expectedCommandType, $commandType);
+    }
+
     /**
      * @test
      */
