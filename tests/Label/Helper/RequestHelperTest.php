@@ -76,17 +76,4 @@ class RequestHelperTest extends \PHPUnit_Framework_TestCase
             $privacy
         );
     }
-
-    /**
-     * @test
-     */
-    public function it_can_get_command_from_request()
-    {
-        $command = $this->requestHelper->getCommandType($this->request);
-
-        $this->assertEquals(
-            CommandType::MAKE_VISIBLE(),
-            $command
-        );
-    }
 }
