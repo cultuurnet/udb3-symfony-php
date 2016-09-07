@@ -59,7 +59,7 @@ class EditRestController
      */
     public function patch(Request $request, $id)
     {
-        $commandType = CommandType::createFromRequest($request);
+        $commandType = $this->requestHelper->getCommandType($request);
         $id = new UUID($id);
 
         switch ($commandType) {
