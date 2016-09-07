@@ -99,13 +99,9 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         );
         $this->mockCreateQuery();
 
-        $this->requestHelper = $this->getMock(RequestHelper::class);
-        $this->mockGetQuery();
-
         $this->readRestController = new ReadRestController(
             $this->readService,
-            $this->queryFactory,
-            $this->requestHelper
+            $this->queryFactory
         );
     }
 

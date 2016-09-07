@@ -3,13 +3,19 @@
 namespace CultuurNet\UDB3\Symfony\Label;
 
 use CultuurNet\UDB3\Label\Services\WriteServiceInterface;
-use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
+use CultuurNet\UDB3\Label\ValueObjects\LabelName;
+use CultuurNet\UDB3\Label\ValueObjects\Privacy;
+use CultuurNet\UDB3\Label\ValueObjects\Visibility;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
 
 class EditRestController
 {
+    const NAME = 'name';
+    const VISIBILITY = 'visibility';
+    const PRIVACY = 'privacy';
+
     const COMMAND_ID = 'commandId';
     const UUID = 'uuid';
 
@@ -19,21 +25,13 @@ class EditRestController
     private $writeService;
 
     /**
-     * @var RequestHelper
-     */
-    private $requestHelper;
-
-    /**
      * EditRestController constructor.
      * @param WriteServiceInterface $writeService
-     * @param RequestHelper $requestHelper
      */
     public function __construct(
-        WriteServiceInterface $writeService,
-        RequestHelper $requestHelper
-    ) {
+        WriteServiceInterface $writeService)
+    {
         $this->writeService = $writeService;
-        $this->requestHelper = $requestHelper;
     }
 
     /**
@@ -43,9 +41,9 @@ class EditRestController
     public function create(Request $request)
     {
         $writeResult = $this->writeService->create(
-            $this->requestHelper->getName($request),
-            $this->requestHelper->getVisibility($request),
-            $this->requestHelper->getPrivacy($request)
+            $this->getName($request),
+            $this->getVisibility($request),
+            $this->getPrivacy($request)
         );
 
         return new JsonResponse($writeResult);
@@ -77,5 +75,47 @@ class EditRestController
         }
 
         return new JsonResponse($writeResult);
+    }
+
+    /**
+     * @param Request $request
+     * @return LabelName
+     */
+    public function getName(Request $request)
+    {
+        return new LabelName($this->getParamByName($request, self::NAME));
+    }
+
+    /**
+     * @param Request $request
+     * @return Visibility
+     */
+    public function getVisibility(Request $request)
+    {
+        return Visibility::fromNative(
+            $this->getParamByName($request, self::VISIBILITY)
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return Privacy
+     */
+    public function getPrivacy(Request $request)
+    {
+        return Privacy::fromNative(
+            $this->getParamByName($request, self::PRIVACY)
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param string $name
+     * @return mixed
+     */
+    private function getParamByName(Request $request, $name)
+    {
+        $bodyAsArray = json_decode($request->getContent(), true);
+        return $bodyAsArray[$name];
     }
 }
