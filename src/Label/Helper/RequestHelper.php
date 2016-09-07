@@ -47,6 +47,17 @@ class RequestHelper
 
     /**
      * @param Request $request
+     * @return CommandType
+     */
+    public function getCommandType(Request $request)
+    {
+        return CommandType::fromNative(
+            $this->getByName($request, self::COMMAND)
+        );
+    }
+
+    /**
+     * @param Request $request
      * @return array
      */
     private function getBodyAsArray(Request $request)
