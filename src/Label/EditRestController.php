@@ -28,8 +28,7 @@ class EditRestController
      * EditRestController constructor.
      * @param WriteServiceInterface $writeService
      */
-    public function __construct(
-        WriteServiceInterface $writeService)
+    public function __construct(WriteServiceInterface $writeService)
     {
         $this->writeService = $writeService;
     }

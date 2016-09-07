@@ -41,8 +41,8 @@ class ReadRestController
      */
     public function __construct(
         ReadServiceInterface $readService,
-        QueryFactoryInterface $queryFactory)
-    {
+        QueryFactoryInterface $queryFactory
+    ) {
         $this->readService = $readService;
         $this->queryFactory = $queryFactory;
     }

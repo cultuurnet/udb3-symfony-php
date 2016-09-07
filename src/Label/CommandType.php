@@ -29,5 +29,4 @@ class CommandType extends Enum
         $bodyContent = json_decode($request->getContent());
         return CommandType::fromNative($bodyContent->command);
     }
-
 }
