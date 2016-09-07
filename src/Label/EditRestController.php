@@ -3,7 +3,6 @@
 namespace CultuurNet\UDB3\Symfony\Label;
 
 use CultuurNet\UDB3\Label\Services\WriteServiceInterface;
-use CultuurNet\UDB3\Symfony\Label\Helper\CommandType;
 use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

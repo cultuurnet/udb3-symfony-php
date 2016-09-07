@@ -1,6 +1,6 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony\Label\Helper;
+namespace CultuurNet\UDB3\Symfony\Label;
 
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Enum\Enum;
