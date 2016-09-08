@@ -1,6 +1,6 @@
 <?php
 
-namespace Cultuurnet\UDB3\Symfony\Jobs;
+namespace CultuurNet\UDB3\Symfony\Jobs;
 
 use Resque_Job_Status;
 use Symfony\Component\HttpFoundation\JsonResponse;
