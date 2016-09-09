@@ -19,14 +19,4 @@ class CommandType extends Enum
     const MAKE_INVISIBLE = 'MakeInvisible';
     const MAKE_PUBLIC = 'MakePublic';
     const MAKE_PRIVATE = 'MakePrivate';
-
-    /**
-     * @param Request $request
-     * @return CommandType
-     */
-    public static function createFromRequest(Request $request)
-    {
-        $bodyContent = json_decode($request->getContent());
-        return CommandType::fromNative($bodyContent->command);
-    }
 }

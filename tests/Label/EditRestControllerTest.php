@@ -47,9 +47,9 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->contentAsArray = [
-            EditRestController::NAME => 'labelName',
-            EditRestController::VISIBILITY => 'invisible',
-            EditRestController::PRIVACY => 'private',
+            'name' => 'labelName',
+            'visibility' => 'invisible',
+            'privacy' => 'private',
         ];
         $this->request = $this->createRequestWithContent($this->contentAsArray);
 
@@ -72,19 +72,20 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_json_response_for_create()
     {
+        $expectedJson = [
+            'commandId' => $this->commandId->toNative(),
+            'uuid' => $this->uuid->toNative()
+        ];
+
         $jsonResponse = $this->editRestController->create($this->request);
+        $actualJson = json_decode($jsonResponse->getContent(), true);
 
-        $expectedJsonResponse = new JsonResponse([
-            EditRestController::COMMAND_ID => $this->commandId->toNative(),
-            EditRestController::UUID => $this->uuid->toNative()
-        ]);
-
-        $this->assertEquals($expectedJsonResponse, $jsonResponse);
+        $this->assertEquals($expectedJson, $actualJson);
     }
 
     /**
      * @test
-     * @dataProvider provider
+     * @dataProvider patchProvider
      * @param array $contentAsArray
      * @param $method
      */
@@ -97,17 +98,21 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->writeService->expects($this->once())
             ->method($method);
 
+        $expectedJson = [
+            'commandId' => $this->commandId->toNative(),
+            'uuid' => $this->uuid->toNative()
+        ];
+
         $jsonResponse = $this->editRestController->patch($request, $this->uuid);
+        $actualJson = json_decode($jsonResponse->getContent(), true);
 
-        $expectedJsonResponse = new JsonResponse([
-            EditRestController::COMMAND_ID => $this->commandId->toNative(),
-            EditRestController::UUID => $this->uuid->toNative()
-        ]);
-
-        $this->assertEquals($expectedJsonResponse, $jsonResponse);
+        $this->assertEquals($expectedJson, $actualJson);
     }
 
-    public function provider()
+    /**
+     * @return array
+     */
+    public function patchProvider()
     {
         return [
             [['command' => 'MakeVisible'], 'makeVisible'],
@@ -121,9 +126,9 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->writeService->method('create')
             ->with(
-                new LabelName($this->contentAsArray[EditRestController::NAME]),
-                Visibility::fromNative($this->contentAsArray[EditRestController::VISIBILITY]),
-                Privacy::fromNative($this->contentAsArray[EditRestController::PRIVACY])
+                new LabelName($this->contentAsArray['name']),
+                Visibility::fromNative($this->contentAsArray['visibility']),
+                Privacy::fromNative($this->contentAsArray['privacy'])
             )
             ->willReturn(new WriteResult($this->commandId, $this->uuid));
     }
