@@ -1,6 +1,6 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony\Label\Helper;
+namespace CultuurNet\UDB3\Symfony\Label;
 
 class CommandTypeTest extends \PHPUnit_Framework_TestCase
 {

@@ -99,13 +99,9 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
         );
         $this->mockCreateQuery();
 
-        $this->requestHelper = $this->getMock(RequestHelper::class);
-        $this->mockGetQuery();
-
         $this->readRestController = new ReadRestController(
             $this->readService,
-            $this->queryFactory,
-            $this->requestHelper
+            $this->queryFactory
         );
     }
 
@@ -226,10 +222,10 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
     private function entityToArray(Entity $entity)
     {
         return [
-            ReadRestController::ID => $entity->getUuid()->toNative(),
-            ReadRestController::NAME => $entity->getName()->toNative(),
-            ReadRestController::VISIBILITY => $entity->getVisibility()->toNative(),
-            ReadRestController::PRIVACY => $entity->getPrivacy()->toNative()
+            'uuid' => $entity->getUuid()->toNative(),
+            'name' => $entity->getName()->toNative(),
+            'visibility' => $entity->getVisibility()->toNative(),
+            'privacy' => $entity->getPrivacy()->toNative()
         ];
     }
 }
