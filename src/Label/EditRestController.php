@@ -3,38 +3,27 @@
 namespace CultuurNet\UDB3\Symfony\Label;
 
 use CultuurNet\UDB3\Label\Services\WriteServiceInterface;
-use CultuurNet\UDB3\Symfony\Label\Helper\CommandType;
-use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
+use CultuurNet\UDB3\Label\ValueObjects\LabelName;
+use CultuurNet\UDB3\Label\ValueObjects\Privacy;
+use CultuurNet\UDB3\Label\ValueObjects\Visibility;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
 
 class EditRestController
 {
-    const COMMAND_ID = 'commandId';
-    const UUID = 'uuid';
-
     /**
      * @var WriteServiceInterface
      */
     private $writeService;
 
     /**
-     * @var RequestHelper
-     */
-    private $requestHelper;
-
-    /**
      * EditRestController constructor.
      * @param WriteServiceInterface $writeService
-     * @param RequestHelper $requestHelper
      */
-    public function __construct(
-        WriteServiceInterface $writeService,
-        RequestHelper $requestHelper
-    ) {
+    public function __construct(WriteServiceInterface $writeService)
+    {
         $this->writeService = $writeService;
-        $this->requestHelper = $requestHelper;
     }
 
     /**
@@ -43,10 +32,12 @@ class EditRestController
      */
     public function create(Request $request)
     {
+        $bodyAsArray = json_decode($request->getContent(), true);
+
         $writeResult = $this->writeService->create(
-            $this->requestHelper->getName($request),
-            $this->requestHelper->getVisibility($request),
-            $this->requestHelper->getPrivacy($request)
+            new LabelName($bodyAsArray['name']),
+            Visibility::fromNative($bodyAsArray['visibility']),
+            Privacy::fromNative($bodyAsArray['privacy'])
         );
 
         return new JsonResponse($writeResult);
@@ -59,7 +50,9 @@ class EditRestController
      */
     public function patch(Request $request, $id)
     {
-        $commandType = $this->requestHelper->getCommandType($request);
+        $bodyAsArray = json_decode($request->getContent(), true);
+        $commandType = CommandType::fromNative($bodyAsArray['command']);
+
         $id = new UUID($id);
 
         switch ($commandType) {
