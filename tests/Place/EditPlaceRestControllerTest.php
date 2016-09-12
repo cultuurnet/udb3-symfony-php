@@ -8,7 +8,7 @@ use CultureFeed_User;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Offer\SecurityInterface;
+use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
@@ -102,11 +102,11 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
         ]);
 
         $request = new Request([], [], [], [], [], [], $content);
-        
+
         $this->placeEditingService
             ->method('createPlace')
             ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
-        
+
         $this->iriGenerator
             ->method('iri')
             ->with('A14DD1C8-0F9C-4633-B56A-A908F009AD94')
@@ -118,7 +118,7 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
             "placeId" => "A14DD1C8-0F9C-4633-B56A-A908F009AD94",
             "url" => "http://du.de/place/A14DD1C8-0F9C-4633-B56A-A908F009AD94"
         ]);
-        
+
         $this->assertEquals($response->getContent(), $expectedResponseContent);
     }
 }

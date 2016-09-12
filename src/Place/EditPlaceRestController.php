@@ -9,7 +9,9 @@ use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Offer\SecurityInterface;
+use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
+use CultuurNet\UDB3\Role\ValueObjects\Permission;
+use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
@@ -311,7 +313,8 @@ class EditPlaceRestController extends OfferRestBaseController
      */
     public function hasPermission($cdbid)
     {
-        $has_permission = $this->security->allowsUpdates(new String($cdbid));
+        $command = new PreflightCommand($cdbid, Permission::AANBOD_BEWERKEN());
+        $has_permission = $this->security->isAuthorized($command);
 
         return JsonResponse::create(['hasPermission' => $has_permission]);
     }
