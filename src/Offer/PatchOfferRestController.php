@@ -39,10 +39,10 @@ class PatchOfferRestController
 
     /**
      * @param Request $request
-     * @param $offerId
+     * @param $cdbid
      * @throws Exception
      */
-    public function handle(Request $request, $offerId)
+    public function handle(Request $request, $cdbid)
     {
         $domainModel = $this->parseDomainModelNameFromRequest($request);
         $commandClass = 'CultuurNet\UDB3\\' . $this->offerType->getValue() . '\Commands\Moderation\\' . $domainModel;
@@ -55,9 +55,9 @@ class PatchOfferRestController
             $content = json_decode($request->getContent());
             $reason = new StringLiteral($content->reason);
 
-            $command = new $commandClass($offerId, $reason);
+            $command = new $commandClass($cdbid, $reason);
         } else {
-            $command = new $commandClass($offerId);
+            $command = new $commandClass($cdbid);
         }
 
         return new JsonResponse([
