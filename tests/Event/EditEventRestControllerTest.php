@@ -7,15 +7,13 @@ use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
-use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
-use CultuurNet\UDB3\Location;
+use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Offer\SecurityInterface;
-use CultuurNet\UDB3\Symfony\User\UserLabelMemoryRestController;
+use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -23,7 +21,6 @@ use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
-use Zend\Validator\File\Count;
 
 class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 {

@@ -3,33 +3,28 @@
 namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultureFeed_User;
-use CultuurNet\UDB3\Address\Address;
-use CultuurNet\UDB3\Address\Locality;
-use CultuurNet\UDB3\Address\PostalCode;
-use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Offer\SecurityInterface;
+use CultuurNet\UDB3\Location\Location;
+use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
+use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
-use CultuurNet\UDB3\Location;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
+use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
-use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
 use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\Geography\Country;
-use ValueObjects\String\String as StringLiteral;
 
 class EditEventRestController extends OfferRestBaseController
 {
@@ -358,11 +353,12 @@ class EditEventRestController extends OfferRestBaseController
      *
      * @param string $cdbid
      *   Id of item to check.
+     * @return JsonResponse
      */
     public function hasPermission($cdbid)
     {
-        $has_permission = $this->security->allowsUpdates(new StringLiteral($cdbid));
-
+        $command = new PreflightCommand($cdbid, Permission::AANBOD_BEWERKEN());
+        $has_permission = $this->security->isAuthorized($command);
         return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 
