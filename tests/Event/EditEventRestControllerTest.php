@@ -150,4 +150,3 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponseContent, $response->getContent());
     }
 }
-
