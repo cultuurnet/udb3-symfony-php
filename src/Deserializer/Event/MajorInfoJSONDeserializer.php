@@ -4,9 +4,8 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Event;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
-use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Location\Location;
+use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Location\LocationJSONDeserializer;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
