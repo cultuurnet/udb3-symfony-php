@@ -5,6 +5,9 @@ namespace CultuurNet\UDB3\Symfony\Deserializer;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\Timestamp;
 
+/**
+ * @todo Extend JSONDeserializer, and clean up.
+ */
 class CalendarDeserializer
 {
     public function deserialize($eventData)
