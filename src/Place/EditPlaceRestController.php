@@ -4,9 +4,6 @@ namespace CultuurNet\UDB3\Symfony\Place;
 
 use CultureFeed_User;
 use CultuurNet\UDB3\Address\Address;
-use CultuurNet\UDB3\Address\PostalCode;
-use CultuurNet\UDB3\Address\Street;
-use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
@@ -19,19 +16,13 @@ use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
-use CultuurNet\UDB3\Symfony\type;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
-use Drupal\culturefeed_udb3\EventRelationsRepository;
 use InvalidArgumentException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Exception\Exception;
-use CultuurNet\UDB3\CalendarDeserializer;
-use ValueObjects\Geography\Country;
-use ValueObjects\String\String;
+use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 
 /**
  * Class EditPlaceRestController.
@@ -64,7 +55,7 @@ class EditPlaceRestController extends OfferRestBaseController
     /**
      * The event relations repository.
      *
-     * @var EventRelationsRepository
+     * @var RepositoryInterface
      */
     protected $eventRelationsRepository;
 
