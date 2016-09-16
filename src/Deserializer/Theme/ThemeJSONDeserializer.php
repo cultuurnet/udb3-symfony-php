@@ -1,16 +1,16 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony\Deserializer\Location;
+namespace CultuurNet\UDB3\Symfony\Deserializer\Theme;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
-use CultuurNet\UDB3\Location\Location;
+use CultuurNet\UDB3\Theme;
 use ValueObjects\String\String as StringLiteral;
 
-class LocationJSONDeserializer extends JSONDeserializer
+class ThemeJSONDeserializer extends JSONDeserializer
 {
     /**
-     * @var LocationDataValidator
+     * @var ThemeDataValidator
      */
     private $validator;
 
@@ -19,25 +19,19 @@ class LocationJSONDeserializer extends JSONDeserializer
         $assoc = true;
         parent::__construct($assoc);
 
-        $this->validator = new LocationDataValidator();
+        $this->validator = new ThemeDataValidator();
     }
 
     /**
      * @param StringLiteral $data
-     *
-     * @return Location
-     *
+     * @return Theme
      * @throws DataValidationException
      */
     public function deserialize(StringLiteral $data)
     {
         $data = parent::deserialize($data);
-
         $this->validator->validate($data);
 
-        $data['cdbid'] = $data['id'];
-        unset($data['id']);
-
-        return Location::deserialize($data);
+        return new Theme($data['id'], $data['label']);
     }
 }

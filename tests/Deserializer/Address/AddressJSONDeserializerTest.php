@@ -32,35 +32,21 @@ class AddressJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         $expectedException = new DataValidationException();
         $expectedException->setValidationMessages(
             [
-                'streetAddress is required but could not be found.',
-                'postalCode is required but could not be found.',
-                'addressLocality is required but could not be found.',
-                'addressCountry is required but could not be found.',
+                'streetAddress' => 'Required but could not be found.',
+                'postalCode' => 'Required but could not be found.',
+                'addressLocality' => 'Required but could not be found.',
+                'addressCountry' => 'Required but could not be found.',
             ]
         );
 
-        $this->deserializeAndExpectException($data, $expectedException);
-    }
-
-    /**
-     * @test
-     */
-    public function it_checks_all_required_fields_are_not_empty()
-    {
-        $json = '{"streetAddress": "", "postalCode": "", "addressLocality": "", "addressCountry": ""}';
-        $data = new StringLiteral($json);
-
-        $expectedException = new DataValidationException();
-        $expectedException->setValidationMessages(
-            [
-                'streetAddress should not be empty.',
-                'postalCode should not be empty.',
-                'addressLocality should not be empty.',
-                'addressCountry should not be empty.',
-            ]
-        );
-
-        $this->deserializeAndExpectException($data, $expectedException);
+        try {
+            $this->deserializer->deserialize($data);
+            $this->fail("No DataValidationException was thrown.");
+        } catch (\Exception $e) {
+            /* @var DataValidationException $e */
+            $this->assertInstanceOf(DataValidationException::class, $e);
+            $this->assertEquals($expectedException->getValidationMessages(), $e->getValidationMessages());
+        }
     }
 
     /**
@@ -89,21 +75,5 @@ class AddressJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         $actualAddress = $this->deserializer->deserialize($data);
 
         $this->assertEquals($expectedAddress, $actualAddress);
-    }
-
-    /**
-     * @param StringLiteral $data
-     * @param \Exception $expectedException
-     */
-    private function deserializeAndExpectException(StringLiteral $data, \Exception $expectedException)
-    {
-        $expectedExceptionClass = get_class($expectedException);
-
-        try {
-            $this->deserializer->deserialize($data);
-            $this->fail("No {$expectedExceptionClass} was thrown.");
-        } catch (\Exception $e) {
-            $this->assertEquals($expectedException, $e);
-        }
     }
 }

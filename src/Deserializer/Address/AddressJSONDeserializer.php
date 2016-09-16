@@ -9,10 +9,17 @@ use ValueObjects\String\String as StringLiteral;
 
 class AddressJSONDeserializer extends JSONDeserializer
 {
+    /**
+     * @var AddressDataValidator
+     */
+    private $validator;
+
     public function __construct()
     {
         $assoc = true;
         parent::__construct($assoc);
+
+        $this->validator = new AddressDataValidator();
     }
 
     /**
@@ -23,24 +30,7 @@ class AddressJSONDeserializer extends JSONDeserializer
     public function deserialize(StringLiteral $data)
     {
         $data = parent::deserialize($data);
-
-        $errors = [];
-        $requiredArguments = ['streetAddress', 'postalCode', 'addressLocality', 'addressCountry'];
-
-        foreach ($requiredArguments as $requiredArgument) {
-            if (!isset($data[$requiredArgument])) {
-                $errors[] = "{$requiredArgument} is required but could not be found.";
-            } elseif (empty($data[$requiredArgument])) {
-                $errors[] = "{$requiredArgument} should not be empty.";
-            }
-        }
-
-        if (!empty($errors)) {
-            $validationException = new DataValidationException();
-            $validationException->setValidationMessages($errors);
-            throw $validationException;
-        }
-
+        $this->validator->validate($data);
         return Address::deserialize($data);
     }
 }

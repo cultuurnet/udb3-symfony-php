@@ -33,29 +33,9 @@ class LocationJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         $expectedException = new DataValidationException();
         $expectedException->setValidationMessages(
             [
-                'id is required but could not be found.',
-                'name is required but could not be found.',
-                'address is required but could not be found.',
-            ]
-        );
-
-        $this->deserializeAndExpectException($data, $expectedException);
-    }
-
-    /**
-     * @test
-     */
-    public function it_checks_all_required_fields_are_not_empty()
-    {
-        $json = '{"id": "", "name": "", "address": ""}';
-        $data = new StringLiteral($json);
-
-        $expectedException = new DataValidationException();
-        $expectedException->setValidationMessages(
-            [
-                'id should not be empty.',
-                'name should not be empty.',
-                'address should not be empty.',
+                'id' => 'Required but could not be found.',
+                'name' => 'Required but could not be found.',
+                'address' => 'Required but could not be found.',
             ]
         );
 
@@ -73,9 +53,9 @@ class LocationJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         $expectedException = new DataValidationException();
         $expectedException->setValidationMessages(
             [
-                'address.streetAddress is required but could not be found.',
-                'address.addressLocality is required but could not be found.',
-                'address.addressCountry is required but could not be found.',
+                'address.streetAddress' => 'Required but could not be found.',
+                'address.addressLocality' => 'Required but could not be found.',
+                'address.addressCountry' => 'Required but could not be found.',
             ]
         );
 
@@ -120,17 +100,17 @@ class LocationJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param StringLiteral $data
-     * @param \Exception $expectedException
+     * @param DataValidationException $expectedException
      */
-    private function deserializeAndExpectException(StringLiteral $data, \Exception $expectedException)
+    private function deserializeAndExpectException(StringLiteral $data, DataValidationException $expectedException)
     {
-        $expectedExceptionClass = get_class($expectedException);
-
         try {
             $this->deserializer->deserialize($data);
-            $this->fail("No {$expectedExceptionClass} was thrown.");
+            $this->fail("No DataValidationException was thrown.");
         } catch (\Exception $e) {
-            $this->assertEquals($expectedException, $e);
+            /* @var DataValidationException $e */
+            $this->assertInstanceOf(DataValidationException::class, $e);
+            $this->assertEquals($expectedException->getValidationMessages(), $e->getValidationMessages());
         }
     }
 }

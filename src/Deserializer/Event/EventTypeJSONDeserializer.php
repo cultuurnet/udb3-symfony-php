@@ -1,16 +1,16 @@
 <?php
 
-namespace CultuurNet\UDB3\Symfony\Deserializer\Location;
+namespace CultuurNet\UDB3\Symfony\Deserializer\Event;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
-use CultuurNet\UDB3\Location\Location;
+use CultuurNet\UDB3\Event\EventType;
 use ValueObjects\String\String as StringLiteral;
 
-class LocationJSONDeserializer extends JSONDeserializer
+class EventTypeJSONDeserializer extends JSONDeserializer
 {
     /**
-     * @var LocationDataValidator
+     * @var EventTypeDataValidator
      */
     private $validator;
 
@@ -19,25 +19,19 @@ class LocationJSONDeserializer extends JSONDeserializer
         $assoc = true;
         parent::__construct($assoc);
 
-        $this->validator = new LocationDataValidator();
+        $this->validator = new EventTypeDataValidator();
     }
 
     /**
      * @param StringLiteral $data
-     *
-     * @return Location
-     *
+     * @return EventType
      * @throws DataValidationException
      */
     public function deserialize(StringLiteral $data)
     {
         $data = parent::deserialize($data);
-
         $this->validator->validate($data);
 
-        $data['cdbid'] = $data['id'];
-        unset($data['id']);
-
-        return Location::deserialize($data);
+        return new EventType($data['id'], $data['label']);
     }
 }
