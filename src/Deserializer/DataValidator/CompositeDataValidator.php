@@ -57,8 +57,7 @@ class CompositeDataValidator implements DataValidatorInterface
     {
         $errors = [];
 
-        foreach ($this->validators as $validatorInfo)
-        {
+        foreach ($this->validators as $validatorInfo) {
             /* @var DataValidatorInterface $validator */
             $validator = $validatorInfo['validator'];
             $depth = $validatorInfo['depth'];
