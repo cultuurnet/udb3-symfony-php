@@ -65,6 +65,26 @@ class LocationJSONDeserializerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_validates_address_properties()
+    {
+        $json = '{"id": "7e81e097-ce33-4e96-8a8a-abfd87b82894", "name": "foo", "address": {"postalCode":1000}}';
+        $data = new StringLiteral($json);
+
+        $expectedException = new DataValidationException();
+        $expectedException->setValidationMessages(
+            [
+                'address.streetAddress is required but could not be found.',
+                'address.addressLocality is required but could not be found.',
+                'address.addressCountry is required but could not be found.',
+            ]
+        );
+
+        $this->deserializeAndExpectException($data, $expectedException);
+    }
+
+    /**
+     * @test
+     */
     public function it_returns_a_location_object()
     {
         $data = new StringLiteral(
