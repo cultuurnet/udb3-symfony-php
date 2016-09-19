@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use ValueObjects\Web\Url;
 
 class EditOrganizerRestController
 {
@@ -44,7 +45,7 @@ class EditOrganizerRestController
         $body_content = json_decode($request->getContent());
 
         try {
-            if (empty($body_content->name)) {
+            if (empty($body_content->name) || empty($body_content->website)) {
                 throw new \InvalidArgumentException('Required fields are missing');
             }
 
@@ -77,6 +78,7 @@ class EditOrganizerRestController
             }
 
             $organizer_id = $this->editingService->create(
+                Url::fromNative($body_content->website),
                 new Title($body_content->name),
                 $addresses,
                 $phones,
