@@ -8,6 +8,7 @@ use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
+use CultuurNet\UDB3\Offer\WorkflowStatus;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
@@ -298,7 +299,8 @@ class EditEventRestController extends OfferRestBaseController
                 $body_content->location->address->streetAddress
             ),
             $this->calendarDeserializer->deserialize($body_content),
-            $theme
+            $theme,
+            WorkflowStatus::DRAFT()
         );
 
         $response->setData(

@@ -10,24 +10,20 @@ use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
+use CultuurNet\UDB3\Offer\WorkflowStatus;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
-use CultuurNet\UDB3\Symfony\type;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
-use Drupal\culturefeed_udb3\EventRelationsRepository;
 use InvalidArgumentException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Exception\Exception;
 use CultuurNet\UDB3\CalendarDeserializer;
-use ValueObjects\String\String;
 
 /**
  * Class EditPlaceRestController.
@@ -174,7 +170,8 @@ class EditPlaceRestController extends OfferRestBaseController
                 $address->addressCountry
             ),
             $this->calendarDeserializer->deserialize($body_content),
-            $theme
+            $theme,
+            WorkflowStatus::DRAFT()
         );
 
         $response->setData(
