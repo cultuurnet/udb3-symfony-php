@@ -283,7 +283,7 @@ class EditEventRestController extends OfferRestBaseController
             new StringLiteral($request->getContent())
         );
 
-        $event_id = $this->editor->createEvent(
+        $eventId = $this->editor->createEvent(
             $majorInfo->getTitle(),
             $majorInfo->getType(),
             $majorInfo->getLocation(),
@@ -293,8 +293,8 @@ class EditEventRestController extends OfferRestBaseController
 
         $response->setData(
             [
-                'eventId' => $event_id,
-                'url' => $this->iriGenerator->iri($event_id)
+                'eventId' => $eventId,
+                'url' => $this->iriGenerator->iri($eventId)
             ]
         );
 

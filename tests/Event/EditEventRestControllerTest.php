@@ -83,6 +83,53 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
             $this->iriGenerator,
             $this->security
         );
+
+        $this->iriGenerator
+            ->expects($this->any())
+            ->method('iri')
+            ->willReturnCallback(
+                function ($eventId) {
+                    return 'http://du.de/event/' . $eventId;
+                }
+            );
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_an_event()
+    {
+        $request = new Request([], [], [], [], [], [], $this->getMajorInfoJson());
+
+        $this->eventEditor
+            ->expects($this->once())
+            ->method('createEvent')
+            ->with(
+                new Title('foo'),
+                new EventType('1.8.2', 'PARTY!'),
+                new Location(
+                    'fe282e4f-35f5-480d-a90b-2720ab883b0a',
+                    new StringLiteral('P-P-Partyzone'),
+                    new Address(
+                        new Street('acmelane 12'),
+                        new PostalCode('3000'),
+                        new Locality('Leuven'),
+                        Country::fromNative('BE')
+                    )
+                )
+            )
+            ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
+
+        $response = $this->controller->createEvent($request);
+
+        $expectedResponseContent = json_encode(
+            [
+                'eventId' => 'A14DD1C8-0F9C-4633-B56A-A908F009AD94',
+                'url' => 'http://du.de/event/A14DD1C8-0F9C-4633-B56A-A908F009AD94',
+            ]
+        );
+
+        $this->assertEquals($expectedResponseContent, $response->getContent());
     }
 
     /**
@@ -90,34 +137,11 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_update_major_info_with_all_the_provided_json_data()
     {
-        $eventId = UUID::generateAsString();
-        $content = \GuzzleHttp\json_encode([
-            "name" => [
-                "nl" => "foo"
-            ],
-            "type" => [
-                "id" => "1.8.2",
-                "label" => "PARTY!"
-            ],
-            "theme" => [
-                "id" => "6.6.6",
-                "label" => "Pentagrams"
-            ],
-            "location" => [
-                "id" => "fe282e4f-35f5-480d-a90b-2720ab883b0a",
-                "name" => "P-P-Partyzone",
-                "address" => [
-                    "streetAddress" => "acmelane 12",
-                    "postalCode" => "3000",
-                    "addressLocality" => "Leuven",
-                    "addressCountry" => "BE",
-                ],
-            ],
-        ]);
-
-        $request = new Request([], [], [], [], [], [], $content);
+        $eventId = new UUID('7f71ebbd-b22b-4b94-96df-947ad0c1534f');
+        $request = new Request([], [], [], [], [], [], $this->getMajorInfoJson());
 
         $this->eventEditor
+            ->expects($this->once())
             ->method('updateMajorInfo')
             ->with(
                 $eventId,
@@ -136,17 +160,44 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
             )
             ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
 
-        $this->iriGenerator
-            ->method('iri')
-            ->with($eventId)
-            ->willReturn('http://du.de/event/' . $eventId);
+        $response = $this->controller->updateMajorInfo($request, $eventId->toNative());
 
-        $response = $this->controller->updateMajorInfo($request, $eventId);
-
-        $expectedResponseContent = \GuzzleHttp\json_encode([
-            "commandId" => "A14DD1C8-0F9C-4633-B56A-A908F009AD94",
-        ]);
+        $expectedResponseContent = json_encode(
+            ["commandId" => "A14DD1C8-0F9C-4633-B56A-A908F009AD94"]
+        );
 
         $this->assertEquals($expectedResponseContent, $response->getContent());
+    }
+
+    /**
+     * @return string
+     */
+    private function getMajorInfoJson()
+    {
+        return json_encode(
+            [
+                "name" => [
+                    "nl" => "foo"
+                ],
+                "type" => [
+                    "id" => "1.8.2",
+                    "label" => "PARTY!"
+                ],
+                "theme" => [
+                    "id" => "6.6.6",
+                    "label" => "Pentagrams"
+                ],
+                "location" => [
+                    "id" => "fe282e4f-35f5-480d-a90b-2720ab883b0a",
+                    "name" => "P-P-Partyzone",
+                    "address" => [
+                        "streetAddress" => "acmelane 12",
+                        "postalCode" => "3000",
+                        "addressLocality" => "Leuven",
+                        "addressCountry" => "BE",
+                    ],
+                ],
+            ]
+        );
     }
 }
