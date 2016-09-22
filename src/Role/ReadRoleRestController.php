@@ -162,10 +162,7 @@ class ReadRoleRestController
         } else {
             $list = array_map(
                 function (Permission $permission) {
-                    return [
-                        'key' => $permission->getName(),
-                        'name' => $permission->getValue(),
-                    ];
+                    return $permission->getName();
                 },
                 $this->permissionsRepository->getPermissions($userId)
             );
@@ -181,10 +178,7 @@ class ReadRoleRestController
         $list = [];
 
         foreach ($permissions as $key => $name) {
-            $item = new \stdClass();
-            $item->key = $key;
-            $item->name = $name;
-            $list[] = $item;
+            $list[] = $key;
         }
 
         return $list;
