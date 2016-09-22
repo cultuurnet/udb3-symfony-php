@@ -48,6 +48,11 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $jsonEquals;
 
     /**
+     * @var \CultureFeed_User
+     */
+    private $cfUser;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
@@ -76,10 +81,12 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->roleSearchRepository = $this->getMock(RepositoryInterface::class);
 
+        $this->cfUser = new \CultureFeed_User();
+
         $this->roleRestController = new ReadRoleRestController(
             $entityServiceInterface,
             $this->roleService,
-            new \CultureFeed_User(),
+            $this->cfUser,
             array(),
             $this->roleSearchRepository,
             $permissionsRepository
@@ -200,6 +207,33 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $responseJson = $response->getContent();
 
         $this->jsonEquals->assert('[]', $responseJson);
+    }
+
+    /**
+     * @test
+     */
+    public function it_responds_with_an_array_of_roles_for_the_current_user()
+    {
+        $userId = new StringLiteral('12345');
+        $this->cfUser->id = $userId->toNative();
+
+        $readmodelJson = file_get_contents(__DIR__ . '/samples/role_users_readmodel.json');
+        $expectedResponseJson = file_get_contents(__DIR__ . '/samples/role_users_response.json');
+
+        $readmodelDocument = new JsonDocument(
+            $userId->toNative(),
+            $readmodelJson
+        );
+
+        $this->roleService->expects($this->once())
+            ->method('getRolesByUserId')
+            ->with($userId)
+            ->willReturn($readmodelDocument);
+
+        $response = $this->roleRestController->getCurrentUserRoles();
+        $actualResponseJson = $response->getContent();
+
+        $this->jsonEquals->assert($expectedResponseJson, $actualResponseJson);
     }
 
     /**
