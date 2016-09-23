@@ -228,6 +228,33 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_responds_with_an_array_of_roles_for_the_current_user()
+    {
+        $userId = new StringLiteral('12345');
+        $this->cfUser->id = $userId->toNative();
+
+        $readmodelJson = file_get_contents(__DIR__ . '/samples/user_roles_readmodel.json');
+        $expectedResponseJson = file_get_contents(__DIR__ . '/samples/user_roles_response.json');
+
+        $readmodelDocument = new JsonDocument(
+            $userId->toNative(),
+            $readmodelJson
+        );
+
+        $this->roleService->expects($this->once())
+            ->method('getRolesByUserId')
+            ->with($userId)
+            ->willReturn($readmodelDocument);
+
+        $response = $this->roleRestController->getCurrentUserRoles();
+        $actualResponseJson = $response->getContent();
+
+        $this->jsonEquals->assert($expectedResponseJson, $actualResponseJson);
+    }
+
+    /**
+     * @test
+     */
     public function it_can_search()
     {
         $request = new Request();
