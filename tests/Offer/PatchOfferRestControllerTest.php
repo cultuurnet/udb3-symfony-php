@@ -40,6 +40,9 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      * @dataProvider commandRequestDataProvider
+     * @param OfferType $offerType
+     * @param Request $request
+     * @param AbstractCommand $expectedCommand
      */
     public function it_should_dispatch_the_requested_offer_commands(
         OfferType $offerType,
@@ -60,7 +63,7 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
 
         $response = $controller->handle($request, $this->itemId);
 
-        $this->assertEquals($expectedResponse, $response);
+        $this->assertEquals($expectedResponse->getContent(), $response->getContent());
     }
 
     public function commandRequestDataProvider()
