@@ -217,8 +217,8 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $userId = new StringLiteral('12345');
         $this->cfUser->id = $userId->toNative();
 
-        $readmodelJson = file_get_contents(__DIR__ . '/samples/role_users_readmodel.json');
-        $expectedResponseJson = file_get_contents(__DIR__ . '/samples/role_users_response.json');
+        $readmodelJson = file_get_contents(__DIR__ . '/samples/user_roles_readmodel.json');
+        $expectedResponseJson = file_get_contents(__DIR__ . '/samples/user_roles_response.json');
 
         $readmodelDocument = new JsonDocument(
             $userId->toNative(),
