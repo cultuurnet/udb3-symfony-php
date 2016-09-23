@@ -15,6 +15,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
+use CultuurNet\UDB3\Role\ValueObjects\Permission;
 
 class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,6 +54,16 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $cfUser;
 
     /**
+     * @var array
+     */
+    private $authorizationList;
+
+    /**
+     * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $permissionsRepository;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
@@ -63,7 +74,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->roleService = $this->getMock(RoleReadingServiceInterface::class);
 
-        $permissionsRepository = $this->getMock(UserPermissionsReadRepositoryInterface::class);
+        $this->permissionsRepository = $this->getMock(UserPermissionsReadRepositoryInterface::class);
 
         $entityServiceInterface->method('getEntity')
             ->willReturnCallback(
@@ -82,14 +93,19 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->roleSearchRepository = $this->getMock(RepositoryInterface::class);
 
         $this->cfUser = new \CultureFeed_User();
+        $this->authorizationList = [
+            'allow_all' => [
+                0 => '948cf2a5-65c5-470e-ab55-97ee4b05f576'
+            ]
+        ];
 
         $this->roleRestController = new ReadRoleRestController(
             $entityServiceInterface,
             $this->roleService,
             $this->cfUser,
-            array(),
+            $this->authorizationList,
             $this->roleSearchRepository,
-            $permissionsRepository
+            $this->permissionsRepository
         );
 
         $this->jsonEquals = new JsonEquals($this);
@@ -256,5 +272,55 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $actualResult = $this->roleRestController->search($request);
         $this->assertEquals($expectedResults, $actualResult->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_an_array_of_permissions_for_the_current_god_user()
+    {
+        $userId = new StringLiteral('948cf2a5-65c5-470e-ab55-97ee4b05f576');
+        $this->cfUser->id = $userId->toNative();
+
+        $response = $this->roleRestController->getUserPermissions();
+        $responseJson = $response->getContent();
+
+        $expectedResponseJson = json_encode([
+            "AANBOD_BEWERKEN",
+            "AANBOD_MODEREREN",
+            "AANBOD_VERWIJDEREN",
+            "ORGANISATIES_BEHEREN",
+            "GEBRUIKERS_BEHEREN",
+            "LABELS_BEHEREN"
+        ]);
+
+        $this->jsonEquals->assert($expectedResponseJson, $responseJson);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_an_array_of_permissions_for_the_current_user()
+    {
+        $userId = new StringLiteral('948cf2a5-65c5-470e-ab55-97ee4b05f577');
+        $this->cfUser->id = $userId->toNative();
+
+        $permissions = [
+            0 => Permission::getByName('AANBOD_MODEREREN')
+        ];
+
+        $this->permissionsRepository
+            ->expects($this->once())
+            ->method('getPermissions')
+            ->willReturn($permissions);
+
+        $response = $this->roleRestController->getUserPermissions();
+        $responseJson = $response->getContent();
+
+        $expectedResponseJson = json_encode([
+            "AANBOD_MODEREREN"
+        ]);
+
+        $this->jsonEquals->assert($expectedResponseJson, $responseJson);
     }
 }
