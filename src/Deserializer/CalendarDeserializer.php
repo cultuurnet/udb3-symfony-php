@@ -3,7 +3,9 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer;
 
 use CultuurNet\UDB3\Calendar;
+use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Timestamp;
+use DateTime;
 
 /**
  * @todo Extend JSONDeserializer, and clean up.
@@ -43,27 +45,30 @@ class CalendarDeserializer
                         $endDate = $date . 'T00:00:00';
                     }
 
-                    $timestamps[strtotime($startDate)] = new Timestamp($startDate, $endDate);
+                    $timestamps[strtotime($startDate)] = new Timestamp(
+                        DateTime::createFromFormat('c', $startDate),
+                        DateTime::createFromFormat('c', $endDate)
+                    );
                 }
             }
             ksort($timestamps);
         }
 
-        $startDate = !empty($eventData->startDate) ? $eventData->startDate : '';
-        $endDate = !empty($eventData->endDate) ? $eventData->endDate : '';
+        $startDate = !empty($eventData->startDate) ? DateTime::createFromFormat('c', $eventData->startDate)  : null;
+        $endDate = !empty($eventData->endDate) ? DateTime::createFromFormat('c', $eventData->endDate) : null;
 
         // For single calendar type, check if it should be multiple
         // Also calculate the correct startDate and endDate for the calendar object.
-        $calendarType = !empty($eventData->calendarType) ? $eventData->calendarType : 'permanent';
-        if ($calendarType == Calendar::SINGLE && count($timestamps) == 1) {
+        $calendarType = !empty($eventData->calendarType) ? CalendarType::fromNative($eventData->calendarType) : CalendarType::PERMANENT();
+        if ($calendarType->is(CalendarType::SINGLE()) && count($timestamps) == 1) {
             // 1 timestamp = no timestamps needed. Copy start and enddate.
             $firstTimestamp = current($timestamps);
             $startDate = $firstTimestamp->getStartDate();
             $endDate = $firstTimestamp->getEndDate();
             $timestamps = array();
-        } else if ($calendarType == Calendar::SINGLE && count($timestamps) > 1) {
+        } else if ($calendarType->is(CalendarType::SINGLE()) && count($timestamps) > 1) {
             // Multiple timestamps, startDate = first date, endDate = last date.
-            $calendarType = Calendar::MULTIPLE;
+            $calendarType = CalendarType::MULTIPLE();
             $firstTimestamp = current($timestamps);
             $lastTimestamp = end($timestamps);
             $startDate = $firstTimestamp->getStartDate();
