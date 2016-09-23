@@ -151,6 +151,14 @@ class ReadRoleRestController
     }
 
     /**
+     * @return Response
+     */
+    public function getCurrentUserRoles()
+    {
+        return $this->getUserRoles($this->currentUser->id);
+    }
+
+    /**
      * @return JsonResponse
      */
     public function getUserPermissions()
