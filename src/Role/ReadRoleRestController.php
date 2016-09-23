@@ -150,6 +150,9 @@ class ReadRoleRestController
         return $response;
     }
 
+    /**
+     * @return Response
+     */
     public function getCurrentUserRoles()
     {
         return $this->getUserRoles($this->currentUser->id);
