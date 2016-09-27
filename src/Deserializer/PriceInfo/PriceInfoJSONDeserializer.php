@@ -13,6 +13,12 @@ use ValueObjects\String\String as StringLiteral;
 
 class PriceInfoJSONDeserializer extends JSONDeserializer
 {
+    public function __construct()
+    {
+        $assoc = true;
+        parent::__construct($assoc);
+    }
+
     /**
      * @param StringLiteral $data
      * @return PriceInfo
@@ -33,7 +39,7 @@ class PriceInfoJSONDeserializer extends JSONDeserializer
             }
 
             if (!isset($itemData['name']) && $itemData['category'] !== 'base') {
-                throw new MissingValueException('The name property is required for each priceInfo item (except base).');
+                throw new MissingValueException('The name property is required for each tariff.');
             }
 
             if (!isset($itemData['price'])) {
