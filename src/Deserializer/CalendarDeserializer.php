@@ -46,16 +46,16 @@ class CalendarDeserializer
                     }
 
                     $timestamps[strtotime($startDate)] = new Timestamp(
-                        DateTime::createFromFormat('c', $startDate),
-                        DateTime::createFromFormat('c', $endDate)
+                        DateTime::createFromFormat(DateTime::ATOM, $startDate),
+                        DateTime::createFromFormat(DateTime::ATOM, $endDate)
                     );
                 }
             }
             ksort($timestamps);
         }
 
-        $startDate = !empty($eventData->startDate) ? DateTime::createFromFormat('c', $eventData->startDate)  : null;
-        $endDate = !empty($eventData->endDate) ? DateTime::createFromFormat('c', $eventData->endDate) : null;
+        $startDate = !empty($eventData->startDate) ? DateTime::createFromFormat(DateTime::ATOM, $eventData->startDate)  : null;
+        $endDate = !empty($eventData->endDate) ? DateTime::createFromFormat(DateTime::ATOM, $eventData->endDate) : null;
 
         // For single calendar type, check if it should be multiple
         // Also calculate the correct startDate and endDate for the calendar object.
