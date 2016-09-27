@@ -3,6 +3,11 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer\PriceInfo;
 
 use CultuurNet\Deserializer\MissingValueException;
+use CultuurNet\UDB3\PriceInfo\BasePrice;
+use CultuurNet\UDB3\PriceInfo\Price;
+use CultuurNet\UDB3\PriceInfo\PriceInfo;
+use CultuurNet\UDB3\PriceInfo\Tariff;
+use ValueObjects\Money\Currency;
 use ValueObjects\String\String as StringLiteral;
 
 class PriceInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
@@ -120,5 +125,36 @@ class PriceInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->deserializer->deserialize($data);
+    }
+
+    /**
+     * @test
+     */
+    public function it_deserializes_valid_price_info_data()
+    {
+        $data = new StringLiteral(
+            '[
+                {"category": "base", "price": 15, "priceCurrency": "EUR"},
+                {"category": "tarrif", "name": "Werkloze dodo kwekers", "price": 0, "priceCurrency": "EUR"}
+            ]'
+        );
+
+        $basePrice = new BasePrice(
+            new Price(15),
+            Currency::fromNative('EUR')
+        );
+
+        $tariff = new Tariff(
+            new StringLiteral('Werkloze dodo kwekers'),
+            new Price(0),
+            Currency::fromNative('EUR')
+        );
+
+        $expectedPriceInfo = (new PriceInfo($basePrice))
+            ->withExtraTariff($tariff);
+
+        $actualPriceInfo = $this->deserializer->deserialize($data);
+
+        $this->assertEquals($expectedPriceInfo, $actualPriceInfo);
     }
 }
