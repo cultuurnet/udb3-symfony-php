@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use ValueObjects\Identity\UUID;
 
 class EditOrganizerRestController
 {
@@ -96,6 +97,21 @@ class EditOrganizerRestController
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $organizerId
+     * @param string $labelId
+     * @return Response
+     */
+    public function addLabel($organizerId, $labelId)
+    {
+        $commandId = $this->editingService->addLabel(
+            $organizerId,
+            new UUID($labelId)
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
     }
 
     /**
