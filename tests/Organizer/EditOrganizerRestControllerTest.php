@@ -58,16 +58,29 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
         $organizerId = 'organizerId';
         $labelId = new UUID();
         $commandId = 'commandId';
-
         $this->editService->expects($this->once())
             ->method('addLabel')
             ->with($organizerId, $labelId)
             ->willReturn($commandId);
-
         $response = $this->controller->addLabel($organizerId, $labelId);
-
         $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedResponseContent, $response->getContent());
+    }
 
+    /**
+     * @test
+     */
+    public function it_removes_a_label()
+    {
+        $organizerId = 'organizerId';
+        $labelId = new UUID();
+        $commandId = 'commandId';
+        $this->editService->expects($this->once())
+            ->method('removeLabel')
+            ->with($organizerId, $labelId)
+            ->willReturn($commandId);
+        $response = $this->controller->removeLabel($organizerId, $labelId);
+        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
         $this->assertEquals($expectedResponseContent, $response->getContent());
     }
 
