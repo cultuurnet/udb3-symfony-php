@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Organizer;
 
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
+use ValueObjects\Identity\UUID;
 
 class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,6 +48,27 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
         $expectedJson = '{"commandId":"' . $commandId . '"}';
 
         $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_removes_a_label()
+    {
+        $organizerId = 'organizerId';
+        $labelId = new UUID();
+        $commandId = 'commandId';
+
+        $this->editService->expects($this->once())
+            ->method('removeLabel')
+            ->with($organizerId, $labelId)
+            ->willReturn($commandId);
+
+        $response = $this->controller->removeLabel($organizerId, $labelId);
+
+        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+
+        $this->assertEquals($expectedResponseContent, $response->getContent());
     }
 
     /**

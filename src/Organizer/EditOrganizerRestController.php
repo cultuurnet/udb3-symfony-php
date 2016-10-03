@@ -2,7 +2,6 @@
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
-use CultuurNet\Hydra\PagedCollection;
 use CultuurNet\UDB3\Address;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
@@ -107,6 +106,21 @@ class EditOrganizerRestController
     public function addLabel($organizerId, $labelId)
     {
         $commandId = $this->editingService->addLabel(
+            $organizerId,
+            new UUID($labelId)
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param string $organizerId
+     * @param string $labelId
+     * @return Response
+     */
+    public function removeLabel($organizerId, $labelId)
+    {
+        $commandId = $this->editingService->removeLabel(
             $organizerId,
             new UUID($labelId)
         );
