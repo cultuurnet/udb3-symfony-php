@@ -80,7 +80,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $request = new Request([], [], [], [], [], [], $data);
 
         $expectedBasePrice = new BasePrice(
-            new Price(15),
+            new Price(1500),
             Currency::fromNative('EUR')
         );
 

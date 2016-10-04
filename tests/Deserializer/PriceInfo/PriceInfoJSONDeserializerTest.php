@@ -76,23 +76,6 @@ class PriceInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_throws_an_exception_if_a_currency_is_missing()
-    {
-        $data = new StringLiteral(
-            '[{"name": "Senioren", "category": "tariff", "price": 10.5}]'
-        );
-
-        $this->setExpectedException(
-            MissingValueException::class,
-            'The priceCurrency property is required for each priceInfo item.'
-        );
-
-        $this->deserializer->deserialize($data);
-    }
-
-    /**
-     * @test
-     */
     public function it_throws_an_exception_if_more_than_one_base_price_is_found()
     {
         $data = new StringLiteral(
@@ -140,7 +123,7 @@ class PriceInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         );
 
         $basePrice = new BasePrice(
-            new Price(15),
+            new Price(1500),
             Currency::fromNative('EUR')
         );
 

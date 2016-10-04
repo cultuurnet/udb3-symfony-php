@@ -46,10 +46,6 @@ class PriceInfoJSONDeserializer extends JSONDeserializer
                 throw new MissingValueException('The price property is required for each priceInfo item.');
             }
 
-            if (!isset($itemData['priceCurrency'])) {
-                throw new MissingValueException('The priceCurrency property is required for each priceInfo item.');
-            }
-
             if ($itemData['category'] == 'base') {
                 $basePrices++;
             }
@@ -69,14 +65,14 @@ class PriceInfoJSONDeserializer extends JSONDeserializer
         foreach ($data as $itemData) {
             if ($itemData['category'] == 'base') {
                 $basePrice = new BasePrice(
-                    new Price($itemData['price']),
-                    Currency::fromNative($itemData['priceCurrency'])
+                    Price::fromFloat((float) $itemData['price']),
+                    Currency::fromNative('EUR')
                 );
             } else {
                 $tariffs[] = new Tariff(
                     new StringLiteral($itemData['name']),
-                    new Price($itemData['price']),
-                    Currency::fromNative($itemData['priceCurrency'])
+                    Price::fromFloat((float) $itemData['price']),
+                    Currency::fromNative('EUR')
                 );
             }
         }
