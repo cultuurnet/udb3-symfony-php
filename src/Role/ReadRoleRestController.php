@@ -151,7 +151,15 @@ class ReadRoleRestController
     }
 
     /**
-     * @return JsonResponse
+     * @return Response
+     */
+    public function getCurrentUserRoles()
+    {
+        return $this->getUserRoles($this->currentUser->id);
+    }
+
+    /**
+     * @return Response
      */
     public function getUserPermissions()
     {
@@ -162,10 +170,7 @@ class ReadRoleRestController
         } else {
             $list = array_map(
                 function (Permission $permission) {
-                    return [
-                        'key' => $permission->getName(),
-                        'name' => $permission->getValue(),
-                    ];
+                    return $permission->getName();
                 },
                 $this->permissionsRepository->getPermissions($userId)
             );
@@ -176,15 +181,16 @@ class ReadRoleRestController
             ->setPrivate();
     }
 
-    private function createPermissionsList($permissions)
+    /**
+     * @param array $permissions
+     * @return array
+     */
+    private function createPermissionsList(array $permissions)
     {
         $list = [];
 
         foreach ($permissions as $key => $name) {
-            $item = new \stdClass();
-            $item->key = $key;
-            $item->name = $name;
-            $list[] = $item;
+            $list[] = $key;
         }
 
         return $list;
