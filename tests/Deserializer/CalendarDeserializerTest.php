@@ -16,8 +16,8 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function setup()
     {
         $this->deserializer = new CalendarDeserializer();
+        date_default_timezone_set('Europe/Brussels');
     }
-
 
     /**
      * @test
