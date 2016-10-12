@@ -37,7 +37,7 @@ class CalendarDeserializer
                     if (!empty($timestamp->showEndHour) && !empty($timestamp->endHour)) {
                         list($hour, $minute) = explode(':', $timestamp->endHour);
                         if (strlen($hour) == 2 && strlen($minute) == 2) {
-                            $endDate = $date . 'T' . $timestamp->endHour . ':59Z';
+                            $endDate = $date . 'T' . $timestamp->endHour . ':00Z';
                         } else {
                             $endDate = $date . 'T23:59:59Z';
                         }
