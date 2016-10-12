@@ -26,13 +26,14 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_should_deserialize_a_calendar_with_a_single_date()
     {
         $majorInfoWithCalendarData = json_decode(
-            file_get_contents(__DIR__ . '/samples/major-info-data-with-single-day.json')
+            file_get_contents(__DIR__ . '/samples/major-info-data-with-single-day.json'),
+            true
         );
 
         $expectedCalendar = new Calendar(
             CalendarType::SINGLE(),
-            DateTime::createFromFormat(DateTime::ATOM, '2016-10-04T13:00:00Z'),
-            DateTime::createFromFormat(DateTime::ATOM, '2016-10-04T23:59:59Z')
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-04T13:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-04T13:00:00+02:00')
         );
 
         $calendar = $this->deserializer->deserialize($majorInfoWithCalendarData);
@@ -46,23 +47,45 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_should_deserialize_a_calendar_with_a_multiple_dates()
     {
         $majorInfoWithCalendarData = json_decode(
-            file_get_contents(__DIR__ . '/samples/major-info-data-with-multiple-days.json')
+            file_get_contents(__DIR__ . '/samples/major-info-data-with-multiple-days.json'),
+            true
         );
 
         $expectedCalendar = new Calendar(
             CalendarType::MULTIPLE(),
-            DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00Z'),
-            DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T13:00:00Z'),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T13:00:00+02:00'),
             [
-                '1476367200' => new Timestamp(
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00Z'),
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T23:59:59Z')
+                '1476309600' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00')
                 ),
-                '1476435600' => new Timestamp(
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T09:00:00Z'),
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T13:00:00Z')
+                '1476396000' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T09:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T13:00:00+02:00')
                 )
             ]
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoWithCalendarData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_deserialize_a_periodic_calendar()
+    {
+        $majorInfoWithCalendarData = json_decode(
+            file_get_contents(__DIR__ . '/samples/major-info-data-with-periodic-calendar.json'),
+            true
+        );
+
+        $expectedCalendar = new Calendar(
+            CalendarType::PERIODIC(),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-06T00:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-07T00:00:00+02:00')
         );
 
         $calendar = $this->deserializer->deserialize($majorInfoWithCalendarData);

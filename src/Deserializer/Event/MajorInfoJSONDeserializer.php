@@ -70,7 +70,7 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
             new StringLiteral(json_encode($data['location']))
         );
 
-        $calendar = $this->calendarDeserializer->deserialize((object) $data);
+        $calendar = $this->calendarDeserializer->deserialize($data);
 
         $theme = null;
         if (!empty($data['theme'])) {
