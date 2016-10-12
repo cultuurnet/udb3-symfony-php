@@ -23,21 +23,13 @@ class ReadOrganizerRestController
     private $service;
 
     /**
-     * @var OrganizerLookupServiceInterface
-     */
-    private $lookupService;
-
-    /**
      * OrganizerController constructor.
      * @param EntityServiceInterface           $service
-     * @param OrganizerLookupServiceInterface  $organizerLookupService
      */
     public function __construct(
-        EntityServiceInterface $service,
-        OrganizerLookupServiceInterface $organizerLookupService
+        EntityServiceInterface $service
     ) {
         $this->service = $service;
-        $this->lookupService = $organizerLookupService;
     }
 
     /**
@@ -64,37 +56,5 @@ class ReadOrganizerRestController
         }
 
         return $response;
-    }
-
-    /**
-     * @param string $term
-     * @return JsonLdResponse
-     */
-    public function findByPartOfTitle($term)
-    {
-        // @todo Add & process pagination parameters
-
-        $ids = $this->lookupService->findOrganizersByPartOfTitle($term);
-
-        $members = [];
-        if (!empty($ids)) {
-            $organizerService = $this->service;
-
-            $members = array_map(
-                function ($id) use ($organizerService) {
-                    return json_decode($organizerService->getEntity($id));
-                },
-                $ids
-            );
-        }
-
-        $pagedCollection = new PagedCollection(
-            1,
-            1000,
-            $members,
-            count($members)
-        );
-
-        return (new JsonLdResponse($pagedCollection));
     }
 }

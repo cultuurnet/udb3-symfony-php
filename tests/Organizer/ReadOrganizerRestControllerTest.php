@@ -27,11 +27,6 @@ class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     private $organizerController;
 
     /**
-     * @var OrganizerLookupServiceInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $lookupService;
-
-    /**
      * @var JsonDocument
      */
     private $jsonDocument;
@@ -44,7 +39,6 @@ class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->jsonDocument = new JsonDocument('id', 'organizer');
 
         $this->service = $this->getMock(EntityServiceInterface::class);
-        $this->lookupService = $this->getMock(OrganizerLookupServiceInterface::class);
 
         $this->service->method('getEntity')
             ->willReturnCallback(
@@ -61,8 +55,7 @@ class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             );
 
         $this->organizerController = new ReadOrganizerRestController(
-            $this->service,
-            $this->lookupService
+            $this->service
         );
     }
 
