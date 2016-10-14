@@ -940,12 +940,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "86871c944cbf90969e50c14bbeea62cf5b1584f1"
+                "reference": "364317484a4751e316e708379c656e2ea7830dfc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/86871c944cbf90969e50c14bbeea62cf5b1584f1",
-                "reference": "86871c944cbf90969e50c14bbeea62cf5b1584f1",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/364317484a4751e316e708379c656e2ea7830dfc",
+                "reference": "364317484a4751e316e708379c656e2ea7830dfc",
                 "shasum": ""
             },
             "require": {
@@ -1018,7 +1018,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2016-10-12 09:51:30"
+            "time": "2016-10-14 09:16:27"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -4131,16 +4131,16 @@
         },
         {
             "name": "phing/phing",
-            "version": "2.15.1",
+            "version": "2.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phingofficial/phing.git",
-                "reference": "16f6372d9bf71783abea98fdd8cd9cb4ecb3bf41"
+                "reference": "0999ab4e94e609dc00998e3d1b88df843054db7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phingofficial/phing/zipball/16f6372d9bf71783abea98fdd8cd9cb4ecb3bf41",
-                "reference": "16f6372d9bf71783abea98fdd8cd9cb4ecb3bf41",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/0999ab4e94e609dc00998e3d1b88df843054db7c",
+                "reference": "0999ab4e94e609dc00998e3d1b88df843054db7c",
                 "shasum": ""
             },
             "require": {
@@ -4220,7 +4220,7 @@
                 "task",
                 "tool"
             ],
-            "time": "2016-10-11 09:24:10"
+            "time": "2016-10-13 09:01:45"
         },
         {
             "name": "phpdocumentor/reflection-common",
