@@ -2,16 +2,17 @@
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
-use CultuurNet\UDB3\Address;
+use CultuurNet\Deserializer\DataValidationException;
+use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
-use CultuurNet\UDB3\Title;
+use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
-use ValueObjects\Web\Url;
+use ValueObjects\String\String as StringLiteral;
 
 class EditOrganizerRestController
 {
@@ -21,6 +22,11 @@ class EditOrganizerRestController
 
     /** @var IriGeneratorInterface */
     private $iriGenerator;
+
+    /**
+     * @var OrganizerCreationPayloadJSONDeserializer
+     */
+    private $organizerCreationPayloadDeserializer;
 
     /**
      * EditOrganizerRestController constructor.
@@ -33,71 +39,43 @@ class EditOrganizerRestController
     ) {
         $this->editingService = $organizerEditingService;
         $this->iriGenerator = $organizerIriGenerator;
+
+        $this->organizerCreationPayloadDeserializer = new OrganizerCreationPayloadJSONDeserializer();
     }
 
     /**
      * @param Request $request
      * @return JsonResponse
+     *
+     * @throws DataValidationException
      */
     public function create(Request $request)
     {
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
+        $payload = $this->organizerCreationPayloadDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
 
         try {
-            if (empty($body_content->name) || empty($body_content->website)) {
-                throw new \InvalidArgumentException('Required fields are missing');
-            }
-
-            $addresses = array();
-            if (!empty($body_content->address->streetAddress) &&
-                !empty($body_content->address->locality) &&
-                !empty($body_content->address->postalCode) &&
-                !empty($body_content->address->country)) {
-                $addresses[] = new Address(
-                    $body_content->address->streetAddress,
-                    $body_content->address->postalCode,
-                    $body_content->address->locality,
-                    $body_content->address->country
-                );
-            }
-
-            $phones = array();
-            $emails = array();
-            $urls = array();
-            if (!empty($body_content->contact)) {
-                foreach ($body_content->contact as $contactInfo) {
-                    if ($contactInfo->type == 'phone') {
-                        $phones[] = $contactInfo->value;
-                    } elseif ($contactInfo->type == 'email') {
-                        $emails[] = $contactInfo->value;
-                    } elseif ($contactInfo->type == 'url') {
-                        $urls[] = $contactInfo->value;
-                    }
-                }
-            }
-
-            $organizer_id = $this->editingService->create(
-                Url::fromNative($body_content->website),
-                new Title($body_content->name),
-                $addresses,
-                $phones,
-                $emails,
-                $urls
+            $organizerId = $this->editingService->create(
+                $payload->getWebsite(),
+                $payload->getTitle(),
+                $payload->getAddress(),
+                $payload->getContactPoint()
             );
-
-            $response->setData(
-                [
-                    'organizerId' => $organizer_id,
-                    'url' => $this->iriGenerator->iri($organizer_id),
-                ]
+        } catch (UniqueConstraintException $e) {
+            $e = new DataValidationException();
+            $e->setValidationMessages(
+                ['url' => 'Should be unique but is already in use.']
             );
-        } catch (\Exception $e) {
-            $response->setStatusCode(400);
-            $response->setData(['error' => $e->getMessage()]);
+            throw $e;
         }
 
-        return $response;
+        return JsonResponse::create(
+            [
+                'organizerId' => $organizerId,
+                'url' => $this->iriGenerator->iri($organizerId),
+            ]
+        );
     }
 
     /**

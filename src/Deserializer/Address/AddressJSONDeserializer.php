@@ -31,6 +31,11 @@ class AddressJSONDeserializer extends JSONDeserializer
     {
         $data = parent::deserialize($data);
         $this->validator->validate($data);
+
+        // @todo postalCode is documented as an integer in Swagger,
+        // but should be a string. (Documented as Text on schema.org)
+        $data['postalCode'] = (string) $data['postalCode'];
+
         return Address::deserialize($data);
     }
 }

@@ -2,10 +2,17 @@
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
+use CultuurNet\UDB3\Address\Address;
+use CultuurNet\UDB3\Address\Locality;
+use CultuurNet\UDB3\Address\PostalCode;
+use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
+use CultuurNet\UDB3\Title;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
+use ValueObjects\Web\Url;
 
 class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,63 +34,53 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->editService = $this->getMock(OrganizerEditingServiceInterface::class);
+
         $this->iriGenerator = $this->getMock(IriGeneratorInterface::class);
+        $this->iriGenerator->expects($this->any())
+            ->method('iri')
+            ->willReturnCallback(
+                function ($organizerId) {
+                    return 'http://io.uitdatabank.be/organizer/' . $organizerId;
+                }
+            );
+
         $this->controller = new EditOrganizerRestController($this->editService, $this->iriGenerator);
     }
 
+    /**
+     * @test
+     */
     public function it_creates_an_organizer()
     {
-        $cdbId = '123';
-        $commandId = '456';
+        $organizerId = '123';
+        $url = $this->iriGenerator->iri($organizerId);
 
         $this->editService->expects($this->once())
             ->method('create')
-            ->with($cdbId)
-            ->willReturn($commandId);
+            ->with(
+                Url::fromNative('http://www.hetdepot.be/'),
+                new Title('Het Depot'),
+                new Address(
+                    new Street('Martelarenplein 12'),
+                    new PostalCode('3000'),
+                    new Locality('Leuven'),
+                    Country::fromNative('BE')
+                )
+            )
+            ->willReturn($organizerId);
 
-        $request = $this->makeRequest('POST', 'organizer_create.json');
+        $expectedResponseData = [
+            'organizerId' => $organizerId,
+            'url' => $url,
+        ];
 
+        $expectedResponseJson = json_encode($expectedResponseData);
+
+        $request = $this->createRequest('POST', 'organizer_create.json');
         $response = $this->controller->create($request);
+        $actualResponseJson = $response->getContent();
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_an_exception_when_no_title_is_given_on_create()
-    {
-        $request = $this->makeRequest('POST', 'organizer_create_without_name.json');
-
-        $response =  $this->controller->create($request);
-        $expectedJson = '{"error":"Required fields are missing"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
-
-        $responseStatusCode = $response->getStatusCode();
-        $expectedResponseStatusCode = '400';
-
-        $this->assertEquals($expectedResponseStatusCode, $responseStatusCode);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_an_exception_when_no_website_is_given_on_create()
-    {
-        $request = $this->makeRequest('POST', 'organizer_create_without_website.json');
-
-        $response =  $this->controller->create($request);
-        $expectedJson = '{"error":"Required fields are missing"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
-
-        $responseStatusCode = $response->getStatusCode();
-        $expectedResponseStatusCode = '400';
-
-        $this->assertEquals($expectedResponseStatusCode, $responseStatusCode);
+        $this->assertEquals($expectedResponseJson, $actualResponseJson);
     }
 
     /**
@@ -149,15 +146,24 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->controller->delete('');
     }
 
-    public function makeRequest($method, $file_name)
+    /**
+     * @param string $method
+     * @param string $fileName
+     * @return Request
+     */
+    private function createRequest($method, $fileName)
     {
-        $content = $this->getJson($file_name);
+        $content = $this->getJson($fileName);
         $request = new Request([], [], [], [], [], [], $content);
         $request->setMethod($method);
 
         return $request;
     }
 
+    /**
+     * @param string $fileName
+     * @return string
+     */
     private function getJson($fileName)
     {
         $json = file_get_contents(
