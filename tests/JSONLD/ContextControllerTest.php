@@ -43,7 +43,7 @@ class ContextControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_update_the_domain_reference_when_a_custom_base_path_is_set()
     {
-        $path = Url::fromNative('https://du.de/');
+        $path = Url::fromNative('https://du.de');
         $controllerWithCustomBasePath = $this->controller->withCustomBasePath($path);
 
         $contextResponse = $controllerWithCustomBasePath->get('event');
