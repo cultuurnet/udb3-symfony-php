@@ -2,16 +2,19 @@
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
+use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
+use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Title;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
+use ValueObjects\String\String as StringLiteral;
 use ValueObjects\Web\Url;
 
 class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
@@ -81,6 +84,33 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
         $actualResponseJson = $response->getContent();
 
         $this->assertEquals($expectedResponseJson, $actualResponseJson);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_exception_when_trying_to_create_an_organizer_with_a_duplicate_url()
+    {
+        $uuid = 'c579e9f9-b43d-49b7-892e-75e55b26841e';
+        $website = 'http://www.hetdepot.be/';
+
+        $this->editService->expects($this->once())
+            ->method('create')
+            ->willThrowException(new UniqueConstraintException($uuid, new StringLiteral($website)));
+
+        $expectedMessages = [
+            'website' => 'Should be unique but is already in use.',
+        ];
+
+        try {
+            $request = $this->createRequest('POST', 'organizer_create.json');
+            $this->controller->create($request);
+            $this->fail('Did not catch expected DataValidationException');
+        } catch (\Exception $e) {
+            /* @var DataValidationException $e */
+            $this->assertInstanceOf(DataValidationException::class, $e);
+            $this->assertEquals($expectedMessages, $e->getValidationMessages());
+        }
     }
 
     /**
