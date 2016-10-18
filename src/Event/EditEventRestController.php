@@ -104,19 +104,6 @@ class EditEventRestController extends OfferRestBaseController
     }
 
     /**
-     * Creates a json-ld response.
-     *
-     * @return BinaryFileResponse
-     *   The response.
-     */
-    public function eventContext()
-    {
-        $response = new BinaryFileResponse('/udb3/api/1.0/event.jsonld');
-        $response->headers->set('Content-Type', 'application/ld+json');
-        return $response;
-    }
-
-    /**
      * Returns an event.
      *
      * @param string $cdbid
