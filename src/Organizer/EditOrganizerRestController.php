@@ -2,7 +2,10 @@
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
-use CultuurNet\UDB3\Address;
+use CultuurNet\UDB3\Address\Address;
+use CultuurNet\UDB3\Address\Locality;
+use CultuurNet\UDB3\Address\PostalCode;
+use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Title;
@@ -10,6 +13,7 @@ use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
 
 class EditOrganizerRestController
@@ -54,10 +58,10 @@ class EditOrganizerRestController
                 !empty($body_content->address->postalCode) &&
                 !empty($body_content->address->country)) {
                 $addresses[] = new Address(
-                    $body_content->address->streetAddress,
-                    $body_content->address->postalCode,
-                    $body_content->address->locality,
-                    $body_content->address->country
+                    new Street($body_content->address->streetAddress),
+                    new PostalCode($body_content->address->postalCode),
+                    new Locality($body_content->address->locality),
+                    Country::fromNative($body_content->address->country)
                 );
             }
 
