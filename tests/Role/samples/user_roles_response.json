@@ -1,18 +1,20 @@
 [
   {
-    "@id": "c022ae72-cb7b-4031-b79f-a93a41e9fa44",
-    "name": {
-      "nl": "Administrator"
-    },
-    "created": "2016-08-01T08:48:22+00:00",
-    "modified": "2016-08-02T13:12:45+00:00"
+    "uuid": "c022ae72-cb7b-4031-b79f-a93a41e9fa44",
+    "name": "Validator Leuven",
+    "constraint": "zipcode:3000",
+    "permissions": [
+      "AANBOD_INVOEREN",
+      "AANBOD_MODEREREN"
+    ]
   },
   {
-    "@id": "3a67f02e-3938-4c81-9935-44a9ee3ae5e0",
-    "name": {
-      "nl": "Moderator"
-    },
-    "created": "2016-08-01T08:52:26+00:00",
-    "modified": "2016-08-02T14:09:12+00:00"
+    "uuid": "3a67f02e-3938-4c81-9935-44a9ee3ae5e0",
+    "name": "validator Kessel-Lo",
+    "constraint": "zipcode:3010",
+    "permissions": [
+      "AANBOD_INVOEREN",
+      "AANBOD_MODEREREN"
+    ]
   }
 ]

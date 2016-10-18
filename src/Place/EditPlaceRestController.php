@@ -3,7 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Place;
 
 use CultureFeed_User;
-use CultuurNet\UDB3\Address;
+use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
@@ -14,20 +14,16 @@ use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
-use CultuurNet\UDB3\Symfony\type;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
-use Drupal\culturefeed_udb3\EventRelationsRepository;
 use InvalidArgumentException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Exception\Exception;
-use CultuurNet\UDB3\CalendarDeserializer;
-use ValueObjects\String\String;
+use ValueObjects\String\String as StringLiteral;
 
 /**
  * Class EditPlaceRestController.
@@ -60,7 +56,7 @@ class EditPlaceRestController extends OfferRestBaseController
     /**
      * The event relations repository.
      *
-     * @var EventRelationsRepository
+     * @var RepositoryInterface
      */
     protected $eventRelationsRepository;
 
@@ -75,9 +71,9 @@ class EditPlaceRestController extends OfferRestBaseController
     protected $iriGenerator;
 
     /**
-     * @var CalendarDeserializer
+     * @var MajorInfoJSONDeserializer
      */
-    protected $calendarDeserializer;
+    protected $majorInfoDeserializer;
 
     /**
      * Constructs a RestController.
@@ -106,8 +102,9 @@ class EditPlaceRestController extends OfferRestBaseController
         $this->eventRelationsRepository = $event_relations_repository;
         $this->user = $user;
         $this->security = $security;
-        $this->calendarDeserializer = new CalendarDeserializer();
         $this->iriGenerator = $iriGenerator;
+
+        $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
     }
 
     /**
@@ -150,41 +147,24 @@ class EditPlaceRestController extends OfferRestBaseController
      */
     public function createPlace(Request $request)
     {
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
-
-        if (empty($body_content->name) || empty($body_content->type)) {
-            throw new InvalidArgumentException('Required fields are missing');
-        }
-
-        $theme = null;
-        if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
-            $theme = new Theme($body_content->theme->id, $body_content->theme->label);
-        }
-
-        $address = !empty($body_content->location->address) ? $body_content->location->address : $body_content->address;
-
-        $place_id = $this->editor->createPlace(
-            new Title($body_content->name->nl),
-            new EventType($body_content->type->id, $body_content->type->label),
-            new Address(
-                $address->streetAddress,
-                $address->postalCode,
-                $address->addressLocality,
-                $address->addressCountry
-            ),
-            $this->calendarDeserializer->deserialize($body_content),
-            $theme
+        $majorInfo = $this->majorInfoDeserializer->deserialize(
+            new StringLiteral($request->getContent())
         );
 
-        $response->setData(
+        $place_id = $this->editor->createPlace(
+            $majorInfo->getTitle(),
+            $majorInfo->getType(),
+            $majorInfo->getAddress(),
+            $majorInfo->getCalendar(),
+            $majorInfo->getTheme()
+        );
+
+        return new JsonResponse(
             [
                 'placeId' => $place_id,
                 'url' => $this->iriGenerator->iri($place_id),
             ]
         );
-
-        return $response;
     }
 
     /**
@@ -209,37 +189,20 @@ class EditPlaceRestController extends OfferRestBaseController
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
-
-        if (empty($body_content->name) || empty($body_content->type)) {
-            throw new \InvalidArgumentException('Required fields are missing');
-        }
-
-        $theme = null;
-        if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
-            $theme = new Theme($body_content->theme->id, $body_content->theme->label);
-        }
-
-        $address = !empty($body_content->location->address) ? $body_content->location->address : $body_content->address;
-
-        $command_id = $this->editor->updateMajorInfo(
-            $cdbid,
-            new Title($body_content->name->nl),
-            new EventType($body_content->type->id, $body_content->type->label),
-            new Address(
-                $address->streetAddress,
-                $address->postalCode,
-                $address->addressLocality,
-                $address->addressCountry
-            ),
-            $this->calendarDeserializer->deserialize($body_content),
-            $theme
+        $majorInfo = $this->majorInfoDeserializer->deserialize(
+            new StringLiteral($request->getContent())
         );
 
-        $response->setData(['commandId' => $command_id]);
+        $commandId = $this->editor->updateMajorInfo(
+            $cdbid,
+            $majorInfo->getTitle(),
+            $majorInfo->getType(),
+            $majorInfo->getAddress(),
+            $majorInfo->getCalendar(),
+            $majorInfo->getTheme()
+        );
 
-        return $response;
+        return new JsonResponse(['commandId' => $commandId]);
     }
 
     /**

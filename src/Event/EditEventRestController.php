@@ -3,28 +3,29 @@
 namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultureFeed_User;
-use CultuurNet\UDB3\CalendarDeserializer;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
+use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
-use CultuurNet\UDB3\Location;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
+use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
-use CultuurNet\UDB3\UsedLabelsMemory\DefaultUsedLabelsMemoryService;
+use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\String\String as StringLiteral;
 
 class EditEventRestController extends OfferRestBaseController
 {
@@ -42,6 +43,11 @@ class EditEventRestController extends OfferRestBaseController
     protected $eventService;
 
     /**
+     * @var UsedLabelsMemoryServiceInterface
+     */
+    protected $usedLabelsMemory;
+
+    /**
      * The culturefeed user.
      *
      * @var Culturefeed_User
@@ -54,14 +60,14 @@ class EditEventRestController extends OfferRestBaseController
     protected $iriGenerator;
 
     /**
-     * @var CalendarDeserializer
-     */
-    protected $calendarDeserializer;
-
-    /**
      * @var SecurityInterface
      */
     protected $security;
+
+    /**
+     * @var MajorInfoJSONDeserializer
+     */
+    protected $majorInfoDeserializer;
 
     /**
      * Constructs a RestController.
@@ -70,7 +76,7 @@ class EditEventRestController extends OfferRestBaseController
      *   The event service.
      * @param EventEditingServiceInterface $eventEditor
      *   The event editor.
-     * @param DefaultUsedLabelsMemoryService $used_labels_memory
+     * @param UsedLabelsMemoryServiceInterface $used_labels_memory
      *   The event labeller.
      * @param CultureFeed_User $user
      *   The culturefeed user.
@@ -81,7 +87,7 @@ class EditEventRestController extends OfferRestBaseController
     public function __construct(
         EventServiceInterface $event_service,
         EventEditingServiceInterface $eventEditor,
-        DefaultUsedLabelsMemoryService $used_labels_memory,
+        UsedLabelsMemoryServiceInterface $used_labels_memory,
         CultureFeed_User $user,
         MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator,
@@ -92,8 +98,9 @@ class EditEventRestController extends OfferRestBaseController
         $this->usedLabelsMemory = $used_labels_memory;
         $this->user = $user;
         $this->iriGenerator = $iriGenerator;
-        $this->calendarDeserializer = new CalendarDeserializer();
         $this->security = $security;
+
+        $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
     }
 
     /**
@@ -258,40 +265,23 @@ class EditEventRestController extends OfferRestBaseController
     public function createEvent(Request $request)
     {
         $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
 
+        $majorInfo = $this->majorInfoDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
 
-        if (empty($body_content->name) ||
-            empty($body_content->type) ||
-            empty($body_content->location) ||
-            empty($body_content->calendarType)) {
-            throw new \InvalidArgumentException('Required fields are missing');
-        }
-
-        $theme = null;
-        if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
-            $theme = new Theme($body_content->theme->id, $body_content->theme->label);
-        }
-
-        $event_id = $this->editor->createEvent(
-            new Title($body_content->name->nl),
-            new EventType($body_content->type->id, $body_content->type->label),
-            new Location(
-                $body_content->location->id,
-                $body_content->location->name,
-                $body_content->location->address->addressCountry,
-                $body_content->location->address->addressLocality,
-                $body_content->location->address->postalCode,
-                $body_content->location->address->streetAddress
-            ),
-            $this->calendarDeserializer->deserialize($body_content),
-            $theme
+        $eventId = $this->editor->createEvent(
+            $majorInfo->getTitle(),
+            $majorInfo->getType(),
+            $majorInfo->getLocation(),
+            $majorInfo->getCalendar(),
+            $majorInfo->getTheme()
         );
 
         $response->setData(
             [
-                'eventId' => $event_id,
-                'url' => $this->iriGenerator->iri($event_id)
+                'eventId' => $eventId,
+                'url' => $this->iriGenerator->iri($eventId)
             ]
         );
 
@@ -320,32 +310,17 @@ class EditEventRestController extends OfferRestBaseController
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
-
-        if (empty($body_content->name) || empty($body_content->type)) {
-            throw new InvalidArgumentException('Required fields are missing');
-        }
-
-        $theme = null;
-        if (!empty($body_content->theme) && !empty($body_content->theme->id)) {
-            $theme = new Theme($body_content->theme->id, $body_content->theme->label);
-        }
+        $majorInfo = $this->majorInfoDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
 
         $command_id = $this->editor->updateMajorInfo(
             $cdbid,
-            new Title($body_content->name->nl),
-            new EventType($body_content->type->id, $body_content->type->label),
-            new Location(
-                $body_content->location->id,
-                $body_content->location->name,
-                $body_content->location->address->addressCountry,
-                $body_content->location->address->addressLocality,
-                $body_content->location->address->postalCode,
-                $body_content->location->address->streetAddress
-            ),
-            $this->calendarDeserializer->deserialize($body_content),
-            $theme
+            $majorInfo->getTitle(),
+            $majorInfo->getType(),
+            $majorInfo->getLocation(),
+            $majorInfo->getCalendar(),
+            $majorInfo->getTheme()
         );
 
         return JsonResponse::create(['commandId' => $command_id]);
@@ -362,7 +337,6 @@ class EditEventRestController extends OfferRestBaseController
     {
         $command = new PreflightCommand($cdbid, Permission::AANBOD_BEWERKEN());
         $has_permission = $this->security->isAuthorized($command);
-
         return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 
