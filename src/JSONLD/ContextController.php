@@ -37,7 +37,10 @@ class ContextController
     public function withCustomBasePath(Url $basePath)
     {
         $controller = clone $this;
-        $controller->basePath = $basePath;
+
+        $controller->basePath = Url::fromNative(
+            rtrim((string) $basePath, '/')
+        );
 
         return $controller;
     }

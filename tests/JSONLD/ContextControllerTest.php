@@ -54,4 +54,21 @@ class ContextControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResponse->getContent(), $contextResponse->getContent());
     }
+
+    /**
+     * @test
+     */
+    public function it_accepts_custom_base_paths_with_a_trailing_slash()
+    {
+        $path = Url::fromNative('https://du.de/');
+        $controllerWithCustomBasePath = $this->controller->withCustomBasePath($path);
+
+        $contextResponse = $controllerWithCustomBasePath->get('event');
+
+        $expectedResponse = new JsonLdResponse(
+            json_decode(file_get_contents(__DIR__ . '/event-with-custom-base-path.jsonld'))
+        );
+
+        $this->assertEquals($expectedResponse->getContent(), $contextResponse->getContent());
+    }
 }
