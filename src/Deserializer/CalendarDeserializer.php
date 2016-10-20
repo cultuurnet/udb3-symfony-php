@@ -26,7 +26,9 @@ class CalendarDeserializer
 
                     $time = strtotime($timestamp['date']);
                     if (!$time) {
-                        throw new InvalidArgumentException('Invalid date string provided for timestamp, ISO8601 expected!');
+                        throw new InvalidArgumentException(
+                            'Invalid date string provided for timestamp, ISO8601 expected!'
+                        );
                     }
 
                     $dayTime = (new DateTime())->setTimestamp($time);
