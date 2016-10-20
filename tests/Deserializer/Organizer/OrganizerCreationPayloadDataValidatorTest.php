@@ -40,7 +40,7 @@ class OrganizerCreationPayloadDataValidatorTest extends \PHPUnit_Framework_TestC
         $expectedMessages = [
             'name' => 'Title can not be empty.',
             'website' => 'Not a valid url.',
-            'address.addressCountry' => 'Required but could not be found.',
+            'address.addressCountry' => 'Should not be empty.',
             'contact.0.type' => 'Invalid type. Allowed types are: url, phone, email.',
         ];
 

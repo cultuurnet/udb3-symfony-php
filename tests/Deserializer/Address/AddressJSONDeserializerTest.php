@@ -32,10 +32,10 @@ class AddressJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         $expectedException = new DataValidationException();
         $expectedException->setValidationMessages(
             [
-                'streetAddress' => 'Required but could not be found.',
-                'postalCode' => 'Required but could not be found.',
-                'addressLocality' => 'Required but could not be found.',
-                'addressCountry' => 'Required but could not be found.',
+                'streetAddress' => 'Should not be empty.',
+                'postalCode' => 'Should not be empty.',
+                'addressLocality' => 'Should not be empty.',
+                'addressCountry' => 'Should not be empty.',
             ]
         );
 
