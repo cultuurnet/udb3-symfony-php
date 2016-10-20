@@ -21,8 +21,10 @@ class CalendarDeserializer
         if (!empty($eventData['timestamps'])) {
             foreach ($eventData['timestamps'] as $timestamp) {
                 if (!empty($timestamp['date'])) {
-                    $time = strtotime($timestamp['date']);
+                    // reset start & endtime to avoid date problems
+                    $startTime = $endTime = null;
 
+                    $time = strtotime($timestamp['date']);
                     if (!$time) {
                         throw new InvalidArgumentException('Invalid date string provided for timestamp, ISO8601 expected!');
                     }
