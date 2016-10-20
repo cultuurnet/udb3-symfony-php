@@ -92,4 +92,39 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedCalendar, $calendar);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_deserialize_calendar_info_with_multiple_days_and_no_hours()
+    {
+        $majorInfoWithCalendarData = json_decode(
+            file_get_contents(__DIR__ . '/samples/major-info-data-with-multiple-days-without-hours.json'),
+            true
+        );
+
+        $expectedCalendar = new Calendar(
+            CalendarType::MULTIPLE(),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200'),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200'),
+            [
+                '1476309600' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200')
+                ),
+                '1476396000' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T00:00:00+0200'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T00:00:00+0200')
+                ),
+                '1476482400' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200')
+                )
+            ]
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoWithCalendarData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
 }
