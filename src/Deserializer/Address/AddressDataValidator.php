@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Address;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\NotEmptyPropertiesDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\RequiredPropertiesDataValidator;
 
 class AddressDataValidator implements DataValidatorInterface
@@ -15,7 +16,7 @@ class AddressDataValidator implements DataValidatorInterface
 
     public function __construct()
     {
-        $this->requiredFieldsValidator = new RequiredPropertiesDataValidator(
+        $this->requiredFieldsValidator = new NotEmptyPropertiesDataValidator(
             [
                 'streetAddress',
                 'postalCode',
