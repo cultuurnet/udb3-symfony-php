@@ -94,14 +94,21 @@ class CalendarDeserializer
             $endDate = $lastTimestamp->getEndDate();
         }
 
-        // Remove empty opening hours.
-        $openingHours = array();
-        if (!empty($eventData['endHour'])) {
-            $openingHours = $eventData['endHour'];
-            foreach ($openingHours as $key => $openingHour) {
+        // Remove empty opening hours and useless properties.
+        $openingHours = [];
+        if (!empty($eventData['openingHours'])) {
+            foreach ($eventData['openingHours'] as $openingHour) {
                 if (empty($openingHour['dayOfWeek']) || empty($openingHour['opens']) || empty($openingHour['closes'])) {
-                    unset($openingHours[$key]);
+                    throw new InvalidArgumentException(
+                        'Opening hours require a list of days and opening and closing times.'
+                    );
                 }
+
+                $openingHours[] = [
+                    'dayOfWeek' => $openingHour['dayOfWeek'],
+                    'opens' => $openingHour['opens'],
+                    'closes' => $openingHour['closes'],
+                ];
             }
         }
 

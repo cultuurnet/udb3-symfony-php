@@ -127,4 +127,47 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedCalendar, $calendar);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_deserialize_opening_hours()
+    {
+        $majorInfoWithOpeningHoursData = json_decode(
+            file_get_contents(__DIR__ . '/samples/major-info-data-with-opening-hours.json'),
+            true
+        );
+
+        $expectedCalendar = new Calendar(
+            CalendarType::PERMANENT(),
+            null,
+            null,
+            [],
+            [
+                [
+                    'dayOfWeek' => [
+                        'monday',
+                        'tuesday',
+                        'wednesday',
+                        'thursday',
+                        'friday',
+                    ],
+                    'opens' => '10:00',
+                    'closes' => '19:00'
+                ],
+                [
+                    'dayOfWeek' => [
+                        'saturday',
+                        'sunday'
+                    ],
+                    'opens' => '12:00',
+                    'closes' => '19:00'
+                ]
+            ]
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoWithOpeningHoursData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
 }
