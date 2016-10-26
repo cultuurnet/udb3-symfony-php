@@ -170,4 +170,27 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedCalendar, $calendar);
     }
+
+    /**
+     * @test
+     */
+    public function it_ignores_empty_opening_hours()
+    {
+        $majorInfoWithEmptyOpeningHoursData = json_decode(
+            file_get_contents(__DIR__ . '/samples/major-info-data-with-empty-opening-hours.json'),
+            true
+        );
+
+        $expectedCalendar = new Calendar(
+            CalendarType::PERMANENT(),
+            null,
+            null,
+            [],
+            []
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoWithEmptyOpeningHoursData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
 }
