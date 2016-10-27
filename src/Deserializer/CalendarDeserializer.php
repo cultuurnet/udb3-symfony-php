@@ -102,7 +102,9 @@ class CalendarDeserializer
                 // This handles the 'empty' opening hours send by the client.
                 if (empty($openingHour['dayOfWeek']) && empty($openingHour['opens']) && empty($openingHour['closes'])) {
                     break;
-                } else if (empty($openingHour['dayOfWeek']) || empty($openingHour['opens']) || empty($openingHour['closes'])) {
+                }
+
+                if (empty($openingHour['dayOfWeek']) || empty($openingHour['opens']) || empty($openingHour['closes'])) {
                     throw new InvalidArgumentException(
                         'Opening hours require a list of days and opening and closing times.'
                     );
