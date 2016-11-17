@@ -54,11 +54,6 @@ class CalendarDeserializer
                     }
                     $endTime = isset($endTime) ? $endTime : $dayTime;
 
-
-                    // Make sure the the timestamp does not end in the past
-                    // If it does, push the end forward to when the timestamp starts
-                    $endTime = ($endTime > $startTime) ? $endTime : $startTime;
-
                     $timestamps[$time] = new Timestamp($startTime, $endTime);
                 }
             }
