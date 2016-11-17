@@ -36,15 +36,12 @@
     {
       "date": "2016-10-12T22:00:00.000Z",
       "startHour": "14:00",
-      "showStartHour": true,
-      "showEndHour": true
+      "endHour": "23:59"
     },
     {
       "date": "2016-10-13T22:00:00.000Z",
       "startHour": "09:00",
-      "endHour": "13:00",
-      "showStartHour": true,
-      "showEndHour": true
+      "endHour": "13:00"
     }
   ],
   "workflowStatus": "DRAFT"
