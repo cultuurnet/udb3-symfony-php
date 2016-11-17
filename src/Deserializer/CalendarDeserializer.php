@@ -34,7 +34,7 @@ class CalendarDeserializer
                     $dayTime = (new DateTime())->setTimestamp($time);
 
                     // Check if a correct starthour is given.
-                    if (!empty($timestamp['showStartHour']) && !empty($timestamp['startHour'])) {
+                    if (!empty($timestamp['startHour'])) {
                         list($hour, $minute) = explode(':', $timestamp['startHour']);
                         if (strlen($hour) == 2 && strlen($minute) == 2) {
                             $startTime = clone $dayTime;
@@ -45,7 +45,7 @@ class CalendarDeserializer
 
 
                     // Check if a correct endhour is given.
-                    if (!empty($timestamp['showEndHour']) && !empty($timestamp['endHour'])) {
+                    if (!empty($timestamp['endHour'])) {
                         list($hour, $minute) = explode(':', $timestamp['endHour']);
                         if (strlen($hour) == 2 && strlen($minute) == 2) {
                             $endTime = clone $dayTime;

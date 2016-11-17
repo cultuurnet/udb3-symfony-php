@@ -33,7 +33,7 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
         $expectedCalendar = new Calendar(
             CalendarType::SINGLE(),
             DateTime::createFromFormat(DateTime::ATOM, '2016-10-04T13:00:00+02:00'),
-            DateTime::createFromFormat(DateTime::ATOM, '2016-10-04T13:00:00+02:00')
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-04T23:59:00+02:00')
         );
 
         $calendar = $this->deserializer->deserialize($majorInfoWithCalendarData);
@@ -58,7 +58,7 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
             [
                 '1476309600' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00'),
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00')
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T23:59:00+02:00')
                 ),
                 '1476396000' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T09:00:00+02:00'),
@@ -106,19 +106,19 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
         $expectedCalendar = new Calendar(
             CalendarType::MULTIPLE(),
             DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200'),
-            DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200'),
+            DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T23:59:00+0200'),
             [
                 '1476309600' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200'),
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200')
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T23:59:00+0200')
                 ),
                 '1476396000' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T00:00:00+0200'),
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T00:00:00+0200')
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T23:59:00+0200')
                 ),
                 '1476482400' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200'),
-                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200')
+                    DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T23:59:00+0200')
                 )
             ]
         );

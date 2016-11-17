@@ -36,9 +36,7 @@
     {
       "date": "2016-10-03T22:00:00.000Z",
       "startHour": "13:00",
-      "endHour": "",
-      "showStartHour": true,
-      "showEndHour": false
+      "endHour": "23:59"
     }
   ],
   "workflowStatus": "DRAFT"
