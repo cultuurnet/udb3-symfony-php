@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Organizer;
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
 use InvalidArgumentException;
@@ -80,14 +81,14 @@ class EditOrganizerRestController
 
     /**
      * @param string $organizerId
-     * @param string $labelId
+     * @param string $labelName
      * @return Response
      */
-    public function addLabel($organizerId, $labelId)
+    public function addLabel($organizerId, $labelName)
     {
         $commandId = $this->editingService->addLabel(
             $organizerId,
-            new UUID($labelId)
+            new Label($labelName)
         );
 
         return JsonResponse::create(['commandId' => $commandId]);
@@ -95,14 +96,14 @@ class EditOrganizerRestController
 
     /**
      * @param string $organizerId
-     * @param string $labelId
+     * @param string $labelName
      * @return Response
      */
-    public function removeLabel($organizerId, $labelId)
+    public function removeLabel($organizerId, $labelName)
     {
         $commandId = $this->editingService->removeLabel(
             $organizerId,
-            new UUID($labelId)
+            new Label($labelName)
         );
 
         return JsonResponse::create(['commandId' => $commandId]);

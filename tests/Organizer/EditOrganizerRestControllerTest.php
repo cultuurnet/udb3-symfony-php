@@ -139,13 +139,16 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_adds_a_label()
     {
         $organizerId = 'organizerId';
-        $labelId = new UUID();
+        $labelName = '2dotstwice';
         $commandId = 'commandId';
+
         $this->editService->expects($this->once())
             ->method('addLabel')
-            ->with($organizerId, $labelId)
+            ->with($organizerId, $labelName)
             ->willReturn($commandId);
-        $response = $this->controller->addLabel($organizerId, $labelId);
+
+        $response = $this->controller->addLabel($organizerId, $labelName);
+
         $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
         $this->assertEquals($expectedResponseContent, $response->getContent());
     }
@@ -156,13 +159,16 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_removes_a_label()
     {
         $organizerId = 'organizerId';
-        $labelId = new UUID();
+        $labelName = '2dotstwice';
         $commandId = 'commandId';
+
         $this->editService->expects($this->once())
             ->method('removeLabel')
-            ->with($organizerId, $labelId)
+            ->with($organizerId, $labelName)
             ->willReturn($commandId);
-        $response = $this->controller->removeLabel($organizerId, $labelId);
+
+        $response = $this->controller->removeLabel($organizerId, $labelName);
+
         $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
         $this->assertEquals($expectedResponseContent, $response->getContent());
     }
