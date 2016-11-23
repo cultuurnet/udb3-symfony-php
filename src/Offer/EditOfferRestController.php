@@ -84,7 +84,7 @@ class EditOfferRestController
      */
     public function removeLabel($cdbid, $label)
     {
-        $commandId = $this->editService->deleteLabel(
+        $commandId = $this->editService->removeLabel(
             $cdbid,
             new Label($label)
         );

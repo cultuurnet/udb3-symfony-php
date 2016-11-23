@@ -5,8 +5,6 @@ namespace CultuurNet\UDB3\Symfony\Event;
 use CultureFeed_User;
 use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
-use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
@@ -18,11 +16,8 @@ use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
-use CultuurNet\UDB3\Theme;
-use CultuurNet\UDB3\Title;
 use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\String\String as StringLiteral;
@@ -222,33 +217,6 @@ class EditEventRestController extends OfferRestBaseController
         $this->usedLabelsMemory->rememberLabelUsed(
             $user->id,
             $label
-        );
-
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
-    }
-
-    /**
-     * Deletes a label.
-     *
-     * @param Request $request
-     *   The request.
-     * @param string $cdbid
-     *   The event id.
-     * @param string $label
-     *   The label.
-     *
-     * @return JsonResponse
-     *   The response.
-     */
-    public function deleteLabel(Request $request, $cdbid, $label)
-    {
-        $response = new JsonResponse();
-
-        $command_id = $this->eventEditor->unlabel(
-            $cdbid,
-            new Label($label)
         );
 
         $response->setData(['commandId' => $command_id]);
