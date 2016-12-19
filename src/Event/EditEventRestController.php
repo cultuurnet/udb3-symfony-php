@@ -3,20 +3,16 @@
 namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultureFeed_User;
-use CultuurNet\UDB3\Event\Event;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
-use CultuurNet\UDB3\Label;
-use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
-use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,11 +32,6 @@ class EditEventRestController extends OfferRestBaseController
      * @var EventServiceInterface
      */
     protected $eventService;
-
-    /**
-     * @var UsedLabelsMemoryServiceInterface
-     */
-    protected $usedLabelsMemory;
 
     /**
      * The culturefeed user.
@@ -71,8 +62,6 @@ class EditEventRestController extends OfferRestBaseController
      *   The event service.
      * @param EventEditingServiceInterface $eventEditor
      *   The event editor.
-     * @param UsedLabelsMemoryServiceInterface $used_labels_memory
-     *   The event labeller.
      * @param CultureFeed_User $user
      *   The culturefeed user.
      * @param IriGeneratorInterface $iriGenerator
@@ -82,7 +71,6 @@ class EditEventRestController extends OfferRestBaseController
     public function __construct(
         EventServiceInterface $event_service,
         EventEditingServiceInterface $eventEditor,
-        UsedLabelsMemoryServiceInterface $used_labels_memory,
         CultureFeed_User $user,
         MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator,
@@ -90,7 +78,6 @@ class EditEventRestController extends OfferRestBaseController
     ) {
         parent::__construct($eventEditor, $mediaManager);
         $this->eventService = $event_service;
-        $this->usedLabelsMemory = $used_labels_memory;
         $this->user = $user;
         $this->iriGenerator = $iriGenerator;
         $this->security = $security;
@@ -116,110 +103,6 @@ class EditEventRestController extends OfferRestBaseController
             ->setPublic()
             ->setClientTtl(60 * 30)
             ->setTtl(60 * 5);
-
-        return $response;
-    }
-
-    /**
-     * Modifies the event tile.
-     *
-     * @param Request $request
-     *   The request.
-     * @param string $cdbid
-     *   The event id.
-     * @param string $language
-     *   The event language.
-     *
-     * @return JsonResponse
-     *   The response.
-     */
-    public function title(Request $request, $cdbid, $language)
-    {
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
-
-        if (!$body_content->title) {
-            return new JsonResponse(['error' => "title required"], 400);
-        }
-
-        $command_id = $this->editor->translateTitle(
-            $cdbid,
-            new Language($language),
-            $body_content->title
-        );
-
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
-    }
-
-    /**
-     * Modifies the event description.
-     *
-     * @param Request $request
-     *   The request.
-     * @param string $cdbid
-     *   The event id.
-     * @param string $language
-     *   The event language.
-     *
-     * @return JsonResponse
-     *   The response.
-     */
-    public function description(Request $request, $cdbid, $language)
-    {
-        // If it's the main language, it should use updateDescription instead of translate.
-        if ($language == Event::MAIN_LANGUAGE_CODE) {
-            return parent::updateDescription($request, $cdbid, $language);
-        }
-
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
-
-        if (!isset($body_content->description)) {
-            return new JsonResponse(['error' => "description required"], 400);
-        }
-
-        $command_id = $this->editor->translateDescription(
-            $cdbid,
-            new Language($language),
-            $body_content->description
-        );
-
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
-    }
-
-    /**
-     * Adds a label.
-     *
-     * @param Request $request
-     *   The request.
-     * @param string $cdbid
-     *   The event id.
-     *
-     * @return JsonResponse
-     *   The response.
-     */
-    public function addLabel(Request $request, $cdbid)
-    {
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
-
-        $label = new Label($body_content->label);
-        $command_id = $this->eventEditor->label(
-            $cdbid,
-            $label
-        );
-
-        $user = $this->user;
-        $this->usedLabelsMemory->rememberLabelUsed(
-            $user->id,
-            $label
-        );
-
-        $response->setData(['commandId' => $command_id]);
 
         return $response;
     }

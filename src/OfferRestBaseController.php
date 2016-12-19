@@ -1,7 +1,4 @@
 <?php
-/**
- * @file
- */
 
 namespace CultuurNet\UDB3\Symfony;
 
@@ -9,13 +6,8 @@ use CultuurNet\UDB3\BookingInfo;
 use CultuurNet\UDB3\ContactPoint;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Media\MediaObject;
+use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
-use CultuurNet\UDB3\Timestamp;
-use Drupal\Core\Site\Settings;
-use Drupal\image\Entity\ImageStyle;
-use Drupal\file\Entity\File;
-use Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +21,7 @@ abstract class OfferRestBaseController
 {
     /**
      * TODO: Create a shared interface for event and places
-     * @var EventEditingServiceInterface|PlaceEditingServiceInterface
+     * @var EventEditingServiceInterface|PlaceEditingServiceInterface|OfferEditingServiceInterface
      */
     protected $editor;
 

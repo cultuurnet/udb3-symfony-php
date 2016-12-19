@@ -15,7 +15,6 @@ use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Title;
-use CultuurNet\UDB3\UsedLabelsMemory\UsedLabelsMemoryServiceInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Geography\Country;
@@ -38,11 +37,6 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
      * @var EventEditingServiceInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $eventEditor;
-
-    /**
-     * @var UsedLabelsMemoryServiceInterface
-     */
-    private $usedLabelsMemory;
 
     /**
      * @var CultureFeed_User
@@ -68,7 +62,6 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->entityService = $this->getMock(EventServiceInterface::class);
         $this->eventEditor = $this->getMock(EventEditingServiceInterface::class);
-        $this->usedLabelsMemory = $this->getMock(UsedLabelsMemoryServiceInterface::class);
         $this->user  = $this->getMock(CultureFeed_User::class);
         $this->mediaManager  = $this->getMock(MediaManagerInterface::class);
         $this->iriGenerator = $this->getMock(IriGeneratorInterface::class);
@@ -77,7 +70,6 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->controller = new EditEventRestController(
             $this->entityService,
             $this->eventEditor,
-            $this->usedLabelsMemory,
             $this->user,
             $this->mediaManager,
             $this->iriGenerator,
