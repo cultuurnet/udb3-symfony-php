@@ -4,6 +4,8 @@ namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultureFeed_User;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
+use CultuurNet\UDB3\Event\ValueObjects\Audience;
+use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
 use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
@@ -175,6 +177,23 @@ class EditEventRestController extends OfferRestBaseController
         );
 
         return JsonResponse::create(['commandId' => $command_id]);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
+     */
+    public function updateAudience(Request $request, $cdbid)
+    {
+        $bodyAsArray = json_decode($request->getContent(), true);
+        $audience = new Audience(
+            AudienceType::fromNative($bodyAsArray['audienceType'])
+        );
+
+        $commandId = $this->editor->updateAudience($cdbid, $audience);
+
+        return JsonResponse::create(['commandId' => $commandId]);
     }
 
     /**

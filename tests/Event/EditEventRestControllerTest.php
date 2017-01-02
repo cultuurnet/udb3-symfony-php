@@ -10,6 +10,8 @@ use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
+use CultuurNet\UDB3\Event\ValueObjects\Audience;
+use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
@@ -160,6 +162,31 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResponseContent, $response->getContent());
     }
+
+    /**
+     * @test
+     */
+    public function it_updates_audience()
+    {
+        $eventId = new UUID('7f71ebbd-b22b-4b94-96df-947ad0c1534f');
+        $commandId = 'commandId';
+        $content = json_encode(['audienceType' => 'education']);
+        $request = new Request([], [], [], [], [], [], $content);
+
+        $this->eventEditor->expects($this->once())
+            ->method('updateAudience')
+            ->with(
+                $eventId,
+                new Audience(AudienceType::EDUCATION())
+            )
+            ->willReturn($commandId);
+
+        $response = $this->controller->updateAudience($request, $eventId);
+
+        $expectedResponse = json_encode(['commandId' => $commandId]);
+        $this->assertEquals($expectedResponse, $response->getContent());
+    }
+
 
     /**
      * @return string
