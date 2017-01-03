@@ -185,8 +185,39 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $expectedResponse = json_encode(['commandId' => $commandId]);
         $this->assertEquals($expectedResponse, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
+    /**
+     * @test
+     */
+    public function it_returns_error_when_updating_audience_but_missing_cdbid()
+    {
+        $eventId = null;
+        $content = json_encode(['audienceType' => 'education']);
+        $request = new Request([], [], [], [], [], [], $content);
+
+        $response = $this->controller->updateAudience($request, $eventId);
+
+        $expectedResponse = json_encode(['error' => 'cdbid is required.']);
+        $this->assertEquals($expectedResponse, $response->getContent());
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_error_when_updating_audience_but_missing_audience_type()
+    {
+        $eventId = new UUID('7f71ebbd-b22b-4b94-96df-947ad0c1534f');
+        $request = new Request();
+
+        $response = $this->controller->updateAudience($request, $eventId);
+
+        $expectedResponse = json_encode(['error' => 'audience type is required.']);
+        $this->assertEquals($expectedResponse, $response->getContent());
+        $this->assertEquals(400, $response->getStatusCode());
+    }
 
     /**
      * @return string

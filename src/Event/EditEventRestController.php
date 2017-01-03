@@ -186,7 +186,15 @@ class EditEventRestController extends OfferRestBaseController
      */
     public function updateAudience(Request $request, $cdbid)
     {
+        if (empty($cdbid)) {
+            return new JsonResponse(['error' => 'cdbid is required.'], 400);
+        }
+
         $bodyAsArray = json_decode($request->getContent(), true);
+        if (!isset($bodyAsArray['audienceType'])) {
+            return new JsonResponse(['error' => 'audience type is required.'], 400);
+        }
+
         $audience = new Audience(
             AudienceType::fromNative($bodyAsArray['audienceType'])
         );
