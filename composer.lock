@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b01db87eebf0d1f014d57c9154ee4da2",
-    "content-hash": "b446b18dcfe497934cdd3de2589f2bdf",
+    "hash": "a804960a8498deb8fab951c27796a630",
+    "content-hash": "852ce48597e67182149cfbe115b0fe99",
     "packages": [
         {
             "name": "2dotstwice/collection",
@@ -980,16 +980,16 @@
         },
         {
             "name": "cultuurnet/udb3",
-            "version": "dev-feature/III-1406",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "896826a79178a3ee2f61cf871a78ef17102df71d"
+                "reference": "2c360464d97f756c5dfa6846f8533ddaa23d84a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/896826a79178a3ee2f61cf871a78ef17102df71d",
-                "reference": "896826a79178a3ee2f61cf871a78ef17102df71d",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/2c360464d97f756c5dfa6846f8533ddaa23d84a5",
+                "reference": "2c360464d97f756c5dfa6846f8533ddaa23d84a5",
                 "shasum": ""
             },
             "require": {
@@ -1063,7 +1063,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2017-01-02 14:59:32"
+            "time": "2017-01-04 13:46:23"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -5622,18 +5622,9 @@
             "time": "2016-11-23 20:04:58"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.1",
-            "alias_normalized": "0.1.0.0",
-            "version": "dev-feature/III-1406",
-            "package": "cultuurnet/udb3"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cultuurnet/udb3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
