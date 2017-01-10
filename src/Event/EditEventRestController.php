@@ -2,18 +2,15 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
-use CultureFeed_User;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
-use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
-use CultuurNet\UDB3\Security\SecurityInterface;
-use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
+use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
+use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
-use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,20 +24,6 @@ class EditEventRestController extends OfferRestBaseController
      * @var EventEditingServiceInterface
      */
     protected $editor;
-
-    /**
-     * The event service.
-     *
-     * @var EventServiceInterface
-     */
-    protected $eventService;
-
-    /**
-     * The culturefeed user.
-     *
-     * @var Culturefeed_User
-     */
-    protected $user;
 
     /**
      * @var IriGeneratorInterface
@@ -60,53 +43,23 @@ class EditEventRestController extends OfferRestBaseController
     /**
      * Constructs a RestController.
      *
-     * @param EventServiceInterface $event_service
-     *   The event service.
      * @param EventEditingServiceInterface $eventEditor
      *   The event editor.
-     * @param CultureFeed_User $user
-     *   The culturefeed user.
      * @param IriGeneratorInterface $iriGenerator
      * @param MediaManagerInterface $mediaManager
      * @param SecurityInterface $security
      */
     public function __construct(
-        EventServiceInterface $event_service,
         EventEditingServiceInterface $eventEditor,
-        CultureFeed_User $user,
         MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator,
         SecurityInterface $security
     ) {
         parent::__construct($eventEditor, $mediaManager);
-        $this->eventService = $event_service;
-        $this->user = $user;
         $this->iriGenerator = $iriGenerator;
         $this->security = $security;
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
-    }
-
-    /**
-     * Returns an event.
-     *
-     * @param string $cdbid
-     *   The event id.
-     *
-     * @return JsonLdResponse
-     *   The response.
-     */
-    public function details($cdbid)
-    {
-        $event = $this->getItem($cdbid);
-
-        $response = JsonResponse::create()
-            ->setContent($event)
-            ->setPublic()
-            ->setClientTtl(60 * 30)
-            ->setTtl(60 * 5);
-
-        return $response;
     }
 
     /**
@@ -216,13 +169,5 @@ class EditEventRestController extends OfferRestBaseController
         $command = new PreflightCommand($cdbid, Permission::AANBOD_BEWERKEN());
         $has_permission = $this->security->isAuthorized($command);
         return JsonResponse::create(['hasPermission' => $has_permission]);
-    }
-
-    /**
-     * Get the detail of an item.
-     */
-    public function getItem($id)
-    {
-        return $this->eventService->getEvent($id);
     }
 }

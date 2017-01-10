@@ -7,17 +7,15 @@ use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Event\EventType;
+use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
+use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Media\MediaManagerInterface;
+use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
+use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Title;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
-use CultureFeed_User;
-use CultuurNet\UDB3\EntityServiceInterface;
-use CultuurNet\UDB3\Iri\IriGeneratorInterface;
-use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Security\SecurityInterface;
-use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
-use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
 
@@ -29,11 +27,6 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
     private $placeRestController;
 
     /**
-     * @var EntityServiceInterface|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $entityService;
-
-    /**
      * @var PlaceEditingServiceInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $placeEditingService;
@@ -42,11 +35,6 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
      * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $relationsRepository;
-
-    /**
-     * @var CultureFeed_User|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $user;
 
     /**
      * @var SecurityInterface|PHPUnit_Framework_MockObject_MockObject
@@ -65,19 +53,15 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->entityService = $this->getMock(EntityServiceInterface::class);
         $this->placeEditingService  = $this->getMock(PlaceEditingServiceInterface::class);
         $this->relationsRepository  = $this->getMock(RepositoryInterface::class);
-        $this->user  = $this->getMock(CultureFeed_User::class);
         $this->security  = $this->getMock(SecurityInterface::class);
         $this->mediaManager  = $this->getMock(MediaManagerInterface::class);
         $this->iriGenerator = $this->getMock(IriGeneratorInterface::class);
 
         $this->placeRestController = new EditPlaceRestController(
-            $this->entityService,
             $this->placeEditingService,
             $this->relationsRepository,
-            $this->user,
             $this->security,
             $this->mediaManager,
             $this->iriGenerator
