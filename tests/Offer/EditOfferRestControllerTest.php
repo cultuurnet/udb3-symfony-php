@@ -49,7 +49,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->editService = $this->getMock(OfferEditingServiceInterface::class);
+        $this->editService = $this->createMock(OfferEditingServiceInterface::class);
 
         $this->labelDeserializer = new LabelJSONDeserializer();
         $this->titleDeserializer = new TitleJSONDeserializer();

@@ -21,7 +21,7 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->jobsStatusFactory = $this->getMock(
+        $this->jobsStatusFactory = $this->createMock(
             JobsStatusFactoryInterface::class
         );
 

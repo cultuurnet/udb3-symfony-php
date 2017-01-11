@@ -56,7 +56,7 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->commandId = new UUID();
         $this->uuid = new UUID();
 
-        $this->writeService = $this->getMock(WriteServiceInterface::class);
+        $this->writeService = $this->createMock(WriteServiceInterface::class);
         $this->mockCreate();
         $this->mockMakeVisible();
         $this->mockMakeInvisible();

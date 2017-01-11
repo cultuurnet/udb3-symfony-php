@@ -62,12 +62,12 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->entityService = $this->getMock(EventServiceInterface::class);
-        $this->eventEditor = $this->getMock(EventEditingServiceInterface::class);
-        $this->user  = $this->getMock(CultureFeed_User::class);
-        $this->mediaManager  = $this->getMock(MediaManagerInterface::class);
-        $this->iriGenerator = $this->getMock(IriGeneratorInterface::class);
-        $this->security  = $this->getMock(SecurityInterface::class);
+        $this->entityService = $this->createMock(EventServiceInterface::class);
+        $this->eventEditor = $this->createMock(EventEditingServiceInterface::class);
+        $this->user  = $this->createMock(CultureFeed_User::class);
+        $this->mediaManager  = $this->createMock(MediaManagerInterface::class);
+        $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
+        $this->security  = $this->createMock(SecurityInterface::class);
 
         $this->controller = new EditEventRestController(
             $this->entityService,

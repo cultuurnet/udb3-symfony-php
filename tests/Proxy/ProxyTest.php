@@ -47,13 +47,13 @@ class ProxyTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->filter = $this->getMock(FilterInterface::class);
-        $this->requestTransformer = $this->getMock(RequestTransformerInterface::class);
+        $this->filter = $this->createMock(FilterInterface::class);
+        $this->requestTransformer = $this->createMock(RequestTransformerInterface::class);
 
-        $this->diactorosFactory = $this->getMock(DiactorosFactory::class);
-        $this->httpFoundationFactory = $this->getMock(HttpFoundationFactory::class);
+        $this->diactorosFactory = $this->createMock(DiactorosFactory::class);
+        $this->httpFoundationFactory = $this->createMock(HttpFoundationFactory::class);
 
-        $this->client = $this->getMock(ClientInterface::class);
+        $this->client = $this->createMock(ClientInterface::class);
 
         $this->proxy = new Proxy(
             $this->filter,

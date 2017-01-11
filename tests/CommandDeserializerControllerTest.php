@@ -27,8 +27,8 @@ class CommandDeserializerControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->deserializer = $this->getMock(DeserializerInterface::class);
-        $this->commandBus = $this->getMock(CommandBusInterface::class);
+        $this->deserializer = $this->createMock(DeserializerInterface::class);
+        $this->commandBus = $this->createMock(CommandBusInterface::class);
 
         $this->controller = new CommandDeserializerController(
             $this->deserializer,

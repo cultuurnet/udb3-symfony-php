@@ -34,7 +34,7 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->commandBus = $this->getMock(CommandBusInterface::class);
+        $this->commandBus = $this->createMock(CommandBusInterface::class);
     }
 
     /**

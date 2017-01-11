@@ -82,17 +82,17 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
             new Natural(2)
         );
 
-        $this->readService = $this->getMock(ReadServiceInterface::class);
+        $this->readService = $this->createMock(ReadServiceInterface::class);
         $this->mockGetByUuid();
         $this->mockGetByName();
         $this->mockSearch();
         $this->mockSearchTotalLabels();
 
-        $this->userIdentification = $this->getMock(UserIdentificationInterface::class);
+        $this->userIdentification = $this->createMock(UserIdentificationInterface::class);
         $this->mockIsGodUser();
         $this->mockGetId();
 
-        $this->queryFactory = $this->getMock(
+        $this->queryFactory = $this->createMock(
             QueryFactory::class,
             null,
             [$this->userIdentification]

@@ -38,7 +38,7 @@ class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->jsonDocument = new JsonDocument('id', 'organizer');
 
-        $this->service = $this->getMock(EntityServiceInterface::class);
+        $this->service = $this->createMock(EntityServiceInterface::class);
 
         $this->service->method('getEntity')
             ->willReturnCallback(

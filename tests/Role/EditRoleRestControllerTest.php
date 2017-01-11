@@ -64,10 +64,10 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->commandId = (new UUID())->toNative();
         $this->labelId = (new UUID())->toNative();
 
-        $this->editService = $this->getMock(RoleEditingServiceInterface::class);
-        $this->commandBus = $this->getMock(CommandBusInterface::class);
-        $this->updateRoleRequestDeserializer = $this->getMock(UpdateRoleRequestDeserializer::class);
-        $this->labelService = $this->getMock(ReadServiceInterface::class);
+        $this->editService = $this->createMock(RoleEditingServiceInterface::class);
+        $this->commandBus = $this->createMock(CommandBusInterface::class);
+        $this->updateRoleRequestDeserializer = $this->createMock(UpdateRoleRequestDeserializer::class);
+        $this->labelService = $this->createMock(ReadServiceInterface::class);
 
         $this->controller = new EditRoleRestController(
             $this->editService,

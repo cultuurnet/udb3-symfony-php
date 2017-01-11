@@ -26,7 +26,7 @@ class UserPermissionsVoterTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->permissionRepository = $this->getMock(
+        $this->permissionRepository = $this->createMock(
             UserPermissionsReadRepositoryInterface::class,
             ['getPermissions']
         );
@@ -40,8 +40,8 @@ class UserPermissionsVoterTest extends PHPUnit_Framework_TestCase
     public function it_should_grant_access_to_a_user_with_all_the_required_permissions()
     {
         $userId = UUID::generateAsString();
-        $userToken = $this->getMockToken($userId);
-        $request = $this->getMock(Request::class);
+        $userToken = $this->createMockToken($userId);
+        $request = $this->createMock(Request::class);
         $grantedPermissions = [
             Permission::get(Permission::GEBRUIKERS_BEHEREN),
             Permission::get(Permission::LABELS_BEHEREN),
@@ -63,8 +63,8 @@ class UserPermissionsVoterTest extends PHPUnit_Framework_TestCase
     public function it_grants_access_to_a_user_with_all_the_required_permissions_and_one_not_supported()
     {
         $userId = UUID::generateAsString();
-        $userToken = $this->getMockToken($userId);
-        $request = $this->getMock(Request::class);
+        $userToken = $this->createMockToken($userId);
+        $request = $this->createMock(Request::class);
         $grantedPermissions = [
             Permission::get(Permission::GEBRUIKERS_BEHEREN),
             Permission::get(Permission::LABELS_BEHEREN),
@@ -88,8 +88,8 @@ class UserPermissionsVoterTest extends PHPUnit_Framework_TestCase
     public function it_denies_access_to_a_user_with_missing_required_permissions()
     {
         $userId = UUID::generateAsString();
-        $userToken = $this->getMockToken($userId);
-        $request = $this->getMock(Request::class);
+        $userToken = $this->createMockToken($userId);
+        $request = $this->createMock(Request::class);
         $grantedPermissions = [
             Permission::get(Permission::GEBRUIKERS_BEHEREN),
             Permission::get(Permission::LABELS_BEHEREN),
@@ -113,8 +113,8 @@ class UserPermissionsVoterTest extends PHPUnit_Framework_TestCase
     public function it_should_deny_access_to_a_user_without_all_the_required_permissions()
     {
         $userId = UUID::generateAsString();
-        $userToken = $this->getMockToken($userId);
-        $request = $this->getMock(Request::class);
+        $userToken = $this->createMockToken($userId);
+        $request = $this->createMock(Request::class);
         $grantedPermissions = [
             Permission::get(Permission::GEBRUIKERS_BEHEREN),
             Permission::get(Permission::LABELS_BEHEREN),
