@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
-use ValueObjects\String\String;
+use ValueObjects\StringLiteral\StringLiteral;
 
 /**
  * Base class for offer reset callbacks.
@@ -268,8 +268,8 @@ abstract class OfferRestBaseController
     public function updateImage(Request $request, $itemId, $mediaObjectId)
     {
         $body_content = json_decode($request->getContent());
-        $description = new String($body_content->description);
-        $copyrightHolder = new String($body_content->copyrightHolder);
+        $description = new StringLiteral($body_content->description);
+        $copyrightHolder = new StringLiteral($body_content->copyrightHolder);
         $imageId = new UUID($mediaObjectId);
         $image = $this->mediaManager->getImage($imageId);
 

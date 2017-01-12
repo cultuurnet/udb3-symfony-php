@@ -2,7 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Management\User;
 
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 interface UserIdentificationInterface
 {

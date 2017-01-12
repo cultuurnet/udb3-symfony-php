@@ -5,7 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Location;
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Location\Location;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class LocationJSONDeserializer extends JSONDeserializer
 {

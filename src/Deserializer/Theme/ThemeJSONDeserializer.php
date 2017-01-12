@@ -5,7 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Theme;
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Theme;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class ThemeJSONDeserializer extends JSONDeserializer
 {

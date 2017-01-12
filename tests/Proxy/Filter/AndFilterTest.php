@@ -3,7 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
 use GuzzleHttp\Psr7\Request;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class AndFilterTest extends \PHPUnit_Framework_TestCase
 {

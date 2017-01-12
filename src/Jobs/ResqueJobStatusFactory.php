@@ -3,7 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Jobs;
 
 use Resque_Job_Status;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class ResqueJobStatusFactory implements JobsStatusFactoryInterface
 {

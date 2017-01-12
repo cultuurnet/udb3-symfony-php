@@ -3,7 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\JSONLD;
 
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
 class ContextController

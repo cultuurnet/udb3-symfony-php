@@ -14,7 +14,7 @@ use CultuurNet\UDB3\Title;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
 class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase

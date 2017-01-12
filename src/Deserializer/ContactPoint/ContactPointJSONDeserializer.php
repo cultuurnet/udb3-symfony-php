@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\ContactPoint;
 
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\ContactPoint;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class ContactPointJSONDeserializer extends JSONDeserializer
 {

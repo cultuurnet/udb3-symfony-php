@@ -14,7 +14,7 @@ use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 {

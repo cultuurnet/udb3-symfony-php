@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\ContactPoint;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\ContactPoint;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class ContactPointJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 {

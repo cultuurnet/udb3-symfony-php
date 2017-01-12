@@ -9,7 +9,7 @@ use CultuurNet\UDB3\SavedSearches\Command\UnsubscribeFromSavedSearch;
 use CultuurNet\UDB3\SavedSearches\ReadModel\SavedSearchRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\String\String;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class EditSavedSearchesRestController
 {
@@ -43,11 +43,11 @@ class EditSavedSearchesRestController
     public function save(Request $request)
     {
         $commandDeserializer = new SubscribeToSavedSearchJSONDeserializer(
-            new String($this->user->id)
+            new StringLiteral($this->user->id)
         );
 
         $command = $commandDeserializer->deserialize(
-            new String($request->getContent())
+            new StringLiteral($request->getContent())
         );
 
         return $this->commandResponse($command);
@@ -61,8 +61,8 @@ class EditSavedSearchesRestController
     public function delete($id)
     {
         $command = new UnsubscribeFromSavedSearch(
-            new String($this->user->id),
-            new String($id)
+            new StringLiteral($this->user->id),
+            new StringLiteral($id)
         );
 
         return $this->commandResponse($command);

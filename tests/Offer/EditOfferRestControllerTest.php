@@ -13,7 +13,7 @@ use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
 use CultuurNet\UDB3\TitleJSONDeserializer;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Money\Currency;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 {

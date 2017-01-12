@@ -11,7 +11,7 @@ use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\PortReplacer;
 use GuzzleHttp\ClientInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Domain;
 use ValueObjects\Web\PortNumber;
 

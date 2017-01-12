@@ -5,7 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Event;
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Event\EventType;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class EventTypeJSONDeserializer extends JSONDeserializer
 {

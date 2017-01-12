@@ -3,7 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
 use Psr\Http\Message\RequestInterface;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class MethodFilter implements FilterInterface
 {
