@@ -2,13 +2,11 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
-use CultureFeed_User;
 use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
-use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
