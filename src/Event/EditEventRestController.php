@@ -96,8 +96,11 @@ class EditEventRestController extends OfferRestBaseController
 
     /**
      * Remove an event.
+     *
+     * @param string $cdbid
+     * @return JsonResponse
      */
-    public function deleteEvent(Request $request, $cdbid)
+    public function deleteEvent($cdbid)
     {
         $response = new JsonResponse();
 
@@ -113,6 +116,10 @@ class EditEventRestController extends OfferRestBaseController
 
     /**
      * Update the major info of an item.
+     *
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
