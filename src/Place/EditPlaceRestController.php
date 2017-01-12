@@ -93,6 +93,9 @@ class EditPlaceRestController extends OfferRestBaseController
 
     /**
      * Create a new place.
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function createPlace(Request $request)
     {
@@ -118,8 +121,11 @@ class EditPlaceRestController extends OfferRestBaseController
 
     /**
      * Remove a place.
+     *
+     * @param string $cdbid
+     * @return JsonResponse
      */
-    public function deletePlace(Request $request, $cdbid)
+    public function deletePlace($cdbid)
     {
         $response = new JsonResponse();
 
@@ -135,6 +141,10 @@ class EditPlaceRestController extends OfferRestBaseController
 
     /**
      * Update the major info of an item.
+     *
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
