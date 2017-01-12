@@ -2,23 +2,16 @@
 
 namespace CultuurNet\UDB3\Symfony\Place;
 
-use CultureFeed_User;
-use CultuurNet\UDB3\Address\Address;
-use CultuurNet\UDB3\EntityServiceInterface;
-use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
+use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
+use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Security\SecurityInterface;
-use CultuurNet\UDB3\Facility;
-use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
-use CultuurNet\UDB3\Symfony\JsonLdResponse;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
-use CultuurNet\UDB3\Theme;
-use CultuurNet\UDB3\Title;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,25 +26,11 @@ use ValueObjects\StringLiteral\StringLiteral;
 class EditPlaceRestController extends OfferRestBaseController
 {
     /**
-     * The entity service.
-     *
-     * @var EntityServiceInterface
-     */
-    protected $entityService;
-
-    /**
      * The place editor.
      *
      * @var PlaceEditingServiceInterface
      */
     protected $editor;
-
-    /**
-     * The culturefeed user.
-     *
-     * @var Culturefeed_User
-     */
-    protected $user;
 
     /**
      * The event relations repository.
@@ -78,29 +57,21 @@ class EditPlaceRestController extends OfferRestBaseController
     /**
      * Constructs a RestController.
      *
-     * @param EntityServiceInterface       $entity_service
-     *   The entity service.
      * @param PlaceEditingServiceInterface $placeEditor
-     * @param RepositoryInterface          $event_relations_repository,
-     * @param CultureFeed_User             $user
-     *   The culturefeed user.
+     * @param RepositoryInterface          $event_relations_repository
      * @param SecurityInterface            $security
      * @param MediaManagerInterface        $mediaManager
      * @param IriGeneratorInterface        $iriGenerator
      */
     public function __construct(
-        EntityServiceInterface $entity_service,
         PlaceEditingServiceInterface $placeEditor,
         RepositoryInterface $event_relations_repository,
-        CultureFeed_User $user,
         SecurityInterface $security,
         MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator
     ) {
         parent::__construct($placeEditor, $mediaManager);
-        $this->entityService = $entity_service;
         $this->eventRelationsRepository = $event_relations_repository;
-        $this->user = $user;
         $this->security = $security;
         $this->iriGenerator = $iriGenerator;
 
@@ -121,29 +92,10 @@ class EditPlaceRestController extends OfferRestBaseController
     }
 
     /**
-     * Returns a place.
-     *
-     * @param string $cdbid
-     *   The place id.
-     *
-     * @return JsonLdResponse
-     *   The response.
-     */
-    public function details($cdbid)
-    {
-        $place = $this->getItem($cdbid);
-
-        $response = JsonResponse::create()
-            ->setContent($place)
-            ->setPublic()
-            ->setClientTtl(60 * 30)
-            ->setTtl(60 * 5);
-
-        return $response;
-    }
-
-    /**
      * Create a new place.
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function createPlace(Request $request)
     {
@@ -169,8 +121,11 @@ class EditPlaceRestController extends OfferRestBaseController
 
     /**
      * Remove a place.
+     *
+     * @param string $cdbid
+     * @return JsonResponse
      */
-    public function deletePlace(Request $request, $cdbid)
+    public function deletePlace($cdbid)
     {
         $response = new JsonResponse();
 
@@ -186,6 +141,10 @@ class EditPlaceRestController extends OfferRestBaseController
 
     /**
      * Update the major info of an item.
+     *
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
@@ -227,14 +186,6 @@ class EditPlaceRestController extends OfferRestBaseController
         $response->setData(['commandId' => $command_id]);
 
         return $response;
-    }
-
-    /**
-     * Get the detail of an item.
-     */
-    public function getItem($id)
-    {
-        return $this->entityService->getEntity($id);
     }
 
     /**
