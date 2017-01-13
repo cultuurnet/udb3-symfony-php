@@ -2,13 +2,11 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
-use CultureFeed_User;
 use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
-use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
@@ -31,19 +29,9 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
     private $controller;
 
     /**
-     * @var EventServiceInterface|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $entityService;
-
-    /**
      * @var EventEditingServiceInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $eventEditor;
-
-    /**
-     * @var CultureFeed_User
-     */
-    private $user;
 
     /**
      * @var SecurityInterface|PHPUnit_Framework_MockObject_MockObject
@@ -62,17 +50,13 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->entityService = $this->createMock(EventServiceInterface::class);
         $this->eventEditor = $this->createMock(EventEditingServiceInterface::class);
-        $this->user  = $this->createMock(CultureFeed_User::class);
         $this->mediaManager  = $this->createMock(MediaManagerInterface::class);
         $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
         $this->security  = $this->createMock(SecurityInterface::class);
 
         $this->controller = new EditEventRestController(
-            $this->entityService,
             $this->eventEditor,
-            $this->user,
             $this->mediaManager,
             $this->iriGenerator,
             $this->security
