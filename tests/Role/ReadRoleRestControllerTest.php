@@ -59,7 +59,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $authorizationList;
 
     /**
-     * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var UserPermissionsReadRepositoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $permissionsRepository;
 
@@ -70,6 +70,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->jsonDocument = new JsonDocument('id', 'role');
 
+        /** @var EntityServiceInterface|\PHPUnit_Framework_MockObject_MockObject $entityServiceInterface */
         $entityServiceInterface = $this->createMock(EntityServiceInterface::class);
 
         $this->roleService = $this->createMock(RoleReadingServiceInterface::class);

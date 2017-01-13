@@ -15,6 +15,7 @@ trait TokenMockingTrait
      */
     private function createMockToken($userId)
     {
+        /** @var \PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
         $mockBuilder = $this->getMockBuilder(JwtUserToken::class);
 
         /** @var JwtUserToken|\PHPUnit_Framework_MockObject_MockObject $token */

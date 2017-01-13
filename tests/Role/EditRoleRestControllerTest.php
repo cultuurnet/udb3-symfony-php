@@ -11,7 +11,6 @@ use CultuurNet\UDB3\Role\Commands\RenameRole;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
@@ -44,7 +43,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $commandBus;
 
     /**
-     * @var UpdateRoleRequestDeserializer
+     * @var UpdateRoleRequestDeserializer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $updateRoleRequestDeserializer;
 
