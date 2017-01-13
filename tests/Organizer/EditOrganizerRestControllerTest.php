@@ -13,7 +13,6 @@ use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Title;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Geography\Country;
-use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
 use ValueObjects\Web\Url;
 

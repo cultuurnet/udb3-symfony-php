@@ -2,12 +2,9 @@
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
-use Crell\ApiProblem\ApiProblem;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
-use CultuurNet\UDB3\Organizer\ReadModel\Lookup\OrganizerLookupServiceInterface;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
-use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase

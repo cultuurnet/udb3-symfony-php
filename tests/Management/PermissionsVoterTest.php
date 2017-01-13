@@ -2,13 +2,9 @@
 
 namespace CultuurNet\UDB3\Symfony\Management;
 
-use CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
-use Lcobucci\JWT\Claim\Basic as BasicClaim;
-use Lcobucci\JWT\Token as JwtToken;
-use PHPUnit_Framework_MockObject_MockObject;
-use Symfony\Component\HttpFoundation\Request;
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class PermissionsVoterTest extends PHPUnit_Framework_TestCase
