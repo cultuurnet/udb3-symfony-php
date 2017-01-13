@@ -27,8 +27,7 @@ class UserPermissionsVoterTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->permissionRepository = $this->createMock(
-            UserPermissionsReadRepositoryInterface::class,
-            ['getPermissions']
+            UserPermissionsReadRepositoryInterface::class
         );
 
         $this->voter = new UserPermissionsVoter($this->permissionRepository);
