@@ -2,6 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
+use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
@@ -10,6 +11,7 @@ use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Security\SecurityInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
@@ -41,6 +43,11 @@ class EditEventRestController extends OfferRestBaseController
     protected $majorInfoDeserializer;
 
     /**
+     * @var CalendarDeserializer
+     */
+    protected $calendarDeserializer;
+
+    /**
      * Constructs a RestController.
      *
      * @param EventEditingServiceInterface $eventEditor
@@ -60,6 +67,7 @@ class EditEventRestController extends OfferRestBaseController
         $this->security = $security;
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
+        $this->calendarDeserializer = new CalendarDeserializer();
     }
 
     /**
@@ -162,6 +170,25 @@ class EditEventRestController extends OfferRestBaseController
         $commandId = $this->editor->updateAudience($cdbid, $audience);
 
         return JsonResponse::create(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
+     */
+    public function copyEvent(Request $request, $cdbid)
+    {
+        $copyCalendar = $this->calendarDeserializer->deserialize(
+            json_decode($request->getContent(), true)
+        );
+
+        $copiedEventId = $this->editor->copyEvent($cdbid, $copyCalendar);
+
+        return JsonResponse::create([
+            'eventId' => $copiedEventId,
+            'url' => $this->iriGenerator->iri($copiedEventId),
+        ]);
     }
 
     /**
