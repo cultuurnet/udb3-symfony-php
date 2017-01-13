@@ -25,7 +25,7 @@ class SearchUserControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->cultureFeed = $this->getMock(\ICultureFeed::class);
+        $this->cultureFeed = $this->createMock(\ICultureFeed::class);
 
         $this->controller = new SearchUserController(
             $this->cultureFeed,

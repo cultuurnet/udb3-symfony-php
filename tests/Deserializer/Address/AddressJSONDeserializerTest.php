@@ -66,9 +66,9 @@ class AddressJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         );
 
         $expectedAddress = new Address(
-            Street::fromNative('Wetstraat 1'),
-            PostalCode::fromNative('1000'),
-            Locality::fromNative('Brussel'),
+            new Street('Wetstraat 1'),
+            new PostalCode('1000'),
+            new Locality('Brussel'),
             Country::fromNative('BE')
         );
 
