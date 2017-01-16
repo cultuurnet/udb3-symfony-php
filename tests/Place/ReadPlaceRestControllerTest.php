@@ -31,9 +31,9 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->jsonDocument = new JsonDocument('id', 'place');
 
-        $entityServiceInterface = $this->getMock(EntityServiceInterface::class);
+        $entityServiceInterface = $this->createMock(EntityServiceInterface::class);
 
-        $lookupService = $this->getMock(PlaceLookupServiceInterface::class);
+        $lookupService = $this->createMock(PlaceLookupServiceInterface::class);
 
         $entityServiceInterface->method('getEntity')
             ->willReturnCallback(

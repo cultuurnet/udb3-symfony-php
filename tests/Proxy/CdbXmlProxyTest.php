@@ -3,7 +3,6 @@
 namespace CultuurNet\UDB3\Symfony\Proxy;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;

@@ -59,7 +59,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     private $authorizationList;
 
     /**
-     * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var UserPermissionsReadRepositoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $permissionsRepository;
 
@@ -70,11 +70,12 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->jsonDocument = new JsonDocument('id', 'role');
 
-        $entityServiceInterface = $this->getMock(EntityServiceInterface::class);
+        /** @var EntityServiceInterface|\PHPUnit_Framework_MockObject_MockObject $entityServiceInterface */
+        $entityServiceInterface = $this->createMock(EntityServiceInterface::class);
 
-        $this->roleService = $this->getMock(RoleReadingServiceInterface::class);
+        $this->roleService = $this->createMock(RoleReadingServiceInterface::class);
 
-        $this->permissionsRepository = $this->getMock(UserPermissionsReadRepositoryInterface::class);
+        $this->permissionsRepository = $this->createMock(UserPermissionsReadRepositoryInterface::class);
 
         $entityServiceInterface->method('getEntity')
             ->willReturnCallback(
@@ -90,7 +91,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
                 }
             );
 
-        $this->roleSearchRepository = $this->getMock(RepositoryInterface::class);
+        $this->roleSearchRepository = $this->createMock(RepositoryInterface::class);
 
         $this->cfUser = new \CultureFeed_User();
         $this->authorizationList = [

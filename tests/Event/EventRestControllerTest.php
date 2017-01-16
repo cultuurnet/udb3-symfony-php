@@ -32,9 +32,9 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
     {
         $this->jsonDocument = new JsonDocument('id', 'history');
 
-        $eventServiceInterface = $this->getMock(EventServiceInterface::class);
+        $eventServiceInterface = $this->createMock(EventServiceInterface::class);
 
-        $documentRepositoryInterface = $this->getMock(DocumentRepositoryInterface::class);
+        $documentRepositoryInterface = $this->createMock(DocumentRepositoryInterface::class);
         $documentRepositoryInterface->method('get')
             ->willReturnCallback(
                 function ($id) {

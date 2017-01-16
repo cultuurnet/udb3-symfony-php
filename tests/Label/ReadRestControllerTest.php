@@ -8,7 +8,6 @@ use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Label\ValueObjects\Privacy;
 use CultuurNet\UDB3\Label\ValueObjects\Visibility;
-use CultuurNet\UDB3\Symfony\Label\Helper\RequestHelper;
 use CultuurNet\UDB3\Symfony\Label\Query\QueryFactory;
 use CultuurNet\UDB3\Symfony\Label\Query\QueryFactoryInterface;
 use CultuurNet\UDB3\Symfony\Management\User\UserIdentificationInterface;
@@ -51,11 +50,6 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
     private $queryFactory;
 
     /**
-     * @var RequestHelper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $requestHelper;
-
-    /**
      * @var ReadRestController
      */
     private $readRestController;
@@ -82,21 +76,17 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
             new Natural(2)
         );
 
-        $this->readService = $this->getMock(ReadServiceInterface::class);
+        $this->readService = $this->createMock(ReadServiceInterface::class);
         $this->mockGetByUuid();
         $this->mockGetByName();
         $this->mockSearch();
         $this->mockSearchTotalLabels();
 
-        $this->userIdentification = $this->getMock(UserIdentificationInterface::class);
+        $this->userIdentification = $this->createMock(UserIdentificationInterface::class);
         $this->mockIsGodUser();
         $this->mockGetId();
 
-        $this->queryFactory = $this->getMock(
-            QueryFactory::class,
-            null,
-            [$this->userIdentification]
-        );
+        $this->queryFactory = $this->createMock(QueryFactory::class);
         $this->mockCreateQuery();
 
         $this->readRestController = new ReadRestController(
@@ -204,13 +194,6 @@ class ReadRestControllerTest extends \PHPUnit_Framework_TestCase
     private function mockCreateQuery()
     {
         $this->queryFactory->method('createFromRequest')
-            ->with($this->request)
-            ->willReturn($this->query);
-    }
-
-    private function mockGetQuery()
-    {
-        $this->requestHelper->method('getQuery')
             ->with($this->request)
             ->willReturn($this->query);
     }

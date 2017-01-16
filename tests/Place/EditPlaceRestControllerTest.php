@@ -53,11 +53,11 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->placeEditingService  = $this->getMock(PlaceEditingServiceInterface::class);
-        $this->relationsRepository  = $this->getMock(RepositoryInterface::class);
-        $this->security  = $this->getMock(SecurityInterface::class);
-        $this->mediaManager  = $this->getMock(MediaManagerInterface::class);
-        $this->iriGenerator = $this->getMock(IriGeneratorInterface::class);
+        $this->placeEditingService  = $this->createMock(PlaceEditingServiceInterface::class);
+        $this->relationsRepository  = $this->createMock(RepositoryInterface::class);
+        $this->security  = $this->createMock(SecurityInterface::class);
+        $this->mediaManager  = $this->createMock(MediaManagerInterface::class);
+        $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
 
         $this->placeRestController = new EditPlaceRestController(
             $this->placeEditingService,

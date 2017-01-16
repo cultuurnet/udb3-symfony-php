@@ -13,7 +13,6 @@ use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Title;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Geography\Country;
-use ValueObjects\Identity\UUID;
 use ValueObjects\String\String as StringLiteral;
 use ValueObjects\Web\Url;
 
@@ -36,9 +35,9 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->editService = $this->getMock(OrganizerEditingServiceInterface::class);
+        $this->editService = $this->createMock(OrganizerEditingServiceInterface::class);
 
-        $this->iriGenerator = $this->getMock(IriGeneratorInterface::class);
+        $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
         $this->iriGenerator->expects($this->any())
             ->method('iri')
             ->willReturnCallback(

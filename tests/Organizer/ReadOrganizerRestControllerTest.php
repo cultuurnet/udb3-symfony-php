@@ -2,12 +2,9 @@
 
 namespace CultuurNet\UDB3\Symfony\Organizer;
 
-use Crell\ApiProblem\ApiProblem;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
-use CultuurNet\UDB3\Organizer\ReadModel\Lookup\OrganizerLookupServiceInterface;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
-use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
@@ -38,7 +35,7 @@ class ReadOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->jsonDocument = new JsonDocument('id', 'organizer');
 
-        $this->service = $this->getMock(EntityServiceInterface::class);
+        $this->service = $this->createMock(EntityServiceInterface::class);
 
         $this->service->method('getEntity')
             ->willReturnCallback(

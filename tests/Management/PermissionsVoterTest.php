@@ -2,13 +2,9 @@
 
 namespace CultuurNet\UDB3\Symfony\Management;
 
-use CultuurNet\SymfonySecurityJwt\Authentication\JwtUserToken;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
-use Lcobucci\JWT\Claim\Basic as BasicClaim;
-use Lcobucci\JWT\Token as JwtToken;
-use PHPUnit_Framework_MockObject_MockObject;
-use Symfony\Component\HttpFoundation\Request;
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class PermissionsVoterTest extends PHPUnit_Framework_TestCase
@@ -49,9 +45,9 @@ class PermissionsVoterTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_give_all_permissions_to_a_white_listed_user()
     {
-        $kingToken = $this->getMockToken($this->kingId);
+        $kingToken = $this->createMockToken($this->kingId);
 
-        $request = $this->getMock(Request::class);
+        $request = $this->createMock(Request::class);
         $access = $this->voter->vote($kingToken, $request, Permission::getConstants());
 
         $this->assertEquals(VoterInterface::ACCESS_GRANTED, $access);
@@ -62,9 +58,9 @@ class PermissionsVoterTest extends PHPUnit_Framework_TestCase
      */
     public function it_should_not_give_any_permissions_to_an_unlisted_user()
     {
-        $peasantToken = $this->getMockToken($this->peasantId);
+        $peasantToken = $this->createMockToken($this->peasantId);
 
-        $request = $this->getMock(Request::class);
+        $request = $this->createMock(Request::class);
         $access = $this->voter->vote($peasantToken, $request, Permission::getConstants());
 
         $this->assertEquals(VoterInterface::ACCESS_DENIED, $access);

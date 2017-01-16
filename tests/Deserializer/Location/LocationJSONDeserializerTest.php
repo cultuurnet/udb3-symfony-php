@@ -86,9 +86,9 @@ class LocationJSONDeserializerTest extends \PHPUnit_Framework_TestCase
             '3941e3b6-3044-4b6c-a1af-f3a97e8af92d',
             new StringLiteral('Praatcafé de Sjoemelaar'),
             new Address(
-                Street::fromNative('Wetstraat 1'),
-                PostalCode::fromNative('1000'),
-                Locality::fromNative('Brussel'),
+                new Street('Wetstraat 1'),
+                new PostalCode('1000'),
+                new Locality('Brussel'),
                 Country::fromNative('BE')
             )
         );

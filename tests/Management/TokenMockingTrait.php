@@ -13,16 +13,17 @@ trait TokenMockingTrait
      *
      * @return JwtUserToken|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getMockToken($userId)
+    private function createMockToken($userId)
     {
+        /** @var \PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
+        $mockBuilder = $this->getMockBuilder(JwtUserToken::class);
+
         /** @var JwtUserToken|\PHPUnit_Framework_MockObject_MockObject $token */
-        $token = $this->getMock(
-            JwtUserToken::class,
-            ['isAuthenticated', 'getCredentials'],
-            array(),
-            'JwtUserToken',
-            false
-        );
+        $token = $mockBuilder
+            ->setMethods(['isAuthenticated', 'getCredentials'])
+            ->setMockClassName('JwtUserToken')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $jwtCredentials = new JwtToken(
             ['alg' => 'none'],

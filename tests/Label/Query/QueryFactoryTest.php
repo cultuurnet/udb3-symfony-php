@@ -27,7 +27,7 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->userIdentification = $this->getMock(UserIdentificationInterface::class);
+        $this->userIdentification = $this->createMock(UserIdentificationInterface::class);
         $this->userIdentification->method('isGodUser')
             ->willReturn(false);
         $this->userIdentification->method('getId')
