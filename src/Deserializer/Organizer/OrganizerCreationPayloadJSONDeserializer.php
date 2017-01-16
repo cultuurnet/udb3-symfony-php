@@ -6,7 +6,7 @@ use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Title;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
 class OrganizerCreationPayloadJSONDeserializer extends JSONDeserializer

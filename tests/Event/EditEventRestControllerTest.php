@@ -21,7 +21,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 {

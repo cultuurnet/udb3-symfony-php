@@ -6,7 +6,7 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\Deserializer\DeserializerInterface;
 use stdClass;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\String\String;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class CommandDeserializerControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,7 +41,7 @@ class CommandDeserializerControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_deserializes_a_command_and_dispatches_it_on_the_command_bus()
     {
-        $json = new String('{"foo": "bar"}');
+        $json = new StringLiteral('{"foo": "bar"}');
         $command = new stdClass();
 
         $request = new Request([], [], [], [], [], [], $json->toNative());

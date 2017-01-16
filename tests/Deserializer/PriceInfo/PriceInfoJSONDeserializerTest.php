@@ -8,7 +8,7 @@ use CultuurNet\UDB3\PriceInfo\Price;
 use CultuurNet\UDB3\PriceInfo\PriceInfo;
 use CultuurNet\UDB3\PriceInfo\Tariff;
 use ValueObjects\Money\Currency;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class PriceInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 {

@@ -8,7 +8,7 @@ use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class UserPermissionsVoter implements VoterInterface
 {

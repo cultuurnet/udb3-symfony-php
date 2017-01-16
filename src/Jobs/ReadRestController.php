@@ -6,7 +6,7 @@ use Crell\ApiProblem\ApiProblem;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class ReadRestController
 {

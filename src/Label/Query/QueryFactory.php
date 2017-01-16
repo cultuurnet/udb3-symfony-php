@@ -6,7 +6,7 @@ use CultuurNet\UDB3\Label\ReadModels\JSON\Repository\Query;
 use CultuurNet\UDB3\Symfony\Management\User\UserIdentificationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Number\Natural;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class QueryFactory implements QueryFactoryInterface
 {

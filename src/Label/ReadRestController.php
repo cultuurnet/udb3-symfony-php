@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Identity\UUID;
 use ValueObjects\Number\Natural;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class ReadRestController
 {

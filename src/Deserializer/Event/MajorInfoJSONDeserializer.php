@@ -10,7 +10,7 @@ use CultuurNet\UDB3\Symfony\Deserializer\Location\LocationJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Theme\ThemeJSONDeserializer;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class MajorInfoJSONDeserializer extends JSONDeserializer
 {

@@ -17,7 +17,7 @@ use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class EditEventRestController extends OfferRestBaseController
 {

@@ -5,7 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Media;
 use CultuurNet\UDB3\Media\ImageUploaderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class EditMediaRestController
 {

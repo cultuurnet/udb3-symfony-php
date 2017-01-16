@@ -2,7 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Jobs;
 
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 interface JobsStatusFactoryInterface
 {

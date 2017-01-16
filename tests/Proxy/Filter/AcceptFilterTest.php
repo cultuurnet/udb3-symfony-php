@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Proxy\Filter;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class AcceptFilterTest extends \PHPUnit_Framework_TestCase
 {

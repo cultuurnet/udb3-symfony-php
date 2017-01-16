@@ -5,7 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Address;
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Address\Address;
-use ValueObjects\String\String as StringLiteral;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class AddressJSONDeserializer extends JSONDeserializer
 {
