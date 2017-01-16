@@ -6,6 +6,8 @@ use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
+use CultuurNet\UDB3\Calendar;
+use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
@@ -99,6 +101,38 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
             ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
 
         $response = $this->controller->createEvent($request);
+
+        $expectedResponseContent = json_encode(
+            [
+                'eventId' => 'A14DD1C8-0F9C-4633-B56A-A908F009AD94',
+                'url' => 'http://du.de/event/A14DD1C8-0F9C-4633-B56A-A908F009AD94',
+            ]
+        );
+
+        $this->assertEquals($expectedResponseContent, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_copies_an_event()
+    {
+        $calendarData = json_encode([
+            'calenderType' => 'permanent'
+        ]);
+
+        $request = new Request([], [], [], [], [], [], $calendarData);
+
+        $this->eventEditor
+            ->expects($this->once())
+            ->method('copyEvent')
+            ->with(
+                '1539b109-5eec-43ef-8dc9-830cbe0cff8e',
+                new Calendar(CalendarType::PERMANENT())
+            )
+            ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
+
+        $response = $this->controller->copyEvent($request, '1539b109-5eec-43ef-8dc9-830cbe0cff8e');
 
         $expectedResponseContent = json_encode(
             [
