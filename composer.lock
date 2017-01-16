@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9f4d1163c2edd7432be20ef15a012b6",
+    "content-hash": "ce4987d62f425221e7653ccc894711db",
     "packages": [
         {
             "name": "2dotstwice/collection",
@@ -819,16 +819,16 @@
         },
         {
             "name": "cultuurnet/udb3",
-            "version": "dev-feature/III-404",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/udb3-php.git",
-                "reference": "e1e2bb53ba829eda9b9204470afe197f5d2a71b6"
+                "reference": "754151c021997a0b8ce8857358b223bfdeab71f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/e1e2bb53ba829eda9b9204470afe197f5d2a71b6",
-                "reference": "e1e2bb53ba829eda9b9204470afe197f5d2a71b6",
+                "url": "https://api.github.com/repos/cultuurnet/udb3-php/zipball/754151c021997a0b8ce8857358b223bfdeab71f9",
+                "reference": "754151c021997a0b8ce8857358b223bfdeab71f9",
                 "shasum": ""
             },
             "require": {
@@ -897,7 +897,7 @@
                 }
             ],
             "description": "UDB3 PHP libraries",
-            "time": "2017-01-12 12:46:54"
+            "time": "2017-01-16 10:48:43"
         },
         {
             "name": "cultuurnet/udb3-jwt",
@@ -5480,18 +5480,9 @@
             "time": "2016-11-23T20:04:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.1",
-            "alias_normalized": "0.1.0.0",
-            "version": "dev-feature/III-404",
-            "package": "cultuurnet/udb3"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cultuurnet/udb3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
