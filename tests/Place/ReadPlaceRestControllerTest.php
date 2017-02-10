@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Place;
 
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
+use CultuurNet\UDB3\Place\ReadModel\Lookup\PlaceLookupServiceInterface;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,6 +33,8 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $entityServiceInterface = $this->createMock(EntityServiceInterface::class);
 
+        $lookupService = $this->createMock(PlaceLookupServiceInterface::class);
+
         $entityServiceInterface->method('getEntity')
             ->willReturnCallback(
                 function ($id) {
@@ -48,9 +51,11 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
 
         /**
          * @var EntityServiceInterface $entityServiceInterface
+         * @var PlaceLookupServiceInterface $lookupService
          */
         $this->placeRestController = new ReadPlaceRestController(
-            $entityServiceInterface
+            $entityServiceInterface,
+            $lookupService
         );
     }
 
