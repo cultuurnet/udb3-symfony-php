@@ -7,6 +7,7 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Event\Commands\Moderation\Approve;
 use CultuurNet\UDB3\Event\Commands\Moderation\FlagAsDuplicate;
 use CultuurNet\UDB3\Event\Commands\Moderation\FlagAsInappropriate;
+use CultuurNet\UDB3\Event\Commands\Moderation\Publish;
 use CultuurNet\UDB3\Event\Commands\Moderation\Reject;
 use CultuurNet\UDB3\Place\Commands\Moderation\Approve as ApprovePlace;
 use CultuurNet\UDB3\Place\Commands\Moderation\FlagAsDuplicate as FlagAsDuplicatePlace;
@@ -115,7 +116,44 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
                 'request' => $this->generatePatchRequest('application/ld+json;domain-model=FlagAsInappropriate'),
                 'expectedCommand' => new FlagAsInappropriatePlace($this->itemId)
             ],
+            'Publish event' => [
+                'offerType' => OfferType::EVENT(),
+                'request' => $this->generatePatchRequest('application/ld+json;domain-model=Publish'),
+                'expectedCommand' => new Publish($this->itemId)
+            ],
+            'Publish event with publication date' => [
+                'offerType' => OfferType::EVENT(),
+                'request' => $this->generatePatchRequest(
+                    'application/ld+json;domain-model=Publish',
+                    json_encode(['publicationDate' => '2017-02-01T12:00:00+00:00'])
+                ),
+                'expectedCommand' => new Publish(
+                    $this->itemId,
+                    \DateTime::createFromFormat(
+                        \DateTime::ISO8601,
+                        '2017-02-01T12:00:00+00:00'
+                    )
+                )
+            ],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_for_invalid_publication_date_format()
+    {
+        $controller = new PatchOfferRestController(OfferType::EVENT(), $this->commandBus);
+
+        $request = $this->generatePatchRequest(
+            'application/ld+json;domain-model=Publish',
+            json_encode(['publicationDate' => '2017-02-01T12:00:00'])
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The publication date is not in ISO08601 format.');
+
+        $controller->handle($request, $this->itemId);
     }
 
     /**

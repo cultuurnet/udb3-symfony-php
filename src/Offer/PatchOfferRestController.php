@@ -4,8 +4,6 @@ namespace CultuurNet\UDB3\Symfony\Offer;
 
 use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Offer\OfferType;
-use Exception;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -40,7 +38,8 @@ class PatchOfferRestController
     /**
      * @param Request $request
      * @param $cdbid
-     * @throws Exception
+     * @return JsonResponse
+     * @throws \Exception
      */
     public function handle(Request $request, $cdbid)
     {
@@ -48,7 +47,7 @@ class PatchOfferRestController
         $commandClass = 'CultuurNet\UDB3\\' . $this->offerType->getValue() . '\Commands\Moderation\\' . $domainModel;
 
         if (!class_exists($commandClass)) {
-            throw new InvalidArgumentException('The command in content-type is not supported.');
+            throw new \InvalidArgumentException('The command in content-type is not supported.');
         }
 
         if ($domainModel === 'Reject') {
@@ -56,6 +55,10 @@ class PatchOfferRestController
             $reason = new StringLiteral($content->reason);
 
             $command = new $commandClass($cdbid, $reason);
+        } elseif ($domainModel === 'Publish') {
+            $publicationDate = $this->getPublicationDate($request);
+
+            $command = new $commandClass($cdbid, $publicationDate);
         } else {
             $command = new $commandClass($cdbid);
         }
@@ -68,7 +71,7 @@ class PatchOfferRestController
     /**
      * @param Request $request
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     private function parseDomainModelNameFromRequest(Request $request)
     {
@@ -76,9 +79,33 @@ class PatchOfferRestController
         preg_match(self::DOMAIN_MODEL_REGEX, $contentType, $matches);
 
         if (!is_array($matches) || !array_key_exists(1, $matches)) {
-            throw new Exception('Unable to determine domain-model');
+            throw new \Exception('Unable to determine domain-model');
         }
 
         return $matches[1];
+    }
+
+    /**
+     * @param Request $request
+     * @return \DateTimeInterface
+     */
+    private function getPublicationDate(Request $request)
+    {
+        $content = json_decode($request->getContent());
+
+        if (!isset($content->publicationDate)) {
+            return null;
+        }
+
+        $publicationDate = \DateTime::createFromFormat(
+            \DateTime::ISO8601,
+            $content->publicationDate
+        );
+
+        if (!$publicationDate) {
+            throw new \InvalidArgumentException('The publication date is not in ISO08601 format.');
+        }
+
+        return $publicationDate;
     }
 }
