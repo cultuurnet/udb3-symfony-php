@@ -60,7 +60,7 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00'),
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00')
                 ),
-                '1476396000' => new Timestamp(
+                '1476396001' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T09:00:00+02:00'),
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T13:00:00+02:00')
                 )
@@ -112,11 +112,11 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200'),
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T00:00:00+0200')
                 ),
-                '1476396000' => new Timestamp(
+                '1476396001' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T00:00:00+0200'),
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-14T00:00:00+0200')
                 ),
-                '1476482400' => new Timestamp(
+                '1476482402' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200'),
                     DateTime::createFromFormat(DateTime::ATOM, '2016-10-15T00:00:00+0200')
                 )
@@ -190,6 +190,45 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
         );
 
         $calendar = $this->deserializer->deserialize($majorInfoWithEmptyOpeningHoursData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_deserialize_multiple_timestamps_per_day()
+    {
+        $majorInfoData = json_decode(
+            file_get_contents(__DIR__ . '/samples/major-info-data-with-multiple-timestamps-per-day.json'),
+            true
+        );
+
+        $expectedCalendar = new Calendar(
+            CalendarType::MULTIPLE(),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T09:00:00+0100'),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-03-01T14:00:00+0100'),
+            [
+                '1488236400' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T09:00:00+0100'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T11:00:00+0100')
+                ),
+                '1488236402' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T12:00:00+0100'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T14:00:00+0100')
+                ),
+                '1488236403' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T16:00:00+0100'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T18:00:00+0100')
+                ),
+                '1488322801' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-29T12:00:00+0100'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-29T14:00:00+0100')
+                ),
+            ]
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoData);
 
         $this->assertEquals($expectedCalendar, $calendar);
     }

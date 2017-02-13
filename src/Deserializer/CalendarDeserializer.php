@@ -19,7 +19,7 @@ class CalendarDeserializer
         // Cleanup empty timestamps.
         $timestamps = array();
         if (!empty($eventData['timestamps'])) {
-            foreach ($eventData['timestamps'] as $timestamp) {
+            foreach ($eventData['timestamps'] as $index => $timestamp) {
                 if (!empty($timestamp['date'])) {
                     // reset start & endtime to avoid date problems
                     $startTime = $endTime = null;
@@ -59,7 +59,10 @@ class CalendarDeserializer
                     // If it does, push the end forward to when the timestamp starts
                     $endTime = ($endTime > $startTime) ? $endTime : $startTime;
 
-                    $timestamps[$time] = new Timestamp($startTime, $endTime);
+                    // offset time with the index of the timestamp to prevent overriding timestamps on the same day
+                    $offsetTimeIndex = $time + $index;
+
+                    $timestamps[$offsetTimeIndex] = new Timestamp($startTime, $endTime);
                 }
             }
             ksort($timestamps);
