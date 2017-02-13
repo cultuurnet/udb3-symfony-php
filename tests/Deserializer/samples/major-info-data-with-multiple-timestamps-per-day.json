@@ -94,6 +94,15 @@
       "showEndHour": true
     },
     {
+      "date": "2017-02-28T23:00:00.000Z",
+      "startHour": "12:00",
+      "startHourAsDate": "2017-02-29T11:00:00.000Z",
+      "endHourAsDate": "2017-02-29T13:00:00.000Z",
+      "endHour": "14:00",
+      "showStartHour": true,
+      "showEndHour": true
+    },
+    {
       "date": "2017-02-27T23:00:00.000Z",
       "startHour": "12:00",
       "startHourAsDate": "2017-02-28T11:00:00.000Z",

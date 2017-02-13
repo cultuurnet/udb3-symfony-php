@@ -207,20 +207,24 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
         $expectedCalendar = new Calendar(
             CalendarType::MULTIPLE(),
             DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T09:00:00+0100'),
-            DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T18:00:00+0100'),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-03-01T14:00:00+0100'),
             [
                 '1488236400' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T09:00:00+0100'),
                     DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T11:00:00+0100')
                 ),
-                '1488236401' => new Timestamp(
+                '1488236402' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T12:00:00+0100'),
                     DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T14:00:00+0100')
                 ),
-                '1488236402' => new Timestamp(
+                '1488236403' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T16:00:00+0100'),
                     DateTime::createFromFormat(DateTime::ATOM, '2017-02-28T18:00:00+0100')
-                )
+                ),
+                '1488322801' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-29T12:00:00+0100'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-02-29T14:00:00+0100')
+                ),
             ]
         );
 
