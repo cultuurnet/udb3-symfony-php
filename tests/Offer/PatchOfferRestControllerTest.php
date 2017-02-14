@@ -116,11 +116,6 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
                 'request' => $this->generatePatchRequest('application/ld+json;domain-model=FlagAsInappropriate'),
                 'expectedCommand' => new FlagAsInappropriatePlace($this->itemId)
             ],
-            'Publish event' => [
-                'offerType' => OfferType::EVENT(),
-                'request' => $this->generatePatchRequest('application/ld+json;domain-model=Publish'),
-                'expectedCommand' => new Publish($this->itemId)
-            ],
             'Publish event with publication date' => [
                 'offerType' => OfferType::EVENT(),
                 'request' => $this->generatePatchRequest(
@@ -154,6 +149,45 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
         $this->expectExceptionMessage('The publication date is not in ISO08601 format.');
 
         $controller->handle($request, $this->itemId);
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_a_default_publication_date_of_now()
+    {
+        $controller = new PatchOfferRestController(OfferType::EVENT(), $this->commandBus);
+
+        $request = $this->generatePatchRequest(
+            'application/ld+json;domain-model=Publish'
+        );
+
+        $expectedResponse = new JsonResponse([
+            'commandId' =>  '6a9762dc-f0d6-400d-b097-00ada39a76e2'
+        ]);
+
+        $beforeDate = new \DateTime();
+
+        $this->commandBus
+            ->expects($this->once())
+            ->method('dispatch')
+            ->willReturnCallback(function (Publish $command) use ($beforeDate) {
+                $afterDate = new \DateTime();
+                $this->assertEquals($command->getItemId(), $this->itemId);
+                $this->assertGreaterThanOrEqual(
+                    $beforeDate,
+                    $command->getPublicationDate()
+                );
+                $this->assertLessThanOrEqual(
+                    $afterDate,
+                    $command->getPublicationDate()
+                );
+                return '6a9762dc-f0d6-400d-b097-00ada39a76e2';
+            });
+
+        $actualResponse = $controller->handle($request, $this->itemId);
+
+        $this->assertEquals($expectedResponse->getContent(), $actualResponse->getContent());
     }
 
     /**
