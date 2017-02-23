@@ -14,7 +14,7 @@
   ],
   "require": {
     "cultuurnet/hydra": "~0.1",
-    "cultuurnet/udb3": "~0.1",
+    "cultuurnet/udb3": "dev-feature/III-1802 as 0.1",
     "nicolopignatelli/valueobjects": "~3.0",
     "crell/api-problem": "~1.7",
     "symfony/http-foundation": "~2.7.2",
