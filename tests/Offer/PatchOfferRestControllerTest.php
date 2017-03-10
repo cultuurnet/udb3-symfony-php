@@ -142,11 +142,11 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
 
         $request = $this->generatePatchRequest(
             'application/ld+json;domain-model=Publish',
-            json_encode(['publicationDate' => '2017-02-01T12:00:00'])
+            json_encode(['publicationDate' => '2017/02/01T12'])
         );
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The publication date is not in ISO08601 format.');
+        $this->expectExceptionMessage('The publication date is not a valid date format.');
 
         $controller->handle($request, $this->itemId);
     }

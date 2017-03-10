@@ -97,13 +97,10 @@ class PatchOfferRestController
             return null;
         }
 
-        $publicationDate = \DateTime::createFromFormat(
-            \DateTime::ISO8601,
-            $content->publicationDate
-        );
-
-        if (!$publicationDate) {
-            throw new \InvalidArgumentException('The publication date is not in ISO08601 format.');
+        try {
+            $publicationDate = new \DateTime($content->publicationDate);
+        } catch (\Exception $exp) {
+            throw new \InvalidArgumentException('The publication date is not a valid date format.');
         }
 
         return $publicationDate;
