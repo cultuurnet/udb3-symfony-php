@@ -127,6 +127,41 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_updates_address_of_an_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $address = new Address(
+            new Street('Martelarenplein 12'),
+            new PostalCode('3000'),
+            new Locality('Leuven'),
+            Country::fromNative('BE')
+        );
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateAddress')
+            ->with(
+                $organizerId,
+                $address
+            )
+            ->willReturn($commandId);
+
+        $request = $this->createRequest(
+            Request::METHOD_PUT,
+            'organizer_update_address.json'
+        );
+        $response = $this->controller->updateAddress(
+            $organizerId,
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
     public function it_updates_contact_point_of_an_organizer()
     {
         $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';

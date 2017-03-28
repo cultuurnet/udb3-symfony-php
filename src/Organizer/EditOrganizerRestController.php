@@ -7,6 +7,7 @@ use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
 use InvalidArgumentException;
@@ -77,6 +78,28 @@ class EditOrganizerRestController
                 'url' => $this->iriGenerator->iri($organizerId),
             ]
         );
+    }
+
+    /**
+     * @param string $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
+    public function updateAddress($organizerId, Request $request)
+    {
+        $addressJSONDeserializer = new AddressJSONDeserializer();
+
+        $address = $addressJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editingService->updateAddress(
+            $organizerId,
+            $address
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
     }
 
     /**
