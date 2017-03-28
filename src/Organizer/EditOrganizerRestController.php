@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
+use CultuurNet\UDB3\TitleJSONDeserializer;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,6 +79,27 @@ class EditOrganizerRestController
                 'url' => $this->iriGenerator->iri($organizerId),
             ]
         );
+    }
+
+    /**
+     * @param $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
+    public function updateTitle($organizerId, Request $request)
+    {
+        $titleJSONDeserializer  = new TitleJSONDeserializer();
+        $title = $titleJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editingService->updateTitle(
+            $organizerId,
+            $title
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
     }
 
     /**
