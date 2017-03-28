@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Organizer\WebsiteJSONDeserializer;
 use CultuurNet\UDB3\TitleJSONDeserializer;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -87,9 +88,39 @@ class EditOrganizerRestController
      * @return JsonResponse
      * @throws DataValidationException
      */
+    public function updateWebsite($organizerId, Request $request)
+    {
+        $websiteJSONDeserializer = new WebsiteJSONDeserializer();
+        $website = $websiteJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        try {
+            $commandId = $this->editingService->updateWebsite(
+                $organizerId,
+                $website
+            );
+        } catch (UniqueConstraintException $e) {
+            $e = new DataValidationException(
+                [
+                    'website' => 'Should be unique but is already in use.',
+                ]
+            );
+            throw $e;
+        }
+
+        return JsonResponse::create(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
     public function updateTitle($organizerId, Request $request)
     {
-        $titleJSONDeserializer  = new TitleJSONDeserializer();
+        $titleJSONDeserializer = new TitleJSONDeserializer();
         $title = $titleJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
