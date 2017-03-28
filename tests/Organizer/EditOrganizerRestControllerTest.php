@@ -7,6 +7,7 @@ use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
+use CultuurNet\UDB3\ContactPoint;
 use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
@@ -67,6 +68,17 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
                     new PostalCode('3000'),
                     new Locality('Leuven'),
                     Country::fromNative('BE')
+                ),
+                new ContactPoint(
+                    [
+                        "+32 498 71 49 96"
+                    ],
+                    [
+                        "jos@hetdepot.be"
+                    ],
+                    [
+                        "https://www.facebook.com/hetdepot"
+                    ]
                 )
             )
             ->willReturn($organizerId);
