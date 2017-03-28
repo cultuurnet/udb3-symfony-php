@@ -7,12 +7,12 @@ use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class EditOrganizerRestController
@@ -77,6 +77,28 @@ class EditOrganizerRestController
                 'url' => $this->iriGenerator->iri($organizerId),
             ]
         );
+    }
+
+    /**
+     * @param string $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
+    public function updateContactPoint($organizerId, Request $request)
+    {
+        $contactPointJSONDeserializer = new ContactPointJSONDeserializer();
+
+        $contactPoint = $contactPointJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editingService->updateContactPoint(
+            $organizerId,
+            $contactPoint
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
     }
 
     /**

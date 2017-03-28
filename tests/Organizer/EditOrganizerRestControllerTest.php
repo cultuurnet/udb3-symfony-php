@@ -127,6 +127,48 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_updates_contact_point_of_an_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $contactPoint = new ContactPoint(
+            [
+                "+32 498 71 49 96"
+            ],
+            [
+                "jos@hetdepot.be",
+                "info@hetdepot.be"
+            ],
+            [
+                "https://www.facebook.com/hetdepot",
+                "https://www.depot.be"
+            ]
+        );
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateContactPoint')
+            ->with(
+                $organizerId,
+                $contactPoint
+            )
+            ->willReturn($commandId);
+
+        $request = $this->createRequest(
+            Request::METHOD_PUT,
+            'organizer_update_contact_point.json'
+        );
+        $response = $this->controller->updateContactPoint(
+            $organizerId,
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
     public function it_deletes_an_organizer()
     {
         $cdbId = '123';
