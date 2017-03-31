@@ -127,24 +127,24 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_updates_website_of_an_organizer()
+    public function it_updates_the_url_of_an_organizer()
     {
         $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
-        $website = Url::fromNative('http://www.depot.be');
+        $url = Url::fromNative('http://www.depot.be');
         $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateWebsite')
             ->with(
                 $organizerId,
-                $website
+                $url
             )
             ->willReturn($commandId);
 
-        $content = '{"website":"' . (string) $website . '"}';
+        $content = '{"url":"' . (string) $url . '"}';
         $request = new Request([], [], [], [], [], [], $content);
 
-        $response = $this->controller->updateWebsite(
+        $response = $this->controller->updateUrl(
             $organizerId,
             $request
         );

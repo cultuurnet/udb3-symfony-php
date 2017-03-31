@@ -10,7 +10,7 @@ use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
-use CultuurNet\UDB3\Symfony\Deserializer\Organizer\WebsiteJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Organizer\UrlJSONDeserializer;
 use CultuurNet\UDB3\TitleJSONDeserializer;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -88,9 +88,9 @@ class EditOrganizerRestController
      * @return JsonResponse
      * @throws DataValidationException
      */
-    public function updateWebsite($organizerId, Request $request)
+    public function updateUrl($organizerId, Request $request)
     {
-        $websiteJSONDeserializer = new WebsiteJSONDeserializer();
+        $websiteJSONDeserializer = new UrlJSONDeserializer();
         $website = $websiteJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
@@ -103,7 +103,7 @@ class EditOrganizerRestController
         } catch (UniqueConstraintException $e) {
             $e = new DataValidationException(
                 [
-                    'website' => 'Should be unique but is already in use.',
+                    'url' => 'Should be unique but is already in use.',
                 ]
             );
             throw $e;

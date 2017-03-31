@@ -7,7 +7,7 @@ use CultuurNet\Deserializer\MissingValueException;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
-class WebsiteJSONDeserializer extends JSONDeserializer
+class UrlJSONDeserializer extends JSONDeserializer
 {
     /**
      * @param StringLiteral $data
@@ -17,10 +17,10 @@ class WebsiteJSONDeserializer extends JSONDeserializer
     {
         $data = parent::deserialize($data);
 
-        if (!isset($data->website)) {
-            throw new MissingValueException('Missing value for "website".');
+        if (!isset($data->url)) {
+            throw new MissingValueException('Missing value for "url".');
         }
 
-        return Url::fromNative($data->website);
+        return Url::fromNative($data->url);
     }
 }
