@@ -21,8 +21,8 @@ class TitleJSONDeserializer extends JSONDeserializer
      */
     public function __construct(
         $assoc = false,
-        StringLiteral $propertyName = null)
-    {
+        StringLiteral $propertyName = null
+    ) {
         parent::__construct($assoc);
 
         if (is_null($propertyName)) {
