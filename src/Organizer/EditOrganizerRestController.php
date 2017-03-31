@@ -11,7 +11,7 @@ use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\UrlJSONDeserializer;
-use CultuurNet\UDB3\TitleJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -118,9 +118,13 @@ class EditOrganizerRestController
      * @return JsonResponse
      * @throws DataValidationException
      */
-    public function updateTitle($organizerId, Request $request)
+    public function updateName($organizerId, Request $request)
     {
-        $titleJSONDeserializer = new TitleJSONDeserializer();
+        $titleJSONDeserializer = new TitleJSONDeserializer(
+            false,
+            new StringLiteral('name')
+        )
+        ;
         $title = $titleJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
