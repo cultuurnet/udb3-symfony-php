@@ -10,7 +10,7 @@ use CultuurNet\UDB3\PriceInfo\Price;
 use CultuurNet\UDB3\PriceInfo\PriceInfo;
 use CultuurNet\UDB3\PriceInfo\Tariff;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
-use CultuurNet\UDB3\TitleJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Money\Currency;
 use ValueObjects\StringLiteral\StringLiteral;
