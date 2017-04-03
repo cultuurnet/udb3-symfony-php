@@ -7,6 +7,7 @@ use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
+use CultuurNet\UDB3\ContactPoint;
 use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
@@ -67,6 +68,17 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
                     new PostalCode('3000'),
                     new Locality('Leuven'),
                     Country::fromNative('BE')
+                ),
+                new ContactPoint(
+                    [
+                        "+32 498 71 49 96"
+                    ],
+                    [
+                        "jos@hetdepot.be"
+                    ],
+                    [
+                        "https://www.facebook.com/hetdepot"
+                    ]
                 )
             )
             ->willReturn($organizerId);
@@ -110,6 +122,141 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(DataValidationException::class, $e);
             $this->assertEquals($expectedMessages, $e->getValidationMessages());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function it_updates_the_url_of_an_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $url = Url::fromNative('http://www.depot.be');
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateWebsite')
+            ->with(
+                $organizerId,
+                $url
+            )
+            ->willReturn($commandId);
+
+        $content = '{"url":"' . (string) $url . '"}';
+        $request = new Request([], [], [], [], [], [], $content);
+
+        $response = $this->controller->updateUrl(
+            $organizerId,
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_updates_the_name_of_an_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $name = new Title('Het Depot');
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateTitle')
+            ->with(
+                $organizerId,
+                $name
+            )
+            ->willReturn($commandId);
+
+        $content = '{"name":"' . $name->toNative() . '"}';
+        $request = new Request([], [], [], [], [], [], $content);
+
+        $response = $this->controller->updateName(
+            $organizerId,
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_updates_address_of_an_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $address = new Address(
+            new Street('Martelarenplein 12'),
+            new PostalCode('3000'),
+            new Locality('Leuven'),
+            Country::fromNative('BE')
+        );
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateAddress')
+            ->with(
+                $organizerId,
+                $address
+            )
+            ->willReturn($commandId);
+
+        $request = $this->createRequest(
+            Request::METHOD_PUT,
+            'organizer_update_address.json'
+        );
+        $response = $this->controller->updateAddress(
+            $organizerId,
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_updates_contact_point_of_an_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $contactPoint = new ContactPoint(
+            [
+                "+32 498 71 49 96"
+            ],
+            [
+                "jos@hetdepot.be",
+                "info@hetdepot.be"
+            ],
+            [
+                "https://www.facebook.com/hetdepot",
+                "https://www.depot.be"
+            ]
+        );
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateContactPoint')
+            ->with(
+                $organizerId,
+                $contactPoint
+            )
+            ->willReturn($commandId);
+
+        $request = $this->createRequest(
+            Request::METHOD_PUT,
+            'organizer_update_contact_point.json'
+        );
+        $response = $this->controller->updateContactPoint(
+            $organizerId,
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
     }
 
     /**

@@ -7,12 +7,15 @@ use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Organizer\UrlJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class EditOrganizerRestController
@@ -77,6 +80,105 @@ class EditOrganizerRestController
                 'url' => $this->iriGenerator->iri($organizerId),
             ]
         );
+    }
+
+    /**
+     * @param $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
+    public function updateUrl($organizerId, Request $request)
+    {
+        $websiteJSONDeserializer = new UrlJSONDeserializer();
+        $website = $websiteJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        try {
+            $commandId = $this->editingService->updateWebsite(
+                $organizerId,
+                $website
+            );
+        } catch (UniqueConstraintException $e) {
+            $e = new DataValidationException(
+                [
+                    'url' => 'Should be unique but is already in use.',
+                ]
+            );
+            throw $e;
+        }
+
+        return JsonResponse::create(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
+    public function updateName($organizerId, Request $request)
+    {
+        $titleJSONDeserializer = new TitleJSONDeserializer(
+            false,
+            new StringLiteral('name')
+        )
+        ;
+        $title = $titleJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editingService->updateTitle(
+            $organizerId,
+            $title
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param string $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
+    public function updateAddress($organizerId, Request $request)
+    {
+        $addressJSONDeserializer = new AddressJSONDeserializer();
+
+        $address = $addressJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editingService->updateAddress(
+            $organizerId,
+            $address
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param string $organizerId
+     * @param Request $request
+     * @return JsonResponse
+     * @throws DataValidationException
+     */
+    public function updateContactPoint($organizerId, Request $request)
+    {
+        $contactPointJSONDeserializer = new ContactPointJSONDeserializer();
+
+        $contactPoint = $contactPointJSONDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editingService->updateContactPoint(
+            $organizerId,
+            $contactPoint
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
     }
 
     /**
