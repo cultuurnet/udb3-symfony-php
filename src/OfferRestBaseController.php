@@ -6,6 +6,7 @@ use CultuurNet\UDB3\BookingInfo;
 use CultuurNet\UDB3\ContactPoint;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
+use CultuurNet\UDB3\Offer\AgeRange;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -84,8 +85,9 @@ abstract class OfferRestBaseController
         }
 
         $response = new JsonResponse();
+        $ageRange = AgeRange::fromString($body_content->typicalAgeRange);
 
-        $command_id = $this->editor->updateTypicalAgeRange($cdbid, $body_content->typicalAgeRange);
+        $command_id = $this->editor->updateTypicalAgeRange($cdbid, $ageRange);
         $response->setData(['commandId' => $command_id]);
 
         return $response;
