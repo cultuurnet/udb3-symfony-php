@@ -2,7 +2,6 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
-use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;

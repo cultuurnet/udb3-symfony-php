@@ -3,11 +3,14 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer;
 
 use CultuurNet\UDB3\Calendar;
+use CultuurNet\UDB3\Calendar\DayOfWeek;
+use CultuurNet\UDB3\Calendar\DayOfWeekCollection;
+use CultuurNet\UDB3\Calendar\OpeningHour;
+use CultuurNet\UDB3\Calendar\OpeningTime;
 use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Timestamp;
 use DateTime;
 use InvalidArgumentException;
-use ValueObjects\DateTime\Date;
 
 /**
  * @todo Extend JSONDeserializer, and clean up.
@@ -113,11 +116,18 @@ class CalendarDeserializer
                     );
                 }
 
-                $openingHours[] = [
-                    'dayOfWeek' => $openingHour['dayOfWeek'],
-                    'opens' => $openingHour['opens'],
-                    'closes' => $openingHour['closes'],
-                ];
+                $daysOfWeek = new DayOfWeekCollection();
+                foreach ($openingHour['dayOfWeek'] as $dayOfWeek) {
+                    $daysOfWeek->addDayOfWeek(
+                        DayOfWeek::fromNative($dayOfWeek)
+                    );
+                }
+
+                $openingHours[] = new OpeningHour(
+                    OpeningTime::fromNativeString($openingHour['opens']),
+                    OpeningTime::fromNativeString($openingHour['closes']),
+                    $daysOfWeek
+                );
             }
         }
 
