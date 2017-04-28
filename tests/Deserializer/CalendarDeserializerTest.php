@@ -240,4 +240,81 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedCalendar, $calendar);
     }
+
+    /**
+     * @feature calendar_udb3_update.feature
+     * @scenario event with one timestamp, start and enddate on same day
+     * @test
+     */
+    public function it_handles_calendar_with_one_timestamp_and_start_and_end_on_the_same_day()
+    {
+        $majorInfoData = json_decode(
+            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_start_and_end_on_the_same_day.json'),
+            true
+        );
+
+        // A single timestamp gets converted to only a start and end date.
+        $expectedCalendar = new Calendar(
+            CalendarType::SINGLE(),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T10:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T11:00:00+02:00'),
+            [],
+            []
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
+
+    /**
+     * @feature calendar_udb3_update.feature
+     * @scenario event with one timestamp, enddate one day later
+     * @test
+     */
+    public function it_handles_calendar_with_one_timestamp_and_end_one_day_later()
+    {
+        $majorInfoData = json_decode(
+            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_end_one_day_later.json'),
+            true
+        );
+
+        // A single timestamp gets converted to only a start and end date.
+        $expectedCalendar = new Calendar(
+            CalendarType::SINGLE(),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-26T21:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-27T02:00:00+02:00'),
+            [],
+            []
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
+
+    /**
+     * @feature calendar_udb3_update.feature
+     * @scenario event with multiple timestamps, start and enddate on same day
+     * @test
+     */
+    public function it_handles_calendar_with_multiple_timestamp_and_start_and_end_on_the_same_day()
+    {
+        $majorInfoData = json_decode(
+            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_start_and_end_on_the_same_day.json'),
+            true
+        );
+
+        $expectedCalendar = new Calendar(
+            CalendarType::SINGLE(),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T10:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T20:00:00+02:00'),
+            [],
+            []
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
 }
