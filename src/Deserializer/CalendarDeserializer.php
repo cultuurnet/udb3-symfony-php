@@ -116,12 +116,7 @@ class CalendarDeserializer
                     );
                 }
 
-                $daysOfWeek = new DayOfWeekCollection();
-                foreach ($openingHour['dayOfWeek'] as $dayOfWeek) {
-                    $daysOfWeek->addDayOfWeek(
-                        DayOfWeek::fromNative($dayOfWeek)
-                    );
-                }
+                $daysOfWeek = DayOfWeekCollection::deserialize($openingHour['dayOfWeek']);
 
                 $openingHours[] = new OpeningHour(
                     OpeningTime::fromNativeString($openingHour['opens']),
