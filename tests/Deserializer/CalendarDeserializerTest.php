@@ -3,6 +3,10 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer;
 
 use CultuurNet\UDB3\Calendar;
+use CultuurNet\UDB3\Calendar\DayOfWeek;
+use CultuurNet\UDB3\Calendar\DayOfWeekCollection;
+use CultuurNet\UDB3\Calendar\OpeningHour;
+use CultuurNet\UDB3\Calendar\OpeningTime;
 use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Timestamp;
 use DateTime;
@@ -138,31 +142,35 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
             true
         );
 
+        $weekDays = new DayOfWeekCollection(
+            DayOfWeek::MONDAY(),
+            DayOfWeek::TUESDAY(),
+            DayOfWeek::WEDNESDAY(),
+            DayOfWeek::THURSDAY(),
+            DayOfWeek::FRIDAY()
+        );
+
+        $weekendDays = new DayOfWeekCollection(
+            DayOfWeek::SATURDAY(),
+            DayOfWeek::SUNDAY()
+        );
+
         $expectedCalendar = new Calendar(
             CalendarType::PERMANENT(),
             null,
             null,
             [],
             [
-                [
-                    'dayOfWeek' => [
-                        'monday',
-                        'tuesday',
-                        'wednesday',
-                        'thursday',
-                        'friday',
-                    ],
-                    'opens' => '10:00',
-                    'closes' => '19:00'
-                ],
-                [
-                    'dayOfWeek' => [
-                        'saturday',
-                        'sunday'
-                    ],
-                    'opens' => '12:00',
-                    'closes' => '19:00'
-                ]
+                new OpeningHour(
+                    OpeningTime::fromNativeString('10:00'),
+                    OpeningTime::fromNativeString('19:00'),
+                    $weekDays
+                ),
+                new OpeningHour(
+                    OpeningTime::fromNativeString('12:00'),
+                    OpeningTime::fromNativeString('19:00'),
+                    $weekendDays
+                ),
             ]
         );
 
