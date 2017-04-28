@@ -40,8 +40,13 @@ class CalendarDeserializer
                     if (!empty($timestamp['showStartHour']) && !empty($timestamp['startHour'])) {
                         list($hour, $minute) = explode(':', $timestamp['startHour']);
                         if (strlen($hour) == 2 && strlen($minute) == 2) {
-                            $startTime = clone $dayTime;
-                            $startTime->setTime(intval($hour), intval($minute));
+                            if (isset($timestamp['startHourAsDate'])) {
+                                $startTime = new \DateTime($timestamp['startHourAsDate']);
+                                $startTime->setTimezone(new \DateTimeZone('Europe/Brussels'));
+                            } else {
+                                $startTime = clone $dayTime;
+                                $startTime->setTime(intval($hour), intval($minute));
+                            }
                         }
                     }
                     $startTime = isset($startTime) ? $startTime : $dayTime;
@@ -51,8 +56,13 @@ class CalendarDeserializer
                     if (!empty($timestamp['showEndHour']) && !empty($timestamp['endHour'])) {
                         list($hour, $minute) = explode(':', $timestamp['endHour']);
                         if (strlen($hour) == 2 && strlen($minute) == 2) {
-                            $endTime = clone $dayTime;
-                            $endTime->setTime(intval($hour), intval($minute));
+                            if (isset($timestamp['endHourAsDate'])) {
+                                $endTime = new \DateTime($timestamp['endHourAsDate']);
+                                $endTime->setTimezone(new \DateTimeZone('Europe/Brussels'));
+                            } else {
+                                $endTime = clone $dayTime;
+                                $endTime->setTime(intval($hour), intval($minute));
+                            }
                         }
                     }
                     $endTime = isset($endTime) ? $endTime : $dayTime;
