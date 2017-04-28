@@ -298,7 +298,7 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
      * @scenario event with multiple timestamps, start and enddate on same day
      * @test
      */
-    public function it_handles_calendar_with_multiple_timestamp_and_start_and_end_on_the_same_day()
+    public function it_handles_calendar_with_multiple_timestamps_and_start_and_end_on_the_same_day()
     {
         $majorInfoData = json_decode(
             file_get_contents(__DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_start_and_end_on_the_same_day.json'),
@@ -306,10 +306,58 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
         );
 
         $expectedCalendar = new Calendar(
-            CalendarType::SINGLE(),
+            CalendarType::MULTIPLE(),
             DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T10:00:00+02:00'),
             DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T20:00:00+02:00'),
-            [],
+            [
+                '1495317600' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T10:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T12:00:00+02:00')
+                ),
+                '1495317601' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T14:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T16:30:00+02:00')
+                ),
+                '1495317602' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T18:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-21T20:00:00+02:00')
+                ),
+            ],
+            []
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
+
+    /**
+     * @feature calendar_udb3_update.feature
+     * @scenario event with multiple timestamp, enddate one day later
+     * @test
+     */
+    public function it_handles_calendar_with_multiple_timestamps_and_end_one_day_later()
+    {
+        $majorInfoData = json_decode(
+            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_end_one_day_later.json'),
+            true
+        );
+
+        // A single timestamp gets converted to only a start and end date.
+        $expectedCalendar = new Calendar(
+            CalendarType::MULTIPLE(),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-25T22:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-27T01:00:00+02:00'),
+            [
+                '1495663200' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-25T22:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-26T01:00:00+02:00')
+                ),
+                '1495663201' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-26T22:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-27T01:00:00+02:00')
+                ),
+            ],
             []
         );
 
