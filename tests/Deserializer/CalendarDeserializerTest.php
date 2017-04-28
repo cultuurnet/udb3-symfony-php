@@ -424,4 +424,42 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedCalendar, $calendar);
     }
+
+    /**
+     * @feature calendar_udb3_update.feature
+     * @scenario event with multiple timestamps (MIX)
+     * @test
+     */
+    public function it_handles_calendar_with_multiple_timestamps_mixed()
+    {
+        $majorInfoData = json_decode(
+            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_mixed.json'),
+            true
+        );
+
+        $expectedCalendar = new Calendar(
+            CalendarType::MULTIPLE(),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-05-25T10:00:00+02:00'),
+            DateTime::createFromFormat(DateTime::ATOM, '2017-06-30T16:00:00+02:00'),
+            [
+                '1495663200' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-25T10:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-25T16:00:00+02:00')
+                ),
+                '1495663201' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-25T20:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-05-26T01:00:00+02:00')
+                ),
+                '1498600802' => new Timestamp(
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-06-28T10:00:00+02:00'),
+                    DateTime::createFromFormat(DateTime::ATOM, '2017-06-30T16:00:00+02:00')
+                ),
+            ],
+            []
+        );
+
+        $calendar = $this->deserializer->deserialize($majorInfoData);
+
+        $this->assertEquals($expectedCalendar, $calendar);
+    }
 }
