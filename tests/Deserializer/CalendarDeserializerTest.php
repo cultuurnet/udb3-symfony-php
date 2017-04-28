@@ -339,7 +339,7 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_handles_calendar_with_multiple_timestamps_and_end_one_day_later()
     {
         $majorInfoData = json_decode(
-            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_end_one_day_later.json'),
+            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_start_and_end_one_day_later.json'),
             true
         );
 
@@ -353,7 +353,7 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
                     DateTime::createFromFormat(DateTime::ATOM, '2017-05-25T22:00:00+02:00'),
                     DateTime::createFromFormat(DateTime::ATOM, '2017-05-26T01:00:00+02:00')
                 ),
-                '1495663201' => new Timestamp(
+                '1495749601' => new Timestamp(
                     DateTime::createFromFormat(DateTime::ATOM, '2017-05-26T22:00:00+02:00'),
                     DateTime::createFromFormat(DateTime::ATOM, '2017-05-27T01:00:00+02:00')
                 ),
