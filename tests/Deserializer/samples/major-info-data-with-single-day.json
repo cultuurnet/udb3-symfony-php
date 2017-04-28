@@ -36,8 +36,10 @@
     {
       "date": "2016-10-03T22:00:00.000Z",
       "startHour": "13:00",
+      "startHourAsDate": "2016-10-04T13:00:00+02:00",
       "endHour": "",
       "showStartHour": true,
+      "endHourAsDate": "2016-10-04T13:00:00+02:00",
       "showEndHour": false
     }
   ],

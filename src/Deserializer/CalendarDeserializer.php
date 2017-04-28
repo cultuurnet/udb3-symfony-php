@@ -37,33 +37,17 @@ class CalendarDeserializer
                     $dayTime = (new DateTime())->setTimestamp($time);
 
                     // Check if a correct starthour is given.
-                    if (!empty($timestamp['showStartHour']) && !empty($timestamp['startHour'])) {
-                        list($hour, $minute) = explode(':', $timestamp['startHour']);
-                        if (strlen($hour) == 2 && strlen($minute) == 2) {
-                            if (isset($timestamp['startHourAsDate'])) {
-                                $startTime = new \DateTime($timestamp['startHourAsDate']);
-                                $startTime->setTimezone(new \DateTimeZone('Europe/Brussels'));
-                            } else {
-                                $startTime = clone $dayTime;
-                                $startTime->setTime(intval($hour), intval($minute));
-                            }
-                        }
+                    if (!empty($timestamp['showStartHour']) && !empty($timestamp['startHourAsDate'])) {
+                        $startTime = new \DateTime($timestamp['startHourAsDate']);
+                        $startTime->setTimezone(new \DateTimeZone('Europe/Brussels'));
                     }
                     $startTime = isset($startTime) ? $startTime : $dayTime;
 
 
                     // Check if a correct endhour is given.
-                    if (!empty($timestamp['showEndHour']) && !empty($timestamp['endHour'])) {
-                        list($hour, $minute) = explode(':', $timestamp['endHour']);
-                        if (strlen($hour) == 2 && strlen($minute) == 2) {
-                            if (isset($timestamp['endHourAsDate'])) {
-                                $endTime = new \DateTime($timestamp['endHourAsDate']);
-                                $endTime->setTimezone(new \DateTimeZone('Europe/Brussels'));
-                            } else {
-                                $endTime = clone $dayTime;
-                                $endTime->setTime(intval($hour), intval($minute));
-                            }
-                        }
+                    if (!empty($timestamp['showEndHour']) && !empty($timestamp['endHourAsDate'])) {
+                        $endTime = new \DateTime($timestamp['endHourAsDate']);
+                        $endTime->setTimezone(new \DateTimeZone('Europe/Brussels'));
                     }
                     $endTime = isset($endTime) ? $endTime : $dayTime;
 
