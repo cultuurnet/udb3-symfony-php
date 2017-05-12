@@ -37,11 +37,6 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
     private $relationsRepository;
 
     /**
-     * @var SecurityInterface|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $security;
-
-    /**
      * @var MediaManagerInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $mediaManager;
@@ -55,14 +50,12 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
     {
         $this->placeEditingService  = $this->createMock(PlaceEditingServiceInterface::class);
         $this->relationsRepository  = $this->createMock(RepositoryInterface::class);
-        $this->security  = $this->createMock(SecurityInterface::class);
         $this->mediaManager  = $this->createMock(MediaManagerInterface::class);
         $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
 
         $this->placeRestController = new EditPlaceRestController(
             $this->placeEditingService,
             $this->relationsRepository,
-            $this->security,
             $this->mediaManager,
             $this->iriGenerator
         );
