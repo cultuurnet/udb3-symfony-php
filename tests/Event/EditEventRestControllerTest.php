@@ -36,11 +36,6 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
     private $eventEditor;
 
     /**
-     * @var SecurityInterface|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $security;
-
-    /**
      * @var MediaManagerInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $mediaManager;
@@ -55,13 +50,11 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->eventEditor = $this->createMock(EventEditingServiceInterface::class);
         $this->mediaManager  = $this->createMock(MediaManagerInterface::class);
         $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
-        $this->security  = $this->createMock(SecurityInterface::class);
 
         $this->controller = new EditEventRestController(
             $this->eventEditor,
             $this->mediaManager,
-            $this->iriGenerator,
-            $this->security
+            $this->iriGenerator
         );
 
         $this->iriGenerator
