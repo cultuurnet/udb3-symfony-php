@@ -7,9 +7,6 @@ use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
-use CultuurNet\UDB3\Role\ValueObjects\Permission;
-use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
@@ -48,7 +45,6 @@ class EditEventRestController extends OfferRestBaseController
      *   The event editor.
      * @param IriGeneratorInterface $iriGenerator
      * @param MediaManagerInterface $mediaManager
-     * @param SecurityInterface $security
      */
     public function __construct(
         EventEditingServiceInterface $eventEditor,
