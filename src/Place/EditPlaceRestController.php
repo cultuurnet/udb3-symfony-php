@@ -6,10 +6,7 @@ use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
-use CultuurNet\UDB3\Role\ValueObjects\Permission;
-use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
@@ -40,11 +37,6 @@ class EditPlaceRestController extends OfferRestBaseController
     protected $eventRelationsRepository;
 
     /**
-     * @var SecurityInterface
-     */
-    protected $security;
-
-    /**
      * @var IriGeneratorInterface
      */
     protected $iriGenerator;
@@ -59,20 +51,17 @@ class EditPlaceRestController extends OfferRestBaseController
      *
      * @param PlaceEditingServiceInterface $placeEditor
      * @param RepositoryInterface          $event_relations_repository
-     * @param SecurityInterface            $security
      * @param MediaManagerInterface        $mediaManager
      * @param IriGeneratorInterface        $iriGenerator
      */
     public function __construct(
         PlaceEditingServiceInterface $placeEditor,
         RepositoryInterface $event_relations_repository,
-        SecurityInterface $security,
         MediaManagerInterface $mediaManager,
         IriGeneratorInterface $iriGenerator
     ) {
         parent::__construct($placeEditor, $mediaManager);
         $this->eventRelationsRepository = $event_relations_repository;
-        $this->security = $security;
         $this->iriGenerator = $iriGenerator;
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
@@ -215,21 +204,5 @@ class EditPlaceRestController extends OfferRestBaseController
         }
 
         return $response;
-    }
-
-    /**
-     * Check if the current user has edit access to the given item.
-     *
-     * @param string $cdbid
-     *   Id of item to check.
-     *
-     * @return JsonResponse
-     */
-    public function hasPermission($cdbid)
-    {
-        $command = new PreflightCommand($cdbid, Permission::AANBOD_BEWERKEN());
-        $has_permission = $this->security->isAuthorized($command);
-
-        return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 }

@@ -7,9 +7,6 @@ use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Offer\Commands\PreflightCommand;
-use CultuurNet\UDB3\Role\ValueObjects\Permission;
-use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
@@ -32,11 +29,6 @@ class EditEventRestController extends OfferRestBaseController
     protected $iriGenerator;
 
     /**
-     * @var SecurityInterface
-     */
-    protected $security;
-
-    /**
      * @var MajorInfoJSONDeserializer
      */
     protected $majorInfoDeserializer;
@@ -53,17 +45,14 @@ class EditEventRestController extends OfferRestBaseController
      *   The event editor.
      * @param IriGeneratorInterface $iriGenerator
      * @param MediaManagerInterface $mediaManager
-     * @param SecurityInterface $security
      */
     public function __construct(
         EventEditingServiceInterface $eventEditor,
         MediaManagerInterface $mediaManager,
-        IriGeneratorInterface $iriGenerator,
-        SecurityInterface $security
+        IriGeneratorInterface $iriGenerator
     ) {
         parent::__construct($eventEditor, $mediaManager);
         $this->iriGenerator = $iriGenerator;
-        $this->security = $security;
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
         $this->calendarDeserializer = new CalendarDeserializer();
@@ -188,19 +177,5 @@ class EditEventRestController extends OfferRestBaseController
             'eventId' => $copiedEventId,
             'url' => $this->iriGenerator->iri($copiedEventId),
         ]);
-    }
-
-    /**
-     * Check if the current user has edit access to the given item.
-     *
-     * @param string $cdbid
-     *   Id of item to check.
-     * @return JsonResponse
-     */
-    public function hasPermission($cdbid)
-    {
-        $command = new PreflightCommand($cdbid, Permission::AANBOD_BEWERKEN());
-        $has_permission = $this->security->isAuthorized($command);
-        return JsonResponse::create(['hasPermission' => $has_permission]);
     }
 }

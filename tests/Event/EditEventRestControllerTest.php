@@ -15,7 +15,6 @@ use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Security\SecurityInterface;
 use CultuurNet\UDB3\Title;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,11 +35,6 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
     private $eventEditor;
 
     /**
-     * @var SecurityInterface|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $security;
-
-    /**
      * @var MediaManagerInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $mediaManager;
@@ -55,13 +49,11 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->eventEditor = $this->createMock(EventEditingServiceInterface::class);
         $this->mediaManager  = $this->createMock(MediaManagerInterface::class);
         $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
-        $this->security  = $this->createMock(SecurityInterface::class);
 
         $this->controller = new EditEventRestController(
             $this->eventEditor,
             $this->mediaManager,
-            $this->iriGenerator,
-            $this->security
+            $this->iriGenerator
         );
 
         $this->iriGenerator
