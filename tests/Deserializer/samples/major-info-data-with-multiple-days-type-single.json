@@ -29,9 +29,9 @@
     "label": "Pop en rock",
     "domain": "theme"
   },
-  "activeCalendarType": "multiple",
+  "activeCalendarType": "single",
   "activeCalendarLabel": "Eén of meerdere dagen",
-  "calendarType": "multiple",
+  "calendarType": "single",
   "timestamps": [
     {
       "date": "2016-10-12T22:00:00.000Z",

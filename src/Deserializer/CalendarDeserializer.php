@@ -73,19 +73,24 @@ class CalendarDeserializer
             ? (new DateTime())->setTimestamp(strtotime($eventData['endDate']))
             : null;
 
-        // For single calendar type, check if it should be multiple
-        // Also calculate the correct startDate and endDate for the calendar object.
         $calendarType = !empty($eventData['calendarType'])
             ? CalendarType::fromNative($eventData['calendarType'])
             : CalendarType::PERMANENT();
 
+        // For single calendar type, check if it should be multiple
+        if ($calendarType->is(CalendarType::SINGLE()) && count($timestamps) > 1) {
+            $calendarType = CalendarType::MULTIPLE();
+        }
+
+        // Also calculate the correct startDate and endDate for the calendar object.
         if ($calendarType->is(CalendarType::SINGLE()) && count($timestamps) == 1) {
             // 1 timestamp = no timestamps needed. Copy start and enddate.
             $firstTimestamp = current($timestamps);
             $startDate = $firstTimestamp->getStartDate();
             $endDate = $firstTimestamp->getEndDate();
             $timestamps = array();
-        } elseif ($calendarType->is(CalendarType::SINGLE()) && count($timestamps) > 1) {
+        }
+        if ($calendarType->is(CalendarType::MULTIPLE()) && count($timestamps) > 1) {
             // Multiple timestamps, startDate = first date, endDate = last date.
             $calendarType = CalendarType::MULTIPLE();
             $firstTimestamp = current($timestamps);
