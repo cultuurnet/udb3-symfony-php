@@ -23,9 +23,9 @@
     "label": "Cinefiel",
     "domain": "theme"
   },
-  "activeCalendarType": "single",
+  "activeCalendarType": "multiple",
   "activeCalendarLabel": "Eén of meerdere dagen",
-  "calendarType": "single",
+  "calendarType": "multiple",
   "startDate": "2016-10-12T22:00:00.000Z",
   "endDate": "2016-10-14T22:00:00.000Z",
   "timestamps": [
