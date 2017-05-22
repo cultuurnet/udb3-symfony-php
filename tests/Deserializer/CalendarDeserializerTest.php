@@ -47,14 +47,12 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider multipleDatesDataProvider
+     *
+     * @param string $majorInfoWithCalendarData
      */
-    public function it_should_deserialize_a_calendar_with_a_multiple_dates()
+    public function it_should_deserialize_a_calendar_with_a_multiple_dates($majorInfoWithCalendarData)
     {
-        $majorInfoWithCalendarData = json_decode(
-            file_get_contents(__DIR__ . '/samples/major-info-data-with-multiple-days.json'),
-            true
-        );
-
         $expectedCalendar = new Calendar(
             CalendarType::MULTIPLE(),
             DateTime::createFromFormat(DateTime::ATOM, '2016-10-13T14:00:00+02:00'),
@@ -74,6 +72,24 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
         $calendar = $this->deserializer->deserialize($majorInfoWithCalendarData);
 
         $this->assertEquals($expectedCalendar, $calendar);
+    }
+
+    public function multipleDatesDataProvider()
+    {
+        return [
+            'multiple timestamps, type multiple' => [
+                'calendarData' => json_decode(
+                    file_get_contents(__DIR__ . '/samples/major-info-data-with-multiple-days.json'),
+                    true
+                )
+            ],
+            'multiple timestamps, type single' => [
+                'calendarData' => json_decode(
+                    file_get_contents(__DIR__ . '/samples/major-info-data-with-multiple-days-type-single.json'),
+                    true
+                )
+            ],
+        ];
     }
 
     /**
