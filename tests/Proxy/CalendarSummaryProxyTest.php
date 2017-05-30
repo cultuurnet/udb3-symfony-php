@@ -109,4 +109,25 @@ class CalendarSummaryProxyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedRequest, $request);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_proxy_preflight_requests()
+    {
+        $request = Request::create(
+            'http://www.2dotstwice.be:666/event/4cb7f311-11cd-486e-88d6-c242489ac235/calendar-summary',
+            'OPTIONS'
+        );
+
+        $this
+            ->client
+            ->expects($this->once())
+            ->method('send')
+            ->willReturn(new Response());
+
+        $response = $this->proxy->handle($request);
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
 }

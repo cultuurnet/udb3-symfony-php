@@ -6,6 +6,7 @@ use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AndFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\FilterInterface;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\MethodFilter;
+use CultuurNet\UDB3\Symfony\Proxy\Filter\OrFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\PathFilter;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\CombinedReplacer;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\DomainReplacer;
@@ -57,8 +58,11 @@ class CalendarSummaryProxy extends Proxy
     {
         $pathFilter = new PathFilter($path);
         $methodFilter = new MethodFilter(new StringLiteral('GET'));
+        $preflightMethodFilter = new MethodFilter(new StringLiteral('OPTIONS'));
 
-        return new AndFilter([$pathFilter, $methodFilter]);
+        $CORSMethodFilter = new OrFilter([$methodFilter, $preflightMethodFilter]);
+
+        return new AndFilter([$pathFilter, $CORSMethodFilter]);
     }
 
     /**
