@@ -6,6 +6,7 @@ use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
@@ -131,7 +132,8 @@ class EditOrganizerRestController
 
         $commandId = $this->editingService->updateTitle(
             $organizerId,
-            $title
+            $title,
+            new Language('nl')
         );
 
         return JsonResponse::create(['commandId' => $commandId]);
