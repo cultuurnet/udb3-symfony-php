@@ -114,13 +114,29 @@ class EditOrganizerRestController
     }
 
     /**
-     * @param $organizerId
+     * @deprecated Use updateName with language parameter instead.
+     * @param string $organizerId
      * @param Request $request
      * @return JsonResponse
-     * @throws DataValidationException
      */
-    public function updateName($organizerId, Request $request)
-    {
+    public function updateNameDeprecated(
+        $organizerId,
+        Request $request
+    ) {
+        return $this->updateName($organizerId, 'nl', $request);
+    }
+
+    /**
+     * @param string $organizerId
+     * @param string $language
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateName(
+        $organizerId,
+        $language,
+        Request $request
+    ) {
         $titleJSONDeserializer = new TitleJSONDeserializer(
             false,
             new StringLiteral('name')
@@ -133,7 +149,7 @@ class EditOrganizerRestController
         $commandId = $this->editingService->updateTitle(
             $organizerId,
             $title,
-            new Language('nl')
+            empty($language) ? new Language('nl') : new Language($language)
         );
 
         return JsonResponse::create(['commandId' => $commandId]);
