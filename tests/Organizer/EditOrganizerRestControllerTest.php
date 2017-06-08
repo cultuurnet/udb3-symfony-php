@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\ContactPoint;
 use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Title;
 use Symfony\Component\HttpFoundation\Request;
@@ -159,14 +160,16 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_updates_the_name_of_an_organizer()
     {
         $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
-        $name = new Title('Het Depot');
+        $name = new Title('Le Depot');
+        $language = new Language('fr');
         $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateTitle')
             ->with(
                 $organizerId,
-                $name
+                $name,
+                $language
             )
             ->willReturn($commandId);
 
@@ -175,6 +178,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateName(
             $organizerId,
+            'fr',
             $request
         );
 
