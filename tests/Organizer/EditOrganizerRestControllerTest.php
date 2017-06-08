@@ -189,6 +189,35 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_supports_deprecated_update_name_of_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $name = new Title('Het Depot');
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateTitle')
+            ->with(
+                $organizerId,
+                $name
+            )
+            ->willReturn($commandId);
+
+        $content = '{"name":"' . $name->toNative() . '"}';
+        $request = new Request([], [], [], [], [], [], $content);
+
+        $response = $this->controller->updateNameDeprecated(
+            $organizerId,
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
     public function it_updates_address_of_an_organizer()
     {
         $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
