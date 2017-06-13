@@ -128,13 +128,13 @@ class EditOrganizerRestController
 
     /**
      * @param string $organizerId
-     * @param string $language
+     * @param string $lang
      * @param Request $request
      * @return JsonResponse
      */
     public function updateName(
         $organizerId,
-        $language,
+        $lang,
         Request $request
     ) {
         $titleJSONDeserializer = new TitleJSONDeserializer(
@@ -149,7 +149,7 @@ class EditOrganizerRestController
         $commandId = $this->editingService->updateTitle(
             $organizerId,
             $title,
-            empty($language) ? new Language('nl') : new Language($language)
+            empty($lang) ? new Language('nl') : new Language($lang)
         );
 
         return JsonResponse::create(['commandId' => $commandId]);
