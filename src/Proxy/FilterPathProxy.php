@@ -2,7 +2,6 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy;
 
-use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AndFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\FilterInterface;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\MethodFilter;
@@ -17,7 +16,7 @@ use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Domain;
 use ValueObjects\Web\PortNumber;
 
-class CalendarSummaryProxy extends Proxy
+class FilterPathProxy extends Proxy
 {
     /**
      * CdbXmlProxy constructor.
@@ -36,13 +35,9 @@ class CalendarSummaryProxy extends Proxy
         HttpFoundationFactory $httpFoundationFactory,
         ClientInterface $client
     ) {
-        $calendarSummaryFilter = $this->createFilter($path);
-        
-        $requestTransformer = $this->createTransformer($domain, $port);
-
         parent::__construct(
-            $calendarSummaryFilter,
-            $requestTransformer,
+            $this->createFilter($path),
+            $this->createTransformer($domain, $port),
             $diactorosFactory,
             $httpFoundationFactory,
             $client

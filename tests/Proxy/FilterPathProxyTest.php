@@ -4,17 +4,16 @@ namespace CultuurNet\UDB3\Symfony\Proxy;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Web\Hostname;
 use ValueObjects\Web\PortNumber;
 
-class CalendarSummaryProxyTest extends \PHPUnit_Framework_TestCase
+class FilterPathProxyTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var CalendarSummaryProxy
+     * @var FilterPathProxy
      */
     private $proxy;
 
@@ -32,7 +31,7 @@ class CalendarSummaryProxyTest extends \PHPUnit_Framework_TestCase
     {
         $this->client = $this->createMock(ClientInterface::class);
 
-        $this->proxy = new CalendarSummaryProxy(
+        $this->proxy = new FilterPathProxy(
             new FilterPathRegex('^\/event\/(?<offerId>[a-zA-Z0-9\-]+)\/calendar-summary$'),
             new Hostname('www.google.be'),
             new PortNumber(80),
