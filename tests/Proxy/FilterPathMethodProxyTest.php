@@ -7,13 +7,14 @@ use GuzzleHttp\Psr7\Response;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Hostname;
 use ValueObjects\Web\PortNumber;
 
-class FilterPathProxyTest extends \PHPUnit_Framework_TestCase
+class FilterPathMethodProxyTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var FilterPathProxy
+     * @var FilterPathMethodProxy
      */
     private $proxy;
 
@@ -31,8 +32,9 @@ class FilterPathProxyTest extends \PHPUnit_Framework_TestCase
     {
         $this->client = $this->createMock(ClientInterface::class);
 
-        $this->proxy = new FilterPathProxy(
+        $this->proxy = new FilterPathMethodProxy(
             new FilterPathRegex('^\/event\/(?<offerId>[a-zA-Z0-9\-]+)\/calendar-summary$'),
+            new StringLiteral('GET'),
             new Hostname('www.google.be'),
             new PortNumber(80),
             new DiactorosFactory(),
@@ -80,7 +82,7 @@ class FilterPathProxyTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_should_not_handle_requests_without_a_get_method()
+    public function it_should_not_handle_requests_that_do_not_match_the_configured_method()
     {
         $this->request->setMethod('POST');
         $response = $this->proxy->handle($this->request);
@@ -95,7 +97,7 @@ class FilterPathProxyTest extends \PHPUnit_Framework_TestCase
     {
         $request = Request::create(
             'http://www.2dotstwice.be',
-            'POST',
+            'GET',
             [],
             [],
             [],

@@ -16,11 +16,12 @@ use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Domain;
 use ValueObjects\Web\PortNumber;
 
-class FilterPathProxy extends Proxy
+class FilterPathMethodProxy extends Proxy
 {
     /**
      * CdbXmlProxy constructor.
      * @param FilterPathRegex $path
+     * @param StringLiteral|null $method
      * @param Domain $domain
      * @param PortNumber $port
      * @param DiactorosFactory $diactorosFactory
@@ -29,6 +30,7 @@ class FilterPathProxy extends Proxy
      */
     public function __construct(
         FilterPathRegex $path,
+        StringLiteral $method,
         Domain $domain,
         PortNumber $port,
         DiactorosFactory $diactorosFactory,
@@ -36,7 +38,7 @@ class FilterPathProxy extends Proxy
         ClientInterface $client
     ) {
         parent::__construct(
-            $this->createFilter($path),
+            $this->createFilter($path, $method),
             $this->createTransformer($domain, $port),
             $diactorosFactory,
             $httpFoundationFactory,
@@ -46,12 +48,13 @@ class FilterPathProxy extends Proxy
 
     /**
      * @param FilterPathRegex $path
+     * @param StringLiteral $method
      * @return FilterInterface
      */
-    private function createFilter(FilterPathRegex $path)
+    private function createFilter(FilterPathRegex $path, StringLiteral $method)
     {
         $pathFilter = new PathFilter($path);
-        $methodFilter = new MethodFilter(new StringLiteral('GET'));
+        $methodFilter = new MethodFilter($method);
 
         return new AndFilter([$pathFilter, $methodFilter]);
     }
