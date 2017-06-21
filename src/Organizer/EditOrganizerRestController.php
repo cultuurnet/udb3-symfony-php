@@ -6,6 +6,7 @@ use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\EventSourcing\DBAL\UniqueConstraintException;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Label;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Organizer\OrganizerEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
@@ -113,13 +114,29 @@ class EditOrganizerRestController
     }
 
     /**
-     * @param $organizerId
+     * @deprecated Use updateName with language parameter instead.
+     * @param string $organizerId
      * @param Request $request
      * @return JsonResponse
-     * @throws DataValidationException
      */
-    public function updateName($organizerId, Request $request)
-    {
+    public function updateNameDeprecated(
+        $organizerId,
+        Request $request
+    ) {
+        return $this->updateName($organizerId, 'nl', $request);
+    }
+
+    /**
+     * @param string $organizerId
+     * @param string $lang
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateName(
+        $organizerId,
+        $lang,
+        Request $request
+    ) {
         $titleJSONDeserializer = new TitleJSONDeserializer(
             false,
             new StringLiteral('name')
@@ -131,7 +148,8 @@ class EditOrganizerRestController
 
         $commandId = $this->editingService->updateTitle(
             $organizerId,
-            $title
+            $title,
+            empty($lang) ? new Language('nl') : new Language($lang)
         );
 
         return JsonResponse::create(['commandId' => $commandId]);
