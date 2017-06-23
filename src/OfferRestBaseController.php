@@ -113,20 +113,19 @@ abstract class OfferRestBaseController
     /**
      * Update the organizer property.
      *
-     * @param Request $request
      * @param string $cdbid
+     * @param string $organizerId
      * @return JsonResponse
      */
-    public function updateOrganizer(Request $request, $cdbid)
+    public function updateOrganizer($cdbid, $organizerId)
     {
-        $body_content = json_decode($request->getContent());
-        if (empty($body_content->organizer)) {
-            return new JsonResponse(['error' => "organizer required"], 400);
+        if (empty($organizerId)) {
+            return new JsonResponse(['error' => "organizerId required"], 400);
         }
 
         $response = new JsonResponse();
 
-        $command_id = $this->editor->updateOrganizer($cdbid, $body_content->organizer);
+        $command_id = $this->editor->updateOrganizer($cdbid, $organizerId);
         $response->setData(['commandId' => $command_id]);
 
         return $response;
