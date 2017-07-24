@@ -132,7 +132,6 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             ->getContent();
 
         $this->assertEquals($expectedResponseContent, $actualResponseContent);
-
     }
 
     /**
