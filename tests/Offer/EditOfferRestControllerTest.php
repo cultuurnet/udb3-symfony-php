@@ -69,6 +69,33 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_adds_a_label()
+    {
+        $label = 'test label';
+        $cdbid = 'c6ff4c27-bdbb-452f-a1b5-d9e2e3aa846c';
+
+        $commandId = 'f9989e43-d14d-4a28-9092-34d7cd1a71fd';
+
+        $this->editService->expects($this->once())
+            ->method('addLabel')
+            ->with(
+                $cdbid,
+                $label
+            )
+            ->willReturn($commandId);
+
+        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+
+        $actualResponseContent = $this->controller
+            ->addLabel($cdbid, $label)
+            ->getContent();
+
+        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+    }
+
+    /**
+     * @test
+     */
     public function it_adds_label_through_json()
     {
         $data = '{
@@ -106,6 +133,33 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResponseContent, $actualResponseContent);
 
+    }
+
+    /**
+     * @test
+     */
+    public function it_removes_a_label()
+    {
+        $label = 'test label';
+        $cdbid = 'c6ff4c27-bdbb-452f-a1b5-d9e2e3aa846c';
+
+        $commandId = 'f9989e43-d14d-4a28-9092-34d7cd1a71fd';
+
+        $this->editService->expects($this->once())
+            ->method('removeLabel')
+            ->with(
+                $cdbid,
+                $label
+            )
+            ->willReturn($commandId);
+
+        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+
+        $actualResponseContent = $this->controller
+            ->removeLabel($cdbid, $label)
+            ->getContent();
+
+        $this->assertEquals($expectedResponseContent, $actualResponseContent);
     }
 
     /**
