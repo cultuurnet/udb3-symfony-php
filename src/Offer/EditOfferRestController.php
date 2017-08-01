@@ -121,13 +121,13 @@ class EditOfferRestController
      * @param $lang
      * @return JsonResponse
      */
-    public function translateDescription(Request $request, $cdbid, $lang)
+    public function updateDescription(Request $request, $cdbid, $lang)
     {
         $description = $this->descriptionJsonDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editService->translateDescription(
+        $commandId = $this->editService->updateDescription(
             $cdbid,
             new Language($lang),
             $description
