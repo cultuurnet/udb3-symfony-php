@@ -2,8 +2,10 @@
 
 namespace CultuurNet\UDB3\Symfony\Offer;
 
+use CultuurNet\UDB3\Description;
 use CultuurNet\UDB3\DescriptionJSONDeserializer;
 use CultuurNet\UDB3\LabelJSONDeserializer;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\PriceInfo\BasePrice;
 use CultuurNet\UDB3\PriceInfo\Price;
@@ -110,5 +112,32 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             ->getContent();
 
         $this->assertEquals($expectedResponseContent, $actualResponseContent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_use_the_editing_service_and_retun_the_command_id_when_updating_an_offer_description_by_language()
+    {
+        $descriptionData = '{"description": "nieuwe beschrijving"}';
+
+        $request = new Request([], [], [], [], [], [], $descriptionData);
+
+        $this->editService->expects($this->once())
+            ->method('updateDescription')
+            ->with(
+                'EC545F35-C76E-4EFC-8AB0-5024DA866CA0',
+                new Language('nl'),
+                new Description('nieuwe beschrijving')
+            )
+            ->willReturn('3390051C-3071-4917-896D-AA0B792392C0');
+
+        $responseContent = $this->controller
+            ->updateDescription($request, 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0', 'nl')
+            ->getContent();
+
+        $expectedResponseContent = '{"commandId":"3390051C-3071-4917-896D-AA0B792392C0"}';
+
+        $this->assertEquals($expectedResponseContent, $responseContent);
     }
 }
