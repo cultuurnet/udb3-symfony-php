@@ -68,8 +68,6 @@ class OfferPermissionsControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_an_array_of_permissions_for_the_current_user()
     {
-        $offerId = new StringLiteral('b06a4ab4-a75b-49d1-b4ab-1992c1db908a');
-
         foreach ($this->permissions as $permission) {
             $this->voter
                 ->method('isAllowed')
@@ -77,7 +75,7 @@ class OfferPermissionsControllerTest extends \PHPUnit_Framework_TestCase
         }
 
         $actualResponse = $this->controllerWithUser
-            ->getPermissionsForCurrentUser($offerId);
+            ->getPermissionsForCurrentUser('b06a4ab4-a75b-49d1-b4ab-1992c1db908a');
         $actualResponseJson = $actualResponse->getContent();
 
         $expectedPermissions = array(
@@ -95,9 +93,6 @@ class OfferPermissionsControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_an_array_of_permissions_for_a_given_user()
     {
-        $offerId = new StringLiteral('b06a4ab4-a75b-49d1-b4ab-1992c1db908a');
-        $userId = new StringLiteral('0d7019dc-d31e-4735-b9d1-5e782af97387');
-
         foreach ($this->permissions as $permission) {
             $this->voter
                 ->method('isAllowed')
@@ -105,7 +100,10 @@ class OfferPermissionsControllerTest extends \PHPUnit_Framework_TestCase
         }
 
         $actualResponse = $this->controllerWithUser
-            ->getPermissionsForGivenUser($offerId, $userId);
+            ->getPermissionsForGivenUser(
+                'b06a4ab4-a75b-49d1-b4ab-1992c1db908a',
+                '0d7019dc-d31e-4735-b9d1-5e782af97387'
+            );
         $actualResponseJson = $actualResponse->getContent();
 
         $expectedPermissions = array(
