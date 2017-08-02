@@ -1,7 +1,4 @@
 <?php
-/**
- * @deprecated
- */
 namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\UDB3\Offer\Security\Permission\PermissionVoterInterface;
@@ -10,12 +7,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
-class OfferPermissionController
+class OfferPermissionsController
 {
     /**
-     * @var Permission
+     * @var Permission[]
      */
-    private $permission;
+    private $permissions;
 
     /**
      * @var PermissionVoterInterface
@@ -28,16 +25,16 @@ class OfferPermissionController
     private $currentUserId;
 
     /**
-     * @param Permission $permission
+     * @param Permission[] $permissions
      * @param PermissionVoterInterface $permissionVoter
      * @param StringLiteral|null $currentUserId
      */
     public function __construct(
-        Permission $permission,
+        array $permissions,
         PermissionVoterInterface $permissionVoter,
         StringLiteral $currentUserId = null
     ) {
-        $this->permission = $permission;
+        $this->permissions = $permissions;
         $this->permissionVoter = $permissionVoter;
         $this->currentUserId = $currentUserId;
     }
@@ -46,10 +43,14 @@ class OfferPermissionController
      * @param string $offerId
      * @return Response
      */
-    public function currentUserHasPermission($offerId)
+    public function getPermissionsForCurrentUser($offerId)
     {
-        return $this->hasPermission(
-            new StringLiteral((string) $offerId),
+        if (is_null($this->currentUserId)) {
+            return JsonResponse::create(['permissions' => []])->setPrivate();
+        }
+
+        return $this->getPermissions(
+            new StringLiteral($offerId),
             $this->currentUserId
         );
     }
@@ -59,32 +60,35 @@ class OfferPermissionController
      * @param string $userId
      * @return Response
      */
-    public function givenUserHasPermission($offerId, $userId)
+    public function getPermissionsForGivenUser($offerId, $userId)
     {
-        return $this->hasPermission(
-            new StringLiteral((string) $offerId),
-            new StringLiteral((string) $userId)
+        return $this->getPermissions(
+            new StringLiteral($offerId),
+            new StringLiteral($userId)
         );
     }
 
     /**
      * @param StringLiteral $offerId
-     * @param StringLiteral|null $userId
+     * @param StringLiteral $userId
      * @return Response
      */
-    private function hasPermission($offerId, $userId = null)
+    private function getPermissions(StringLiteral $offerId, StringLiteral $userId)
     {
-        if ($userId) {
+        $permissionsToReturn = array();
+        foreach ($this->permissions as $permission) {
             $hasPermission = $this->permissionVoter->isAllowed(
-                $this->permission,
+                $permission,
                 $offerId,
                 $userId
             );
-        } else {
-            $hasPermission = false;
+
+            if ($hasPermission) {
+                $permissionsToReturn[] = (string) $permission;
+            }
         }
 
-        return JsonResponse::create(['hasPermission' => $hasPermission])
+        return JsonResponse::create(['permissions' => $permissionsToReturn])
             ->setPrivate();
     }
 }
