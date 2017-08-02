@@ -60,11 +60,26 @@ class EditOfferRestController
     }
 
     /**
+     * @param $cdbid
+     * @param $label
+     * @return JsonResponse
+     */
+    public function addLabel($cdbid, $label)
+    {
+        $commandId = $this->editService->addLabel(
+            $cdbid,
+            new Label($label)
+        );
+
+        return new JsonResponse(['commandId' => $commandId]);
+    }
+
+    /**
      * @param Request $request
      * @param $cdbid
      * @return JsonResponse
      */
-    public function addLabel(Request $request, $cdbid)
+    public function addLabelFromJsonBody(Request $request, $cdbid)
     {
         $json = new StringLiteral($request->getContent());
         $label = $this->labelJsonDeserializer->deserialize($json);
