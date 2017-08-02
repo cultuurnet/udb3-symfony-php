@@ -61,7 +61,7 @@ class DashboardRestController
         $pageUrlFactory = new PageUrlGenerator(
             $request->query,
             $this->urlGenerator,
-            'dashboard-items',
+            'user-offers',
             'page'
         );
 
