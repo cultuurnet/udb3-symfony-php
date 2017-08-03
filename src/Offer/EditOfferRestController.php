@@ -75,6 +75,8 @@ class EditOfferRestController
     }
 
     /**
+     * @deprecated
+     *
      * @param Request $request
      * @param $cdbid
      * @return JsonResponse
