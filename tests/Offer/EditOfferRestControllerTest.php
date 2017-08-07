@@ -236,4 +236,31 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResponseContent, $responseContent);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_use_the_editing_service_and_return_the_command_id_when_updating_an_offer_title_by_language()
+    {
+        $titleData = '{"title": "nieuwe titel"}';
+
+        $request = new Request([], [], [], [], [], [], $titleData);
+
+        $this->editService->expects($this->once())
+            ->method('updateTitle')
+            ->with(
+                'EC545F35-C76E-4EFC-8AB0-5024DA866CA0',
+                new Language('nl'),
+                new StringLiteral('nieuwe titel')
+            )
+            ->willReturn('3390051C-3071-4917-896D-AA0B792392C0');
+
+        $responseContent = $this->controller
+            ->updateTitle($request, 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0', 'nl')
+            ->getContent();
+
+        $expectedResponseContent = '{"commandId":"3390051C-3071-4917-896D-AA0B792392C0"}';
+
+        $this->assertEquals($expectedResponseContent, $responseContent);
+    }
 }
