@@ -195,7 +195,7 @@ class EditPlaceRestController extends OfferRestBaseController
 
         $facilities = array();
         foreach ($body_content->facilities as $facility) {
-            $facilities[] = $this->facilityResolver->byId($facility->id);
+            $facilities[] = $this->facilityResolver->byId(new StringLiteral($facility->id));
         }
 
         $response = new JsonResponse();
