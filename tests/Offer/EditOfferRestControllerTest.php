@@ -277,6 +277,5 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $expectedResponseContent = '{"commandId":"commandId"}';
 
         $this->assertEquals($expectedResponseContent, $responseContent);
-
     }
 }
