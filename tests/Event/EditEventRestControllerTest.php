@@ -14,6 +14,7 @@ use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Location\Location;
+use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Title;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -171,6 +172,30 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($expectedResponseContent, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_updates_location()
+    {
+        $eventId = '7f71ebbd-b22b-4b94-96df-947ad0c1534f';
+        $locationId = '9a1fe7fc-4129-4563-aafd-414ef25b2814';
+        $commandId = 'commandId';
+
+        $this->eventEditor->expects($this->once())
+            ->method('updateLocation')
+            ->with(
+                $eventId,
+                new LocationId('9a1fe7fc-4129-4563-aafd-414ef25b2814')
+            )
+            ->willReturn($commandId);
+
+        $response = $this->controller->updateLocation($eventId, $locationId);
+
+        $expectedResponse = json_encode(['commandId' => $commandId]);
+        $this->assertEquals($expectedResponse, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
