@@ -189,9 +189,9 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
             [
                 'facilities' =>
                 [
-                    ['id' => '3.23.1.0.0'],
-                    ['id' => '3.23.2.0.0'],
-                    ['id' => '3.23.3.0.0']
+                    '3.23.1.0.0',
+                    '3.23.2.0.0',
+                    '3.23.3.0.0'
                 ]
             ]
         );
