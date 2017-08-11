@@ -251,7 +251,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0',
                 new Language('nl'),
-                new StringLiteral('nieuwe titel')
+                'nieuwe titel'
             )
             ->willReturn('3390051C-3071-4917-896D-AA0B792392C0');
 
