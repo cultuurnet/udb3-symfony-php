@@ -9,8 +9,8 @@ use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Place\FacilitiesJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
-use CultuurNet\UDB3\Symfony\Offer\OfferFacilityResolverInterface;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -48,9 +48,9 @@ class EditPlaceRestController extends OfferRestBaseController
     private $addressDeserializer;
 
     /**
-     * @var OfferFacilityResolverInterface
+     * @var FacilitiesJSONDeserializer
      */
-    private $facilityResolver;
+    private $facilityDeserializer;
 
     /**
      * Constructs a RestController.
@@ -72,7 +72,7 @@ class EditPlaceRestController extends OfferRestBaseController
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
         $this->addressDeserializer = new AddressJSONDeserializer();
-        $this->facilityResolver = new PlaceFacilityResolver();
+        $this->facilityDeserializer = new FacilitiesJSONDeserializer(new PlaceFacilityResolver());
     }
 
     /**
@@ -191,19 +191,13 @@ class EditPlaceRestController extends OfferRestBaseController
      */
     public function updateFacilities(Request $request, $cdbid)
     {
-        $body_content = json_decode($request->getContent());
-
-        $facilities = array();
-        foreach ($body_content->facilities as $facility) {
-            $facilities[] = $this->facilityResolver->byId(new StringLiteral($facility));
-        }
-
-        $response = new JsonResponse();
+        $facilities = $this->facilityDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
 
         $command_id = $this->editor->updateFacilities($cdbid, $facilities);
-        $response->setData(['commandId' => $command_id]);
 
-        return $response;
+        return new JsonResponse(['commandId' => $command_id]);
     }
 
     /**
