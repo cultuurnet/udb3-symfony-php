@@ -36,7 +36,7 @@ class PlaceFacilityResolver implements OfferFacilityResolverInterface
     public function byId(StringLiteral $facilityId)
     {
         if (!array_key_exists((string) $facilityId, $this->facilities)) {
-            throw new \Exception("Unknown place facility");
+            throw new \Exception("Unknown place facility id '{$facilityId}'");
         }
 
         return $this->facilities[(string) $facilityId];
