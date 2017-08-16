@@ -24,7 +24,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $updateCalendar = file_get_contents(__DIR__ . '/update_calendar.json');
+        $updateCalendar = file_get_contents(__DIR__ . '/calendar_all_fields.json');
         $this->updateCalendarAsArray = json_decode($updateCalendar, true);
 
         $this->calendarJSONParser = new CalendarJSONParser();
@@ -50,7 +50,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_null_when_start_date_is_missing()
     {
-        $updateCalendar = file_get_contents(__DIR__ . '/update_calendar_missing_start_and_end.json');
+        $updateCalendar = file_get_contents(__DIR__ . '/calendar_missing_start_and_end.json');
         $updateCalendarAsArray = json_decode($updateCalendar, true);
 
         $this->assertNull(
@@ -80,7 +80,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_null_when_end_date_is_missing()
     {
-        $updateCalendar = file_get_contents(__DIR__ . '/update_calendar_missing_start_and_end.json');
+        $updateCalendar = file_get_contents(__DIR__ . '/calendar_missing_start_and_end.json');
         $updateCalendarAsArray = json_decode($updateCalendar, true);
 
         $this->assertNull(

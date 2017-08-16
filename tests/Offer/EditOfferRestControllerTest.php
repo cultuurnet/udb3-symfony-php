@@ -13,10 +13,11 @@ use CultuurNet\UDB3\PriceInfo\BasePrice;
 use CultuurNet\UDB3\PriceInfo\Price;
 use CultuurNet\UDB3\PriceInfo\PriceInfo;
 use CultuurNet\UDB3\PriceInfo\Tariff;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
-use CultuurNet\UDB3\Symfony\Deserializer\CalendarJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Money\Currency;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -66,7 +67,9 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->titleDeserializer = new TitleJSONDeserializer();
         $this->descriptionDeserializer = new DescriptionJSONDeserializer();
         $this->priceInfoDeserializer = new PriceInfoJSONDeserializer();
-        $this->calendarDeserializer = new CalendarJSONDeserializer();
+        $this->calendarDeserializer = new CalendarJSONDeserializer(
+            new CalendarJSONParser()
+        );
 
         $this->controller = new EditOfferRestController(
             $this->editService,
