@@ -48,6 +48,21 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_returns_null_when_start_date_is_missing()
+    {
+        $updateCalendar = file_get_contents(__DIR__ . '/updated_calendar_missing_start_and_end.json');
+        $updateCalendarAsArray = json_decode($updateCalendar, true);
+
+        $this->assertNull(
+            $this->calendarJSONParser->getStartDate(
+                $updateCalendarAsArray
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
     public function it_can_get_the_end_date()
     {
         $endDate = \DateTime::createFromFormat(\DateTime::ATOM, '2020-02-10T16:00:00+01:00');
@@ -56,6 +71,21 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
             $endDate,
             $this->calendarJSONParser->getEndDate(
                 $this->updateCalendarAsArray
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_null_when_end_date_is_missing()
+    {
+        $updateCalendar = file_get_contents(__DIR__ . '/updated_calendar_missing_start_and_end.json');
+        $updateCalendarAsArray = json_decode($updateCalendar, true);
+
+        $this->assertNull(
+            $this->calendarJSONParser->getEndDate(
+                $updateCalendarAsArray
             )
         );
     }
