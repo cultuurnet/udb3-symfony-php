@@ -13,6 +13,11 @@ use ValueObjects\DateTime\Minute;
 class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @var array
+     */
+    private $updateCalendarAsArray;
+
+    /**
      * @var CalendarJSONParser
      */
     private $calendarJSONParser;
@@ -20,10 +25,9 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $updateCalendar = file_get_contents(__DIR__ . '/updated_calendar.json');
+        $this->updateCalendarAsArray = json_decode($updateCalendar, true);
 
-        $this->calendarJSONParser = new CalendarJSONParser(
-            json_decode($updateCalendar, true)
-        );
+        $this->calendarJSONParser = new CalendarJSONParser();
     }
 
     /**
@@ -35,7 +39,9 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $startDate,
-            $this->calendarJSONParser->getStartDate()
+            $this->calendarJSONParser->getStartDate(
+                $this->updateCalendarAsArray
+            )
         );
     }
 
@@ -48,7 +54,9 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $endDate,
-            $this->calendarJSONParser->getEndDate()
+            $this->calendarJSONParser->getEndDate(
+                $this->updateCalendarAsArray
+            )
         );
     }
 
@@ -76,7 +84,9 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $timeStamps,
-            $this->calendarJSONParser->getTimeStamps()
+            $this->calendarJSONParser->getTimeStamps(
+                $this->updateCalendarAsArray
+            )
         );
     }
 
@@ -119,7 +129,9 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $openingHours,
-            $this->calendarJSONParser->getOpeningHours()
+            $this->calendarJSONParser->getOpeningHours(
+                $this->updateCalendarAsArray
+            )
         );
     }
 }

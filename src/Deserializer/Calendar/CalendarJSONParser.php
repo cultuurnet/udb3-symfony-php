@@ -7,46 +7,47 @@ use CultuurNet\UDB3\Calendar\OpeningHour;
 use CultuurNet\UDB3\Calendar\OpeningTime;
 use CultuurNet\UDB3\Timestamp;
 
-class CalendarJSONParser
+class CalendarJSONParser implements CalendarJSONParserInterface
 {
     /**
-     * @var array
+     * @param array $data
+     *
+     * @return \DateTimeInterface|null
      */
-    private $data;
+    public function getStartDate($data)
+    {
+        if (!isset($data['startDate'])) {
+            return null;
+        }
+
+        return new \DateTime($data['startDate']);
+    }
 
     /**
      * @param array $data
+     *
+     * @return \DateTimeInterface|null
      */
-    public function __construct(array $data)
+    public function getEndDate($data)
     {
-        $this->data = $data;
+        if (!isset($data['startDate'])) {
+            return null;
+        }
+
+        return new \DateTime($data['endDate']);
     }
 
     /**
-     * @return \DateTimeInterface
+     * @param array $data
+     *
+     * @return Timestamp[]
      */
-    public function getStartDate()
-    {
-        return new \DateTime($this->data['startDate']);
-    }
-
-    /**
-     * @return \DateTimeInterface
-     */
-    public function getEndDate()
-    {
-        return new \DateTime($this->data['endDate']);
-    }
-
-    /**
-     * @return TimeStamp[]
-     */
-    public function getTimeStamps()
+    public function getTimeStamps($data)
     {
         $timestamps = [];
 
-        if (!empty($this->data['timestamps'])) {
-            foreach ($this->data['timestamps'] as $index => $timestamp) {
+        if (!empty($data['timestamps'])) {
+            foreach ($data['timestamps'] as $index => $timestamp) {
                 $startDate = new \DateTime($timestamp['start']);
                 $endDate = new \DateTime($timestamp['end']);
                 $timestamps[] = new Timestamp($startDate, $endDate);
@@ -58,14 +59,16 @@ class CalendarJSONParser
     }
 
     /**
+     * @param array $data
+     *
      * @return OpeningHour[]
      */
-    public function getOpeningHours()
+    public function getOpeningHours($data)
     {
         $openingHours = [];
 
-        if (!empty($this->data['openingHours'])) {
-            foreach ($this->data['openingHours'] as $openingHour) {
+        if (!empty($data['openingHours'])) {
+            foreach ($data['openingHours'] as $openingHour) {
                 $daysOfWeek = DayOfWeekCollection::deserialize($openingHour['dayOfWeek']);
 
                 $openingHours[] = new OpeningHour(
