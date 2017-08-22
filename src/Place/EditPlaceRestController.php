@@ -9,6 +9,7 @@ use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Place\FacilitiesJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
@@ -47,6 +48,11 @@ class EditPlaceRestController extends OfferRestBaseController
     private $addressDeserializer;
 
     /**
+     * @var FacilitiesJSONDeserializer
+     */
+    private $facilityDeserializer;
+
+    /**
      * Constructs a RestController.
      *
      * @param PlaceEditingServiceInterface $placeEditor
@@ -66,6 +72,7 @@ class EditPlaceRestController extends OfferRestBaseController
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
         $this->addressDeserializer = new AddressJSONDeserializer();
+        $this->facilityDeserializer = new FacilitiesJSONDeserializer(new PlaceFacilityResolver());
     }
 
     /**
@@ -183,6 +190,24 @@ class EditPlaceRestController extends OfferRestBaseController
      * @return JsonResponse
      */
     public function updateFacilities(Request $request, $cdbid)
+    {
+        $facilities = $this->facilityDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $command_id = $this->editor->updateFacilities($cdbid, $facilities);
+
+        return new JsonResponse(['commandId' => $command_id]);
+    }
+
+    /**
+     * Update the facilities with labels.
+     *
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
+     */
+    public function updateFacilitiesWithLabel(Request $request, $cdbid)
     {
         $body_content = json_decode($request->getContent());
 
