@@ -8,12 +8,23 @@ use CultuurNet\UDB3\Calendar\DayOfWeekCollection;
 use CultuurNet\UDB3\Calendar\OpeningHour;
 use CultuurNet\UDB3\Calendar\OpeningTime;
 use CultuurNet\UDB3\CalendarType;
+use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 use ValueObjects\DateTime\Hour;
 use ValueObjects\DateTime\Minute;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var DataValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $calendarDataValidator;
+
+    protected function setUp()
+    {
+        $this->calendarDataValidator = $this->createMock(DataValidatorInterface::class);
+    }
+
     /**
      * @test
      */
@@ -24,7 +35,8 @@ class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         );
 
         $calendarJSONDeserializer = new CalendarJSONDeserializer(
-            new CalendarJSONParser()
+            new CalendarJSONParser(),
+            $this->calendarDataValidator
         );
 
         $openingHours = [
@@ -86,7 +98,8 @@ class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         $calendarAsJsonString = new StringLiteral($calendarData);
 
         $calendarJSONDeserializer = new CalendarJSONDeserializer(
-            new CalendarJSONParser()
+            new CalendarJSONParser(),
+            $this->calendarDataValidator
         );
 
         $calendar = $calendarJSONDeserializer->deserialize($calendarAsJsonString);

@@ -15,6 +15,7 @@ use CultuurNet\UDB3\PriceInfo\PriceInfo;
 use CultuurNet\UDB3\PriceInfo\Tariff;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
@@ -55,6 +56,11 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     private $calendarDeserializer;
 
     /**
+     * @var DataValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $calendarDataValidator;
+
+    /**
      * @var EditOfferRestController
      */
     private $controller;
@@ -63,12 +69,15 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->editService = $this->createMock(OfferEditingServiceInterface::class);
 
+        $this->calendarDataValidator = $this->createMock(DataValidatorInterface::class);
+
         $this->labelDeserializer = new LabelJSONDeserializer();
         $this->titleDeserializer = new TitleJSONDeserializer();
         $this->descriptionDeserializer = new DescriptionJSONDeserializer();
         $this->priceInfoDeserializer = new PriceInfoJSONDeserializer();
         $this->calendarDeserializer = new CalendarJSONDeserializer(
-            new CalendarJSONParser()
+            new CalendarJSONParser(),
+            $this->calendarDataValidator
         );
 
         $this->controller = new EditOfferRestController(

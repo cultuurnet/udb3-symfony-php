@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Calendar;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\CalendarType;
+use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 use CultuurNet\UDB3\Timestamp;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -15,12 +16,19 @@ class CalendarJSONDeserializer extends JSONDeserializer
      */
     private $calendarJSONParser;
 
+    /**
+     * @var DataValidatorInterface
+     */
+    private $calendarDataValidator;
+
     public function __construct(
-        CalendarJSONParserInterface $calendarJSONParser
+        CalendarJSONParserInterface $calendarJSONParser,
+        DataValidatorInterface $calendarDataValidator
     ) {
         parent::__construct(true);
 
         $this->calendarJSONParser = $calendarJSONParser;
+        $this->calendarDataValidator = $calendarDataValidator;
     }
 
     /**
@@ -30,6 +38,8 @@ class CalendarJSONDeserializer extends JSONDeserializer
     public function deserialize(StringLiteral $data)
     {
         $data = parent::deserialize($data);
+
+        $this->calendarDataValidator->validate((array) $data);
 
         // There are 6 possible options in 2 categories.
         //
