@@ -29,7 +29,7 @@ class CalendarJSONParser implements CalendarJSONParserInterface
      */
     public function getEndDate($data)
     {
-        if (!isset($data['startDate'])) {
+        if (!isset($data['endDate'])) {
             return null;
         }
 
