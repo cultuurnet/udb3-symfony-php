@@ -82,7 +82,7 @@ class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_should_return_right_calendar_type_from_json_data(
         $calendarData,
         CalendarType $expectedCalendarType
-    ){
+    ) {
         $calendarAsJsonString = new StringLiteral($calendarData);
 
         $calendarJSONDeserializer = new CalendarJSONDeserializer(
