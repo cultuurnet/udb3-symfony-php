@@ -49,8 +49,8 @@ class CalendarJSONDeserializer extends JSONDeserializer
 
         return new Calendar(
             $this->getCalendarType((array) $data),
-            $this->calendarJSONParser->getStartDate($data),
-            $this->calendarJSONParser->getEndDate($data),
+            $this->getStartDate((array) $data),
+            $this->getEndDate((array) $data),
             $this->convertToTimeStamps(
                 ...$this->calendarJSONParser->getTimeSpans($data)
             ),
@@ -98,5 +98,43 @@ class CalendarJSONDeserializer extends JSONDeserializer
         }
 
         return $timeStamps;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return \DateTimeInterface|null
+     */
+    private function getStartDate(array $data)
+    {
+        if ($this->calendarJSONParser->getStartDate($data)) {
+            return $this->calendarJSONParser->getStartDate($data);
+        }
+
+        $timeSpans = $this->calendarJSONParser->getTimeSpans($data);
+        if (count($timeSpans)) {
+            return $timeSpans[0]->getStart();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return \DateTimeInterface|null
+     */
+    private function getEndDate(array $data)
+    {
+        if ($this->calendarJSONParser->getEndDate($data)) {
+            return $this->calendarJSONParser->getEndDate($data);
+        }
+
+        $timeSpans = $this->calendarJSONParser->getTimeSpans($data);
+        if (count($timeSpans)) {
+            return $timeSpans[count($timeSpans) - 1]->getEnd();
+        }
+
+        return null;
     }
 }

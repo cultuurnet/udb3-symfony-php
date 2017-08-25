@@ -15,16 +15,11 @@ class CalendarJSONParser implements CalendarJSONParserInterface
      */
     public function getStartDate($data)
     {
-        if (isset($data['startDate'])) {
-            return new \DateTime($data['startDate']);
+        if (!isset($data['startDate'])) {
+            return null;
         }
 
-        $timeSpans = $this->getTimeSpans($data);
-        if (count($timeSpans) > 0) {
-            return $timeSpans[0]->getStart();
-        }
-
-        return null;
+        return new \DateTime($data['startDate']);
     }
 
     /**
@@ -34,16 +29,11 @@ class CalendarJSONParser implements CalendarJSONParserInterface
      */
     public function getEndDate($data)
     {
-        if (isset($data['startDate'])) {
-            return new \DateTime($data['endDate']);
+        if (!isset($data['startDate'])) {
+            return null;
         }
 
-        $timeSpans = $this->getTimeSpans($data);
-        if (count($timeSpans) > 0) {
-            return $timeSpans[count($timeSpans) - 1]->getEnd();
-        }
-
-        return null;
+        return new \DateTime($data['endDate']);
     }
 
     /**
