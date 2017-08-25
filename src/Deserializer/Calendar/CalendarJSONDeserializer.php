@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Calendar;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\CalendarType;
+use CultuurNet\UDB3\Timestamp;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class CalendarJSONDeserializer extends JSONDeserializer
@@ -50,7 +51,9 @@ class CalendarJSONDeserializer extends JSONDeserializer
             $this->getCalendarType((array) $data),
             $this->calendarJSONParser->getStartDate($data),
             $this->calendarJSONParser->getEndDate($data),
-            $this->calendarJSONParser->getTimeStamps($data),
+            $this->convertToTimeStamps(
+                ...$this->calendarJSONParser->getTimeSpans($data)
+            ),
             $this->calendarJSONParser->getOpeningHours($data)
         );
     }
@@ -62,11 +65,11 @@ class CalendarJSONDeserializer extends JSONDeserializer
      */
     private function getCalendarType(array $data)
     {
-        if (count($this->calendarJSONParser->getTimeStamps($data)) > 1) {
+        if (count($this->calendarJSONParser->getTimeSpans($data)) > 1) {
             return CalendarType::MULTIPLE();
         }
 
-        if (count($this->calendarJSONParser->getTimeStamps($data)) == 1) {
+        if (count($this->calendarJSONParser->getTimeSpans($data)) == 1) {
             return CalendarType::SINGLE();
         }
 
@@ -76,5 +79,24 @@ class CalendarJSONDeserializer extends JSONDeserializer
         }
 
         return CalendarType::PERMANENT();
+    }
+
+    /**
+     * @param TimeSpan[] $timeSpans
+     *
+     * @return Timestamp[]
+     */
+    private function convertToTimeStamps(TimeSpan ...$timeSpans)
+    {
+        $timeStamps = [];
+
+        foreach ($timeSpans as $timeSpan) {
+            $timeStamps[] = new Timestamp(
+                $timeSpan->getStart(),
+                $timeSpan->getEnd()
+            );
+        }
+
+        return $timeStamps;
     }
 }

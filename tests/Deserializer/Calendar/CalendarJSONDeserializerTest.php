@@ -8,7 +8,6 @@ use CultuurNet\UDB3\Calendar\DayOfWeekCollection;
 use CultuurNet\UDB3\Calendar\OpeningHour;
 use CultuurNet\UDB3\Calendar\OpeningTime;
 use CultuurNet\UDB3\CalendarType;
-use CultuurNet\UDB3\Timestamp;
 use ValueObjects\DateTime\Hour;
 use ValueObjects\DateTime\Minute;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -77,6 +76,8 @@ class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @dataProvider calendarDataProvider()
+     * @param $calendarData
+     * @param CalendarType $expectedCalendarType
      */
     public function it_should_return_right_calendar_type_from_json_data(
         $calendarData,
@@ -114,7 +115,7 @@ class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
             ],
             'calendar_of_type_PERIODIC_when_json_contains_start_and_end_date' => [
                 'calendarData' => file_get_contents(__DIR__ . '/calendar_with_start_and_end_date.json'),
-                'expectedCalendarType' => CalendarType::MULTIPLE(),
+                'expectedCalendarType' => CalendarType::PERIODIC(),
             ],
         ];
     }

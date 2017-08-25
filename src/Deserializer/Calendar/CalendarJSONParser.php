@@ -5,7 +5,6 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Calendar;
 use CultuurNet\UDB3\Calendar\DayOfWeekCollection;
 use CultuurNet\UDB3\Calendar\OpeningHour;
 use CultuurNet\UDB3\Calendar\OpeningTime;
-use CultuurNet\UDB3\Timestamp;
 
 class CalendarJSONParser implements CalendarJSONParserInterface
 {
@@ -16,11 +15,16 @@ class CalendarJSONParser implements CalendarJSONParserInterface
      */
     public function getStartDate($data)
     {
-        if (!isset($data['startDate'])) {
-            return null;
+        if (isset($data['startDate'])) {
+            return new \DateTime($data['startDate']);
         }
 
-        return new \DateTime($data['startDate']);
+        $timeSpans = $this->getTimeSpans($data);
+        if (count($timeSpans) > 0) {
+            return $timeSpans[0]->getStart();
+        }
+
+        return null;
     }
 
     /**
@@ -30,27 +34,32 @@ class CalendarJSONParser implements CalendarJSONParserInterface
      */
     public function getEndDate($data)
     {
-        if (!isset($data['startDate'])) {
-            return null;
+        if (isset($data['startDate'])) {
+            return new \DateTime($data['endDate']);
         }
 
-        return new \DateTime($data['endDate']);
+        $timeSpans = $this->getTimeSpans($data);
+        if (count($timeSpans) > 0) {
+            return $timeSpans[count($timeSpans) - 1]->getEnd();
+        }
+
+        return null;
     }
 
     /**
      * @param array $data
      *
-     * @return Timestamp[]
+     * @return TimeSpan[]
      */
-    public function getTimeStamps($data)
+    public function getTimeSpans($data)
     {
         $timestamps = [];
 
-        if (!empty($data['timestamps'])) {
-            foreach ($data['timestamps'] as $index => $timestamp) {
+        if (!empty($data['timeSpans'])) {
+            foreach ($data['timeSpans'] as $index => $timestamp) {
                 $startDate = new \DateTime($timestamp['start']);
                 $endDate = new \DateTime($timestamp['end']);
-                $timestamps[] = new Timestamp($startDate, $endDate);
+                $timestamps[] = new TimeSpan($startDate, $endDate);
             }
             ksort($timestamps);
         }

@@ -93,7 +93,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_can_get_the_timestamps()
+    public function it_can_get_the_time_spans()
     {
         $startDatePeriod1 = \DateTime::createFromFormat(\DateTime::ATOM, '2020-01-26T09:00:00+01:00');
         $endDatePeriod1 = \DateTime::createFromFormat(\DateTime::ATOM, '2020-02-01T16:00:00+01:00');
@@ -101,20 +101,20 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
         $startDatePeriod2 = \DateTime::createFromFormat(\DateTime::ATOM, '2020-02-03T09:00:00+01:00');
         $endDatePeriod2 = \DateTime::createFromFormat(\DateTime::ATOM, '2020-02-10T16:00:00+01:00');
 
-        $timeStamps = [
-            new Timestamp(
+        $timeSpans = [
+            new TimeSpan(
                 $startDatePeriod1,
                 $endDatePeriod1
             ),
-            new Timestamp(
+            new TimeSpan(
                 $startDatePeriod2,
                 $endDatePeriod2
             ),
         ];
 
         $this->assertEquals(
-            $timeStamps,
-            $this->calendarJSONParser->getTimeStamps(
+            $timeSpans,
+            $this->calendarJSONParser->getTimeSpans(
                 $this->updateCalendarAsArray
             )
         );

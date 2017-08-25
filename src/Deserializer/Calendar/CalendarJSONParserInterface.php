@@ -3,7 +3,6 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer\Calendar;
 
 use CultuurNet\UDB3\Calendar\OpeningHour;
-use CultuurNet\UDB3\Timestamp;
 
 interface CalendarJSONParserInterface
 {
@@ -24,9 +23,9 @@ interface CalendarJSONParserInterface
     /**
      * @param mixed $data
      *
-     * @return TimeStamp[]
+     * @return TimeSpan[]
      */
-    public function getTimeStamps($data);
+    public function getTimeSpans($data);
 
     /**
      * @param mixed $data
