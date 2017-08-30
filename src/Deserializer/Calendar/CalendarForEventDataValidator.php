@@ -32,7 +32,7 @@ class CalendarForEventDataValidator implements DataValidatorInterface
         }
 
         if ($calendarJSONParser->getEndDate($data) && !$calendarJSONParser->getStartDate($data)) {
-            $messages['start_date'] = 'When a end date is given then a start date is also required.';
+            $messages['start_date'] = 'When an end date is given then a start date is also required.';
         }
 
         if (count($calendarJSONParser->getTimeSpans($data)) > 0 && count($calendarJSONParser->getOpeningHours($data)) > 0) {

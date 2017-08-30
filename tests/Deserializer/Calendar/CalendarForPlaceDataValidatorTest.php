@@ -78,7 +78,7 @@ class CalendarForPlaceDataValidatorTest extends \PHPUnit_Framework_TestCase
                     'endDate' => '2020-02-10T16:00:00+01:00',
                 ],
                 'messages' => [
-                    'start_date' => 'When a end date is given then a start date is also required.',
+                    'start_date' => 'When an end date is given then a start date is also required.',
                 ],
             ],
         ];
