@@ -39,8 +39,21 @@ class CalendarForEventDataValidator implements DataValidatorInterface
             (new TimeSpanValidator())->validate($data)
         );
 
-        if (count($calendarJSONParser->getTimeSpans($data)) > 0 && count($calendarJSONParser->getOpeningHours($data)) > 0) {
+        $timeSpans = $calendarJSONParser->getTimeSpans($data);
+        if (count($timeSpans) > 0 && count($calendarJSONParser->getOpeningHours($data)) > 0) {
             $messages['opening_hours'] = 'When opening hours are given no time spans are allowed.';
+        }
+
+        if (count($timeSpans) > 0 &&
+            $calendarJSONParser->getStartDate($data) &&
+            $calendarJSONParser->getEndDate($data)) {
+            if ($calendarJSONParser->getStartDate($data) !== $timeSpans[0]->getStart()) {
+                $messages['start_time_span'] = 'The start date is different from the start of the first time span.';
+            }
+
+            if ($calendarJSONParser->getEndDate($data) !== $timeSpans[count($timeSpans) - 1]->getEnd()) {
+                $messages['end_time_span'] = 'The end date is different from the end of the last time span.';
+            }
         }
 
         if (!empty($messages)) {
