@@ -31,7 +31,7 @@ class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_can_deserialize_json_to_calendar()
     {
         $calendarAsJsonString = new StringLiteral(
-            file_get_contents(__DIR__ . '/calendar.json')
+            file_get_contents(__DIR__ . '/samples/calendar.json')
         );
 
         $calendarJSONDeserializer = new CalendarJSONDeserializer(
@@ -111,23 +111,23 @@ class CalendarJSONDeserializerTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'calendar_of_type_PERMANENT_when_json_only_contains_opening_hours' => [
-                'calendarData' => file_get_contents(__DIR__ . '/calendar_with_opening_hours.json'),
+                'calendarData' => file_get_contents(__DIR__ . '/samples/calendar_with_opening_hours.json'),
                 'expectedCalendarType' => CalendarType::PERMANENT(),
             ],
             'calendar_of_type_PERMANENT_when_json_is_empty' => [
-                'calendarData' => file_get_contents(__DIR__ . '/empty_calendar.json'),
+                'calendarData' => file_get_contents(__DIR__ . '/samples/empty_calendar.json'),
                 'expectedCalendarType' => CalendarType::PERMANENT(),
             ],
             'calendar_of_type_SINGLE_when_json_contains_a_single_time_span' => [
-                'calendarData' => file_get_contents(__DIR__ . '/calendar_with_single_time_span.json'),
+                'calendarData' => file_get_contents(__DIR__ . '/samples/calendar_with_single_time_span.json'),
                 'expectedCalendarType' => CalendarType::SINGLE(),
             ],
             'calendar_of_type_MULTIPLE_when_json_contains_multiple_time_spans' => [
-                'calendarData' => file_get_contents(__DIR__ . '/calendar_with_multiple_time_spans.json'),
+                'calendarData' => file_get_contents(__DIR__ . '/samples/calendar_with_multiple_time_spans.json'),
                 'expectedCalendarType' => CalendarType::MULTIPLE(),
             ],
             'calendar_of_type_PERIODIC_when_json_contains_start_and_end_date' => [
-                'calendarData' => file_get_contents(__DIR__ . '/calendar_with_start_and_end_date.json'),
+                'calendarData' => file_get_contents(__DIR__ . '/samples/calendar_with_start_and_end_date.json'),
                 'expectedCalendarType' => CalendarType::PERIODIC(),
             ],
         ];

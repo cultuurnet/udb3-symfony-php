@@ -24,7 +24,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $updateCalendar = file_get_contents(__DIR__ . '/calendar_all_fields.json');
+        $updateCalendar = file_get_contents(__DIR__ . '/samples/calendar_all_fields.json');
         $this->updateCalendarAsArray = json_decode($updateCalendar, true);
 
         $this->calendarJSONParser = new CalendarJSONParser();
@@ -50,7 +50,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_null_when_start_date_is_missing()
     {
-        $updateCalendar = file_get_contents(__DIR__ . '/calendar_missing_start_and_end.json');
+        $updateCalendar = file_get_contents(__DIR__ . '/samples/calendar_missing_start_and_end.json');
         $updateCalendarAsArray = json_decode($updateCalendar, true);
 
         $this->assertNull(
@@ -80,7 +80,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_null_when_end_date_is_missing()
     {
-        $updateCalendar = file_get_contents(__DIR__ . '/calendar_missing_start_and_end.json');
+        $updateCalendar = file_get_contents(__DIR__ . '/samples/calendar_missing_start_and_end.json');
         $updateCalendarAsArray = json_decode($updateCalendar, true);
 
         $this->assertNull(
@@ -126,7 +126,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
     public function it_should_not_create_time_spans_when_json_is_missing_an_end_property()
     {
         $calendarData = json_decode(
-            file_get_contents(__DIR__ . '/calendar_missing_time_span_end.json'),
+            file_get_contents(__DIR__ . '/samples/calendar_missing_time_span_end.json'),
             true
         );
 
@@ -141,7 +141,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
     public function it_should_not_create_time_spans_when_json_is_missing_a_start_property()
     {
         $calendarData = json_decode(
-            file_get_contents(__DIR__ . '/calendar_missing_time_span_start.json'),
+            file_get_contents(__DIR__ . '/samples/calendar_missing_time_span_start.json'),
             true
         );
 
@@ -201,7 +201,7 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
     public function it_should_not_create_opening_hours_when_fields_are_missing()
     {
         $calendarData = json_decode(
-            file_get_contents(__DIR__ . '/calendar_with_opening_hours_but_missing_fields.json'),
+            file_get_contents(__DIR__ . '/samples/calendar_with_opening_hours_but_missing_fields.json'),
             true
         );
 
