@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Calendar;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\Validators\StartDateEndDateValidator;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\Validators\TimeSpanValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 
 class CalendarForEventDataValidator implements DataValidatorInterface
@@ -31,6 +32,11 @@ class CalendarForEventDataValidator implements DataValidatorInterface
         $messages = array_merge(
             $messages,
             (new StartDateEndDateValidator())->validate($data)
+        );
+
+        $messages = array_merge(
+            $messages,
+            (new TimeSpanValidator())->validate($data)
         );
 
         if (count($calendarJSONParser->getTimeSpans($data)) > 0 && count($calendarJSONParser->getOpeningHours($data)) > 0) {

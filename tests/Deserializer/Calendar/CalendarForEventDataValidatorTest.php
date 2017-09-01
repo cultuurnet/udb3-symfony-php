@@ -71,13 +71,37 @@ class CalendarForEventDataValidatorTest extends \PHPUnit_Framework_TestCase
                     'start_date' => 'When an end date is given then a start date is also required.',
                 ],
             ],
-            'it_throws_end_date_is_before_start_date' => [
+            'it_throws_when_end_date_is_before_start_date' => [
                 'data' => [
                     'startDate' => '2020-02-10T16:00:00+01:00',
                     'endDate' => '2020-02-09T16:00:00+01:00',
                 ],
                 'messages' => [
                     'start_end_date' => 'The end date should be later then the start date.',
+                ],
+            ],
+            'it_throws_when_time_span_has_missing_start' => [
+                'data' => [
+                    'timeSpans' => [
+                        [
+                            'end' => '2020-02-01T16:00:00+01:00',
+                        ],
+                    ],
+                ],
+                'messages' => [
+                    'start_0' => 'A start is required for a time span.',
+                ],
+            ],
+            'it_throws_when_time_span_has_missing_end' => [
+                'data' => [
+                    'timeSpans' => [
+                        [
+                            'start' => '2020-01-26T09:00:00+01:00',
+                        ],
+                    ],
+                ],
+                'messages' => [
+                    'end_0' => 'An end is required for a time span.',
                 ],
             ],
             'it_throws_time_spans_and_opening_hours' => [
