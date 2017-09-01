@@ -38,25 +38,33 @@ class EditOfferRestController
     private $priceInfoJsonDeserializer;
 
     /**
+     * @var DeserializerInterface
+     */
+    private $calendarJsonDeserializer;
+
+    /**
      * EditOfferRestController constructor.
      * @param OfferEditingServiceInterface $editingServiceInterface
      * @param DeserializerInterface $labelJsonDeserializer
      * @param DeserializerInterface $titleJsonDeserializer
      * @param DeserializerInterface $descriptionJsonDeserializer
      * @param DeserializerInterface $priceInfoJsonDeserializer
+     * @param DeserializerInterface $calendarJsonDeserializer
      */
     public function __construct(
         OfferEditingServiceInterface $editingServiceInterface,
         DeserializerInterface $labelJsonDeserializer,
         DeserializerInterface $titleJsonDeserializer,
         DeserializerInterface $descriptionJsonDeserializer,
-        DeserializerInterface $priceInfoJsonDeserializer
+        DeserializerInterface $priceInfoJsonDeserializer,
+        DeserializerInterface $calendarJsonDeserializer
     ) {
         $this->editService = $editingServiceInterface;
         $this->labelJsonDeserializer = $labelJsonDeserializer;
         $this->titleJsonDeserializer = $titleJsonDeserializer;
         $this->descriptionJsonDeserializer = $descriptionJsonDeserializer;
         $this->priceInfoJsonDeserializer = $priceInfoJsonDeserializer;
+        $this->calendarJsonDeserializer = $calendarJsonDeserializer;
     }
 
     /**
@@ -148,6 +156,28 @@ class EditOfferRestController
             $cdbid,
             new Language($lang),
             $description
+        );
+
+        return new JsonResponse(
+            ['commandId' => $commandId]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param string $cdbid
+     *
+     * @return JsonResponse
+     */
+    public function updateCalendar(Request $request, $cdbid)
+    {
+        $calendar = $this->calendarJsonDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editService->updateCalendar(
+            $cdbid,
+            $calendar
         );
 
         return new JsonResponse(

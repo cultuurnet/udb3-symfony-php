@@ -2,9 +2,10 @@
 
 namespace CultuurNet\UDB3\Symfony\Offer;
 
+use CultuurNet\UDB3\Calendar;
+use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Description;
 use CultuurNet\UDB3\DescriptionJSONDeserializer;
-use CultuurNet\UDB3\Label\Label;
 use CultuurNet\UDB3\LabelJSONDeserializer;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
@@ -12,8 +13,12 @@ use CultuurNet\UDB3\PriceInfo\BasePrice;
 use CultuurNet\UDB3\PriceInfo\Price;
 use CultuurNet\UDB3\PriceInfo\PriceInfo;
 use CultuurNet\UDB3\PriceInfo\Tariff;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
+use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Money\Currency;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -46,6 +51,16 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     private $priceInfoDeserializer;
 
     /**
+     * @var CalendarDeserializer
+     */
+    private $calendarDeserializer;
+
+    /**
+     * @var DataValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $calendarDataValidator;
+
+    /**
      * @var EditOfferRestController
      */
     private $controller;
@@ -54,17 +69,24 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->editService = $this->createMock(OfferEditingServiceInterface::class);
 
+        $this->calendarDataValidator = $this->createMock(DataValidatorInterface::class);
+
         $this->labelDeserializer = new LabelJSONDeserializer();
         $this->titleDeserializer = new TitleJSONDeserializer();
         $this->descriptionDeserializer = new DescriptionJSONDeserializer();
         $this->priceInfoDeserializer = new PriceInfoJSONDeserializer();
+        $this->calendarDeserializer = new CalendarJSONDeserializer(
+            new CalendarJSONParser(),
+            $this->calendarDataValidator
+        );
 
         $this->controller = new EditOfferRestController(
             $this->editService,
             $this->labelDeserializer,
             $this->titleDeserializer,
             $this->descriptionDeserializer,
-            $this->priceInfoDeserializer
+            $this->priceInfoDeserializer,
+            $this->calendarDeserializer
         );
     }
 
@@ -233,6 +255,38 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             ->getContent();
 
         $expectedResponseContent = '{"commandId":"3390051C-3071-4917-896D-AA0B792392C0"}';
+
+        $this->assertEquals($expectedResponseContent, $responseContent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_updating_calendar()
+    {
+        $eventId = '0f4ea9ad-3681-4f3b-adc2-4b8b00dd845a';
+
+        $calendar = new Calendar(
+            CalendarType::PERMANENT()
+        );
+
+        $calendarData = '{"calendarType": "permanent"}';
+
+        $request = new Request([], [], [], [], [], [], $calendarData);
+
+        $this->editService->expects($this->once())
+            ->method('updateCalendar')
+            ->with(
+                $eventId,
+                $calendar
+            )
+            ->willReturn('commandId');
+
+        $responseContent = $this->controller
+            ->updateCalendar($request, $eventId)
+            ->getContent();
+
+        $expectedResponseContent = '{"commandId":"commandId"}';
 
         $this->assertEquals($expectedResponseContent, $responseContent);
     }
