@@ -43,20 +43,20 @@ class CalendarJSONParser implements CalendarJSONParserInterface
      */
     public function getTimeSpans($data)
     {
-        $timestamps = [];
+        $timeSpans = [];
 
         if (!empty($data['timeSpans'])) {
-            foreach ($data['timeSpans'] as $index => $timestamp) {
-                if (!empty($timestamp['start']) && !empty($timestamp['end'])) {
-                    $startDate = new \DateTime($timestamp['start']);
-                    $endDate = new \DateTime($timestamp['end']);
-                    $timestamps[] = new TimeSpan($startDate, $endDate);
+            foreach ($data['timeSpans'] as $index => $timeSpan) {
+                if (!empty($timeSpan['start']) && !empty($timeSpan['end'])) {
+                    $startDate = new \DateTime($timeSpan['start']);
+                    $endDate = new \DateTime($timeSpan['end']);
+                    $timeSpans[] = new TimeSpan($startDate, $endDate);
                 }
             }
-            ksort($timestamps);
+            ksort($timeSpans);
         }
 
-        return $timestamps;
+        return $timeSpans;
     }
 
     /**
