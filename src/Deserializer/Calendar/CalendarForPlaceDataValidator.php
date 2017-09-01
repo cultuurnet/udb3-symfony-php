@@ -3,6 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer\Calendar;
 
 use CultuurNet\Deserializer\DataValidationException;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\Validators\StartDateEndDateValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 
 class CalendarForPlaceDataValidator implements DataValidatorInterface
@@ -26,13 +27,10 @@ class CalendarForPlaceDataValidator implements DataValidatorInterface
             $messages['time_spans'] = 'No time spans allowed for place calendar.';
         }
 
-        if ($calendarJSONParser->getStartDate($data) && !$calendarJSONParser->getEndDate($data)) {
-            $messages['end_date'] = 'When a start date is given then an end date is also required.';
-        }
-
-        if ($calendarJSONParser->getEndDate($data) && !$calendarJSONParser->getStartDate($data)) {
-            $messages['start_date'] = 'When an end date is given then a start date is also required.';
-        }
+        $messages = array_merge(
+            $messages,
+            (new StartDateEndDateValidator())->validate($data)
+        );
 
         // All other combinations are valid:
         // - No data at all

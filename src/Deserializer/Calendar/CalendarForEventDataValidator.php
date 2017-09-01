@@ -3,6 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer\Calendar;
 
 use CultuurNet\Deserializer\DataValidationException;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\Validators\StartDateEndDateValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 
 class CalendarForEventDataValidator implements DataValidatorInterface
@@ -27,13 +28,10 @@ class CalendarForEventDataValidator implements DataValidatorInterface
             $messages['permanent'] = 'Permanent events are not supported.';
         }
 
-        if ($calendarJSONParser->getStartDate($data) && !$calendarJSONParser->getEndDate($data)) {
-            $messages['end_date'] = 'When a start date is given then an end date is also required.';
-        }
-
-        if ($calendarJSONParser->getEndDate($data) && !$calendarJSONParser->getStartDate($data)) {
-            $messages['start_date'] = 'When an end date is given then a start date is also required.';
-        }
+        $messages = array_merge(
+            $messages,
+            (new StartDateEndDateValidator())->validate($data)
+        );
 
         if (count($calendarJSONParser->getTimeSpans($data)) > 0 && count($calendarJSONParser->getOpeningHours($data)) > 0) {
             $messages['opening_hours'] = 'When opening hours are given no time spans are allowed.';
