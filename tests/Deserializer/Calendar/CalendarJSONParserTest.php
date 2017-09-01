@@ -125,14 +125,14 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_not_create_time_spans_when_json_is_missing_an_end_property()
     {
-        $this->expectException(\Exception::class);
-
         $calendarData = json_decode(
             file_get_contents(__DIR__ . '/calendar_missing_time_span_end.json'),
             true
         );
 
-        $this->calendarJSONParser->getTimeSpans($calendarData);
+        $this->assertEmpty(
+            $this->calendarJSONParser->getTimeSpans($calendarData)
+        );
     }
 
     /**
@@ -140,14 +140,14 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_not_create_time_spans_when_json_is_missing_a_start_property()
     {
-        $this->expectException(\Exception::class);
-
         $calendarData = json_decode(
             file_get_contents(__DIR__ . '/calendar_missing_time_span_start.json'),
             true
         );
 
-        $this->calendarJSONParser->getTimeSpans($calendarData);
+        $this->assertEmpty(
+            $this->calendarJSONParser->getTimeSpans($calendarData)
+        );
     }
 
     /**
@@ -192,6 +192,21 @@ class CalendarJSONParserTest extends \PHPUnit_Framework_TestCase
             $this->calendarJSONParser->getOpeningHours(
                 $this->updateCalendarAsArray
             )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_not_create_opening_hours_when_fields_are_missing()
+    {
+        $calendarData = json_decode(
+            file_get_contents(__DIR__ . '/calendar_with_opening_hours_but_missing_fields.json'),
+            true
+        );
+
+        $this->assertEmpty(
+            $this->calendarJSONParser->getOpeningHours($calendarData)
         );
     }
 }

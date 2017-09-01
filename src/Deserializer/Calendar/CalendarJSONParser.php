@@ -47,9 +47,11 @@ class CalendarJSONParser implements CalendarJSONParserInterface
 
         if (!empty($data['timeSpans'])) {
             foreach ($data['timeSpans'] as $index => $timestamp) {
-                $startDate = new \DateTime($timestamp['start']);
-                $endDate = new \DateTime($timestamp['end']);
-                $timestamps[] = new TimeSpan($startDate, $endDate);
+                if (!empty($timestamp['start']) && !empty($timestamp['end'])) {
+                    $startDate = new \DateTime($timestamp['start']);
+                    $endDate = new \DateTime($timestamp['end']);
+                    $timestamps[] = new TimeSpan($startDate, $endDate);
+                }
             }
             ksort($timestamps);
         }
@@ -68,13 +70,17 @@ class CalendarJSONParser implements CalendarJSONParserInterface
 
         if (!empty($data['openingHours'])) {
             foreach ($data['openingHours'] as $openingHour) {
-                $daysOfWeek = DayOfWeekCollection::deserialize($openingHour['dayOfWeek']);
+                if (!empty($openingHour['dayOfWeek']) &&
+                    !empty($openingHour['opens']) &&
+                    !empty($openingHour['closes'])) {
+                    $daysOfWeek = DayOfWeekCollection::deserialize($openingHour['dayOfWeek']);
 
-                $openingHours[] = new OpeningHour(
-                    OpeningTime::fromNativeString($openingHour['opens']),
-                    OpeningTime::fromNativeString($openingHour['closes']),
-                    $daysOfWeek
-                );
+                    $openingHours[] = new OpeningHour(
+                        OpeningTime::fromNativeString($openingHour['opens']),
+                        OpeningTime::fromNativeString($openingHour['closes']),
+                        $daysOfWeek
+                    );
+                }
             }
         }
 
