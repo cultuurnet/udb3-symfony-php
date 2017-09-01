@@ -20,6 +20,12 @@ class StartDateEndDateValidator
             $messages['end_date'] = 'When a start date is given then an end date is also required.';
         }
 
+        if ($calendarJSONParser->getEndDate($data) &&
+            $calendarJSONParser->getStartDate($data) &&
+            $calendarJSONParser->getEndDate($data) < $calendarJSONParser->getStartDate($data)) {
+            $messages['start_end_date'] = 'The end date should be later then the start date.';
+        }
+
         return $messages;
     }
 }
