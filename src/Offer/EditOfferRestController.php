@@ -164,6 +164,30 @@ class EditOfferRestController
     }
 
     /**
+     * @param string $cdbid
+     * @param string $typeId
+     *
+     * @return JsonResponse
+     */
+    public function updateType($cdbid, $typeId)
+    {
+        $commandId = $this->editService->updateType($cdbid, new StringLiteral($typeId));
+        return new JsonResponse(['commandId' => $commandId]);
+    }
+
+    /**
+     * @param string $cdbid
+     * @param string $themeId
+     *
+     * @return JsonResponse
+     */
+    public function updateTheme($cdbid, $themeId)
+    {
+        $commandId = $this->editService->updateTheme($cdbid, new StringLiteral($themeId));
+        return new JsonResponse(['commandId' => $commandId]);
+    }
+    
+    /**
      * @param Request $request
      * @param string $cdbid
      *
