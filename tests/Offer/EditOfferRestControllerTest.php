@@ -290,4 +290,54 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResponseContent, $responseContent);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_return_a_command_id_when_updating_theme_by_id()
+    {
+        $this->editService
+            ->expects($this->once())
+            ->method('updateTheme')
+            ->with(
+                'B904CD9E-0125-473E-ADDB-EC5E7ED12875',
+                new StringLiteral('CEFFE9F0-AD3C-446B-838A-0E309843C5E1')
+            )
+            ->willReturn('EBFF0B3A-0401-4C4D-A355-D326C8A4F31A');
+
+        $responseContent = $this->controller
+            ->updateTheme(
+                'B904CD9E-0125-473E-ADDB-EC5E7ED12875',
+                'CEFFE9F0-AD3C-446B-838A-0E309843C5E1'
+            )
+            ->getContent();
+
+        $expectedResponseContent = '{"commandId":"EBFF0B3A-0401-4C4D-A355-D326C8A4F31A"}';
+        $this->assertEquals($expectedResponseContent, $responseContent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_return_a_command_id_when_updating_type_by_id()
+    {
+        $this->editService
+            ->expects($this->once())
+            ->method('updateType')
+            ->with(
+                'BA403978-7378-41F7-A416-C5D2155D6EDE',
+                new StringLiteral('6B22AC5E-83AF-4590-91C9-91B4D66426CD')
+            )
+            ->willReturn('2B7D4F57-A813-4C4F-8B32-EA7091A0FF1B');
+
+        $responseContent = $this->controller
+            ->updateType(
+                'BA403978-7378-41F7-A416-C5D2155D6EDE',
+                '6B22AC5E-83AF-4590-91C9-91B4D66426CD'
+            )
+            ->getContent();
+
+        $expectedResponseContent = '{"commandId":"2B7D4F57-A813-4C4F-8B32-EA7091A0FF1B"}';
+        $this->assertEquals($expectedResponseContent, $responseContent);
+    }
 }
