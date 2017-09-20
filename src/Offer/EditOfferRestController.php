@@ -123,13 +123,13 @@ class EditOfferRestController
      * @param $lang
      * @return JsonResponse
      */
-    public function translateTitle(Request $request, $cdbid, $lang)
+    public function updateTitle(Request $request, $cdbid, $lang)
     {
         $title = $this->titleJsonDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editService->translateTitle(
+        $commandId = $this->editService->updateTitle(
             $cdbid,
             new Language($lang),
             $title
@@ -186,7 +186,7 @@ class EditOfferRestController
         $commandId = $this->editService->updateTheme($cdbid, new StringLiteral($themeId));
         return new JsonResponse(['commandId' => $commandId]);
     }
-    
+
     /**
      * @param Request $request
      * @param string $cdbid
