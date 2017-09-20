@@ -47,11 +47,11 @@ class CalendarForEventDataValidator implements DataValidatorInterface
         if (count($timeSpans) > 0 &&
             $calendarJSONParser->getStartDate($data) &&
             $calendarJSONParser->getEndDate($data)) {
-            if ($calendarJSONParser->getStartDate($data) !== $timeSpans[0]->getStart()) {
+            if ($calendarJSONParser->getStartDate($data) != $timeSpans[0]->getStart()) {
                 $messages['start_time_span'] = 'The start date is different from the start of the first time span.';
             }
 
-            if ($calendarJSONParser->getEndDate($data) !== $timeSpans[count($timeSpans) - 1]->getEnd()) {
+            if ($calendarJSONParser->getEndDate($data) != $timeSpans[count($timeSpans) - 1]->getEnd()) {
                 $messages['end_time_span'] = 'The end date is different from the end of the last time span.';
             }
         }
@@ -61,5 +61,7 @@ class CalendarForEventDataValidator implements DataValidatorInterface
             $e->setValidationMessages($messages);
             throw $e;
         }
+
+        return true;
     }
 }
