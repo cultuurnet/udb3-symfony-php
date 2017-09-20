@@ -18,6 +18,38 @@ class CalendarForEventDataValidatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider fileDataProvider
+     * @param string $file
+     */
+    public function it_does_not_throw_for_valid_calendars($file)
+    {
+        $data = json_decode(
+            file_get_contents(__DIR__ . '/samples/' . $file),
+            true
+        );
+
+        $this->assertTrue(
+            $this->calendarForEventDataValidator->validate($data)
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function fileDataProvider()
+    {
+        return [
+            'single_time_span' => [
+                'file' => 'calendar_with_single_time_span_and_start_and_end.json',
+            ],
+            'multiple_time_span' => [
+                'file' => 'calendar_with_multiple_time_spans_and_start_and_end.json',
+            ],
+        ];
+    }
+
+    /**
+     * @test
      * @dataProvider dataProvider
      * @param array $data
      * @param array $messages
