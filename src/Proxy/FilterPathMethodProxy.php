@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Proxy;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AndFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\FilterInterface;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\MethodFilter;
+use CultuurNet\UDB3\Symfony\Proxy\Filter\OrFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\PathFilter;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\CombinedReplacer;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\DomainReplacer;
@@ -54,9 +55,12 @@ class FilterPathMethodProxy extends Proxy
     private function createFilter(FilterPathRegex $path, StringLiteral $method)
     {
         $pathFilter = new PathFilter($path);
-        $methodFilter = new MethodFilter($method);
+        $corsMethodFilter = new OrFilter([
+            new MethodFilter(new StringLiteral('OPTIONS')),
+            new MethodFilter($method),
+        ]);
 
-        return new AndFilter([$pathFilter, $methodFilter]);
+        return new AndFilter([$pathFilter, $corsMethodFilter]);
     }
 
     /**
