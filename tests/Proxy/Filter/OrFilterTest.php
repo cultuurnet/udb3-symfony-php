@@ -17,7 +17,7 @@ class OrFilterTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->request = new Request(
-            'POST',
+            'GET',
             'http://www.foo.bar',
             [AcceptFilter::ACCEPT => self::APPLICATION_XML]
         );
@@ -26,10 +26,10 @@ class OrFilterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_does_match_when_one_filter_matches()
+    public function it_does_match_when_one_filters_matches()
     {
         $orFilter = new OrFilter(array(
-            new MethodFilter(new StringLiteral('OPTIONS')),
+            new AcceptFilter(new StringLiteral(self::APPLICATION_XML)),
             new MethodFilter(new StringLiteral('POST'))
         ));
 
@@ -39,10 +39,10 @@ class OrFilterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_does_not_match_when_none_of_the_filters_match()
+    public function it_does_not_match_when_no_filter_matches()
     {
         $orFilter = new OrFilter(array(
-            new MethodFilter(new StringLiteral('OPTIONS')),
+            new AcceptFilter(new StringLiteral('application/json')),
             new MethodFilter(new StringLiteral('PUT'))
         ));
 

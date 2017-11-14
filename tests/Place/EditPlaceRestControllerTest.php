@@ -9,8 +9,10 @@ use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
+use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Title;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
@@ -100,7 +102,7 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->assertEquals($response->getContent(), $expectedResponseContent);
+        $this->assertEquals($expectedResponseContent, $response->getContent());
     }
 
     /**
@@ -132,7 +134,143 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
 
         $expectedResponseContent = json_encode(["commandId" => $commandId]);
 
-        $this->assertEquals($response->getContent(), $expectedResponseContent);
+        $this->assertEquals($expectedResponseContent, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_update_the_address_of_a_place_for_a_given_language()
+    {
+        $json = json_encode(
+            [
+                'streetAddress' => 'Eenmeilaan 35',
+                'postalCode' => '3010',
+                'addressLocality' => 'Kessel-Lo',
+                'addressCountry' => 'BE',
+            ]
+        );
+
+        $request = new Request([], [], [], [], [], [], $json);
+
+        $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
+        $lang = 'nl';
+
+        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
+
+        $this->placeEditingService->expects($this->once())
+            ->method('updateAddress')
+            ->with(
+                $placeId,
+                new Address(
+                    new Street('Eenmeilaan 35'),
+                    new PostalCode('3010'),
+                    new Locality('Kessel-Lo'),
+                    Country::fromNative('BE')
+                ),
+                new Language($lang)
+            )
+            ->willReturn($expectedCommandId);
+
+        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
+
+        $response = $this->placeRestController->updateAddress($request, $placeId, $lang);
+        $actualResponseContent = $response->getContent();
+
+        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_update_the_facilities_of_a_place()
+    {
+        $json = json_encode(
+            [
+                'facilities' =>
+                [
+                    '3.23.1.0.0',
+                    '3.23.2.0.0',
+                    '3.23.3.0.0'
+                ]
+            ]
+        );
+
+        $request = new Request([], [], [], [], [], [], $json);
+
+        $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
+
+        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
+
+        $this->placeEditingService->expects($this->once())
+            ->method('updateFacilities')
+            ->with(
+                $placeId,
+                [
+                    new Facility('3.23.1.0.0', 'Voorzieningen voor rolstoelgebruikers'),
+                    new Facility('3.23.2.0.0', 'Assistentie'),
+                    new Facility('3.23.3.0.0', 'Rolstoel ter beschikking'),
+                ]
+            )
+            ->willReturn($expectedCommandId);
+
+        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
+
+        $response = $this->placeRestController->updateFacilities($request, $placeId);
+        $actualResponseContent = $response->getContent();
+
+        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_update_the_facilities_of_a_place_when_sent_with_labels()
+    {
+        $json = json_encode(
+            [
+                'facilities' =>
+                    [
+                        [
+                            'id' => '3.23.1.0.0',
+                            'label' => 'Voorzieningen voor rolstoelgebruikers'
+                        ],
+                        [
+                            'id' => '3.23.2.0.0',
+                            'label' => 'Assistentie'
+                        ],
+                        [
+                            'id' => '3.23.3.0.0',
+                            'label' => 'Rolstoel ter beschikking'
+                        ],
+                    ]
+            ]
+        );
+
+        $request = new Request([], [], [], [], [], [], $json);
+
+        $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
+
+        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
+
+        $this->placeEditingService->expects($this->once())
+            ->method('updateFacilities')
+            ->with(
+                $placeId,
+                [
+                    new Facility('3.23.1.0.0', 'Voorzieningen voor rolstoelgebruikers'),
+                    new Facility('3.23.2.0.0', 'Assistentie'),
+                    new Facility('3.23.3.0.0', 'Rolstoel ter beschikking'),
+                ]
+            )
+            ->willReturn($expectedCommandId);
+
+        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
+
+        $response = $this->placeRestController->updateFacilitiesWithLabel($request, $placeId);
+        $actualResponseContent = $response->getContent();
+
+        $this->assertEquals($expectedResponseContent, $actualResponseContent);
     }
 
     /**

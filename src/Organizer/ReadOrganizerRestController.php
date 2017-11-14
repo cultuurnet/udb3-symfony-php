@@ -42,9 +42,7 @@ class ReadOrganizerRestController
         if ($organizer) {
             $response = JsonLdResponse::create()
                 ->setContent($organizer)
-                ->setPublic()
-                ->setClientTtl(60 * 30)
-                ->setTtl(60 * 5);
+                ->setPublic();
 
             $response->headers->set('Vary', 'Origin');
         } else {

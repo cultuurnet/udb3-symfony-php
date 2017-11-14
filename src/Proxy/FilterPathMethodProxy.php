@@ -2,12 +2,12 @@
 
 namespace CultuurNet\UDB3\Symfony\Proxy;
 
-use CultuurNet\UDB3\Symfony\Proxy\Filter\AcceptFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AndFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\FilterInterface;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\MethodFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\OrFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\PathFilter;
+use CultuurNet\UDB3\Symfony\Proxy\Filter\PreflightFilter;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\CombinedReplacer;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\DomainReplacer;
 use CultuurNet\UDB3\Symfony\Proxy\RequestTransformer\PortReplacer;
@@ -18,11 +18,12 @@ use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Domain;
 use ValueObjects\Web\PortNumber;
 
-class CalendarSummaryProxy extends Proxy
+class FilterPathMethodProxy extends Proxy
 {
     /**
      * CdbXmlProxy constructor.
      * @param FilterPathRegex $path
+     * @param StringLiteral|null $method
      * @param Domain $domain
      * @param PortNumber $port
      * @param DiactorosFactory $diactorosFactory
@@ -31,19 +32,16 @@ class CalendarSummaryProxy extends Proxy
      */
     public function __construct(
         FilterPathRegex $path,
+        StringLiteral $method,
         Domain $domain,
         PortNumber $port,
         DiactorosFactory $diactorosFactory,
         HttpFoundationFactory $httpFoundationFactory,
         ClientInterface $client
     ) {
-        $calendarSummaryFilter = $this->createFilter($path);
-        
-        $requestTransformer = $this->createTransformer($domain, $port);
-
         parent::__construct(
-            $calendarSummaryFilter,
-            $requestTransformer,
+            $this->createFilter($path, $method),
+            $this->createTransformer($domain, $port),
             $diactorosFactory,
             $httpFoundationFactory,
             $client
@@ -52,17 +50,20 @@ class CalendarSummaryProxy extends Proxy
 
     /**
      * @param FilterPathRegex $path
+     * @param StringLiteral $method
      * @return FilterInterface
      */
-    private function createFilter(FilterPathRegex $path)
+    private function createFilter(FilterPathRegex $path, StringLiteral $method)
     {
-        $pathFilter = new PathFilter($path);
-        $methodFilter = new MethodFilter(new StringLiteral('GET'));
-        $preflightMethodFilter = new MethodFilter(new StringLiteral('OPTIONS'));
+        $pathMethodFilter = new AndFilter([
+            new PathFilter($path),
+            new MethodFilter($method),
+        ]);
 
-        $CORSMethodFilter = new OrFilter([$methodFilter, $preflightMethodFilter]);
-
-        return new AndFilter([$pathFilter, $CORSMethodFilter]);
+        return new OrFilter([
+            $pathMethodFilter,
+            new PreflightFilter($path, $method),
+        ]);
     }
 
     /**

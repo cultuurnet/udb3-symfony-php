@@ -6,6 +6,7 @@ use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
@@ -133,6 +134,22 @@ class EditEventRestController extends OfferRestBaseController
         );
 
         return JsonResponse::create(['commandId' => $command_id]);
+    }
+
+    /**
+     * @param string $cdbid
+     * @param string $locationId
+     *
+     * @return JsonResponse
+     */
+    public function updateLocation($cdbid, $locationId)
+    {
+        $commandId = $this->editor->updateLocation(
+            $cdbid,
+            new LocationId($locationId)
+        );
+
+        return JsonResponse::create(['commandId' => $commandId]);
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-
+/** @deprecated */
 namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\UDB3\Offer\Security\Permission\PermissionVoterInterface;

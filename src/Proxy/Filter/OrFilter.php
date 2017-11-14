@@ -26,9 +26,7 @@ class OrFilter implements FilterInterface
     public function matches(RequestInterface $request)
     {
         foreach ($this->filters as $filter) {
-            $matches = $filter->matches($request);
-
-            if ($matches) {
+            if ($filter->matches($request)) {
                 return true;
             }
         }

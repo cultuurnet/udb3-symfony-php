@@ -5,8 +5,11 @@ namespace CultuurNet\UDB3\Symfony\Place;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Place\FacilitiesJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
@@ -23,28 +26,31 @@ use ValueObjects\StringLiteral\StringLiteral;
 class EditPlaceRestController extends OfferRestBaseController
 {
     /**
-     * The place editor.
-     *
-     * @var PlaceEditingServiceInterface
-     */
-    protected $editor;
-
-    /**
      * The event relations repository.
      *
      * @var RepositoryInterface
      */
-    protected $eventRelationsRepository;
+    private $eventRelationsRepository;
 
     /**
      * @var IriGeneratorInterface
      */
-    protected $iriGenerator;
+    private $iriGenerator;
 
     /**
      * @var MajorInfoJSONDeserializer
      */
-    protected $majorInfoDeserializer;
+    private $majorInfoDeserializer;
+
+    /**
+     * @var AddressJSONDeserializer
+     */
+    private $addressDeserializer;
+
+    /**
+     * @var FacilitiesJSONDeserializer
+     */
+    private $facilityDeserializer;
 
     /**
      * Constructs a RestController.
@@ -65,6 +71,8 @@ class EditPlaceRestController extends OfferRestBaseController
         $this->iriGenerator = $iriGenerator;
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
+        $this->addressDeserializer = new AddressJSONDeserializer();
+        $this->facilityDeserializer = new FacilitiesJSONDeserializer(new PlaceFacilityResolver());
     }
 
     /**
@@ -154,6 +162,27 @@ class EditPlaceRestController extends OfferRestBaseController
     }
 
     /**
+     * @param Request $request
+     * @param string $cdbid
+     * @param string $lang
+     * @return JsonResponse
+     */
+    public function updateAddress(Request $request, $cdbid, $lang)
+    {
+        $address = $this->addressDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editor->updateAddress(
+            $cdbid,
+            $address,
+            new Language($lang)
+        );
+
+        return new JsonResponse(['commandId' => $commandId]);
+    }
+
+    /**
      * Update the facilities.
      *
      * @param Request $request
@@ -161,6 +190,24 @@ class EditPlaceRestController extends OfferRestBaseController
      * @return JsonResponse
      */
     public function updateFacilities(Request $request, $cdbid)
+    {
+        $facilities = $this->facilityDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $command_id = $this->editor->updateFacilities($cdbid, $facilities);
+
+        return new JsonResponse(['commandId' => $command_id]);
+    }
+
+    /**
+     * Update the facilities with labels.
+     *
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
+     */
+    public function updateFacilitiesWithLabel(Request $request, $cdbid)
     {
         $body_content = json_decode($request->getContent());
 
