@@ -4,7 +4,6 @@ namespace CultuurNet\UDB3\Symfony\Proxy;
 
 use CultuurNet\UDB3\Symfony\Proxy\Filter\AndFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\FilterInterface;
-use CultuurNet\UDB3\Symfony\Proxy\Filter\HeaderFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\MethodFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\OrFilter;
 use CultuurNet\UDB3\Symfony\Proxy\Filter\PathFilter;

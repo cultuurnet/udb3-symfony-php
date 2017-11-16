@@ -28,12 +28,12 @@ class OrFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_match_when_one_filters_matches()
     {
-        $andFilter = new OrFilter(array(
+        $orFilter = new OrFilter(array(
             new AcceptFilter(new StringLiteral(self::APPLICATION_XML)),
             new MethodFilter(new StringLiteral('POST'))
         ));
 
-        $this->assertTrue($andFilter->matches($this->request));
+        $this->assertTrue($orFilter->matches($this->request));
     }
 
     /**
@@ -41,11 +41,11 @@ class OrFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_does_not_match_when_no_filter_matches()
     {
-        $andFilter = new AndFilter(array(
+        $orFilter = new OrFilter(array(
             new AcceptFilter(new StringLiteral('application/json')),
             new MethodFilter(new StringLiteral('PUT'))
         ));
 
-        $this->assertFalse($andFilter->matches($this->request));
+        $this->assertFalse($orFilter->matches($this->request));
     }
 }
