@@ -46,14 +46,14 @@ class EditMediaRestController
         $response = new JsonResponse();
         $file = $request->files->get('file');
 
-        $commandId = $this->imageUploader->upload(
+        $imageUuid = $this->imageUploader->upload(
             $file,
             new StringLiteral($description),
             new StringLiteral($copyrightHolder),
             new Language($language)
         );
 
-        $response->setData(['commandId' => $commandId]);
+        $response->setData(['uuid' => $imageUuid->toNative()]);
 
         return $response;
     }
