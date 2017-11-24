@@ -69,8 +69,9 @@ class EditMediaRestController
         $response->setData(
             [
                 'commandId' => $commandId,
-                'imageId' => $imageId->toNative()
-            ]);
+                'imageId' => $imageId->toNative(),
+            ]
+        );
 
         return $response;
     }
