@@ -242,12 +242,10 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "media object id required"], 400);
         }
 
-        $mediaObjectId = new UUID($body_content->mediaObjectId);
-
-        $image = $this->mediaManager->getImage($mediaObjectId);
+        $imageId = new UUID($body_content->mediaObjectId);
 
         $response = new JsonResponse();
-        $commandId = $this->editor->addImage($itemId, $image);
+        $commandId = $this->editor->addImage($itemId, $imageId);
         $response->setData(['commandId' => $commandId]);
 
         return $response;

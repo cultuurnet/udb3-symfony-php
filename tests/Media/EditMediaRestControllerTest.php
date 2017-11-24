@@ -2,12 +2,14 @@
 
 namespace CultuurNet\UDB3\Symfony\Media;
 
+use Broadway\UuidGenerator\UuidGeneratorInterface;
 use CultuurNet\UDB3\Media\ImageUploaderInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use ValueObjects\Identity\UUID;
 
 class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,6 +19,11 @@ class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
     protected $imageUploader;
 
     /**
+     * @var UuidGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $uuidGenerator;
+
+    /**
      * @var EditMediaRestController
      */
     protected $controller;
@@ -24,12 +31,20 @@ class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->imageUploader = $this->createMock(ImageUploaderInterface::class);
-        $this->controller = new EditMediaRestController($this->imageUploader);
+
+        $this->uuidGenerator = $this->createMock(UuidGeneratorInterface::class);
+
+        $this->controller = new EditMediaRestController(
+            $this->imageUploader,
+            $this->uuidGenerator
+        );
     }
 
     /**
      * @test
      * @dataProvider incompleteUploadRequestsProvider
+     * @param Request $uploadRequest
+     * @param Response $expectedErrorResponse
      */
     public function it_should_return_an_error_response_when_media_meta_data_is_missing_for_an_upload(
         Request $uploadRequest,
@@ -126,10 +141,17 @@ class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
             ->method('upload')
             ->willReturn('9691CCF6-7D9F-499F-A97C-4E50ACB8BB7E');
 
+        $imageId = new UUID();
+
+        $this->uuidGenerator->expects($this->once())
+            ->method('generate')
+            ->willReturn($imageId);
+
         $response = $this->controller->upload($uploadRequest);
 
         $expectedResponseContent = json_encode([
-            'commandId' => '9691CCF6-7D9F-499F-A97C-4E50ACB8BB7E'
+            'commandId' => '9691CCF6-7D9F-499F-A97C-4E50ACB8BB7E',
+            'imageId' => $imageId->toNative(),
         ]);
 
         $this->assertEquals($expectedResponseContent, $response->getContent());
