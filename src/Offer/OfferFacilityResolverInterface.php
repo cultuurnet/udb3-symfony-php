@@ -10,6 +10,7 @@ interface OfferFacilityResolverInterface
     /**
      * @param StringLiteral $typeId
      * @return Category
+     * @throws \Exception
      */
     public function byId(StringLiteral $typeId);
 }

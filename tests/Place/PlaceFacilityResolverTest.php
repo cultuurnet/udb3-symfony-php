@@ -14,6 +14,7 @@ class PlaceFacilityResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = new PlaceFacilityResolver();
 
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Unknown place facility id '1.8.2'");
 
         $resolver->byId(new StringLiteral('1.8.2'));
@@ -26,8 +27,8 @@ class PlaceFacilityResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = new PlaceFacilityResolver();
 
-        $facility = $resolver->byId(new StringLiteral('3.23.2.0.0'));
-        $expectedFacility = new Facility("3.23.2.0.0", "Assistentie");
+        $facility = $resolver->byId(new StringLiteral('3.23.3.0.0'));
+        $expectedFacility = new Facility("3.23.3.0.0", "Rolstoel ter beschikking");
 
         $this->assertEquals($expectedFacility, $facility);
     }
