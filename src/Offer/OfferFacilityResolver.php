@@ -35,5 +35,5 @@ abstract class OfferFacilityResolver implements OfferFacilityResolverInterface
     /**
      * @return Facility[]
      */
-    protected abstract function getFacilities();
+    abstract protected function getFacilities();
 }
