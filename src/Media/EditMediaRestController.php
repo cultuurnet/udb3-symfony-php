@@ -2,12 +2,10 @@
 
 namespace CultuurNet\UDB3\Symfony\Media;
 
-use Broadway\UuidGenerator\UuidGeneratorInterface;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\ImageUploaderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class EditMediaRestController
@@ -17,18 +15,9 @@ class EditMediaRestController
      */
     private $imageUploader;
 
-    /**
-     * @var UuidGeneratorInterface
-     */
-    private $uuidGenerator;
-
-    public function __construct(
-        ImageUploaderInterface $imageUploader,
-        UuidGeneratorInterface $uuidGenerator
-    ) {
+    public function __construct(ImageUploaderInterface $imageUploader)
+    {
         $this->imageUploader = $imageUploader;
-
-        $this->uuidGenerator = $uuidGenerator;
     }
 
     public function upload(Request $request)
@@ -56,10 +45,7 @@ class EditMediaRestController
         $response = new JsonResponse();
         $file = $request->files->get('file');
 
-        $imageId = new UUID($this->uuidGenerator->generate());
-
-        $commandId = $this->imageUploader->upload(
-            $imageId,
+        $imageUploadResult = $this->imageUploader->upload(
             $file,
             new StringLiteral($description),
             new StringLiteral($copyrightHolder),
@@ -68,8 +54,8 @@ class EditMediaRestController
 
         $response->setData(
             [
-                'commandId' => $commandId,
-                'imageId' => $imageId->toNative(),
+                'commandId' => $imageUploadResult->getJobId(),
+                'imageId' => $imageUploadResult->getImageId()->toNative(),
             ]
         );
 

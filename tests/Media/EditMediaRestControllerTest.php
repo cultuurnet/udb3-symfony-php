@@ -2,8 +2,8 @@
 
 namespace CultuurNet\UDB3\Symfony\Media;
 
-use Broadway\UuidGenerator\UuidGeneratorInterface;
 use CultuurNet\UDB3\Media\ImageUploaderInterface;
+use CultuurNet\UDB3\Media\ImageUploadResult;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,11 +19,6 @@ class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
     protected $imageUploader;
 
     /**
-     * @var UuidGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $uuidGenerator;
-
-    /**
      * @var EditMediaRestController
      */
     protected $controller;
@@ -32,12 +27,7 @@ class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->imageUploader = $this->createMock(ImageUploaderInterface::class);
 
-        $this->uuidGenerator = $this->createMock(UuidGeneratorInterface::class);
-
-        $this->controller = new EditMediaRestController(
-            $this->imageUploader,
-            $this->uuidGenerator
-        );
+        $this->controller = new EditMediaRestController($this->imageUploader);
     }
 
     /**
@@ -136,21 +126,22 @@ class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
+        $imageId = new UUID('08d9df2e-091d-4f65-930b-00f565a9158f');
+        $jobId = '9691CCF6-7D9F-499F-A97C-4E50ACB8BB7E';
+        $imageUploadResult = new ImageUploadResult(
+            $imageId,
+            $jobId
+        );
+
         $this->imageUploader
             ->expects($this->once())
             ->method('upload')
-            ->willReturn('9691CCF6-7D9F-499F-A97C-4E50ACB8BB7E');
-
-        $imageId = new UUID();
-
-        $this->uuidGenerator->expects($this->once())
-            ->method('generate')
-            ->willReturn($imageId);
+            ->willReturn($imageUploadResult);
 
         $response = $this->controller->upload($uploadRequest);
 
         $expectedResponseContent = json_encode([
-            'commandId' => '9691CCF6-7D9F-499F-A97C-4E50ACB8BB7E',
+            'commandId' => $jobId,
             'imageId' => $imageId->toNative(),
         ]);
 
