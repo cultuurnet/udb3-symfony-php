@@ -80,7 +80,7 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
         }
 
         return new MajorInfo(
-            new Title($data['name']['nl']),
+            new Title(reset($data['name'])),
             $type,
             $address,
             $calendar,
