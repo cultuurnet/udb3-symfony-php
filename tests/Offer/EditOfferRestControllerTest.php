@@ -2,10 +2,12 @@
 
 namespace CultuurNet\UDB3\Symfony\Offer;
 
+use CultuurNet\Deserializer\DeserializerInterface;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Description;
 use CultuurNet\UDB3\DescriptionJSONDeserializer;
+use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\LabelJSONDeserializer;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
@@ -61,6 +63,11 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     private $calendarDataValidator;
 
     /**
+     * @var DeserializerInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $facilitiesJSONDeserializer;
+
+    /**
      * @var EditOfferRestController
      */
     private $controller;
@@ -79,6 +86,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             new CalendarJSONParser(),
             $this->calendarDataValidator
         );
+        $this->facilitiesJSONDeserializer = $this->createMock(DeserializerInterface::class);
 
         $this->controller = new EditOfferRestController(
             $this->editService,
@@ -86,7 +94,8 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             $this->titleDeserializer,
             $this->descriptionDeserializer,
             $this->priceInfoDeserializer,
-            $this->calendarDeserializer
+            $this->calendarDeserializer,
+            $this->facilitiesJSONDeserializer
         );
     }
 
@@ -339,5 +348,105 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $expectedResponseContent = '{"commandId":"2B7D4F57-A813-4C4F-8B32-EA7091A0FF1B"}';
         $this->assertEquals($expectedResponseContent, $responseContent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_update_the_facilities_of_a_place()
+    {
+        $json = json_encode(
+            [
+                'facilities' =>
+                    [
+                        '3.23.1.0.0',
+                        '3.23.2.0.0',
+                        '3.23.3.0.0'
+                    ]
+            ]
+        );
+
+        $facilities = [
+            new Facility('3.23.1.0.0', 'Voorzieningen voor rolstoelgebruikers'),
+            new Facility('3.23.2.0.0', 'Assistentie'),
+            new Facility('3.23.3.0.0', 'Rolstoel ter beschikking'),
+        ];
+
+        $request = new Request([], [], [], [], [], [], $json);
+
+        $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
+
+        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
+
+        $this->facilitiesJSONDeserializer->expects($this->once())
+            ->method('deserialize')
+            ->with(new StringLiteral($json))
+            ->willReturn($facilities);
+
+        $this->editService->expects($this->once())
+            ->method('updateFacilities')
+            ->with(
+                $placeId,
+                $facilities
+            )
+            ->willReturn($expectedCommandId);
+
+        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
+
+        $response = $this->controller->updateFacilities($request, $placeId);
+        $actualResponseContent = $response->getContent();
+
+        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_update_the_facilities_of_a_place_when_sent_with_labels()
+    {
+        $json = json_encode(
+            [
+                'facilities' =>
+                    [
+                        [
+                            'id' => '3.23.1.0.0',
+                            'label' => 'Voorzieningen voor rolstoelgebruikers'
+                        ],
+                        [
+                            'id' => '3.23.2.0.0',
+                            'label' => 'Assistentie'
+                        ],
+                        [
+                            'id' => '3.23.3.0.0',
+                            'label' => 'Rolstoel ter beschikking'
+                        ],
+                    ]
+            ]
+        );
+
+        $request = new Request([], [], [], [], [], [], $json);
+
+        $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
+
+        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
+
+        $this->editService->expects($this->once())
+            ->method('updateFacilities')
+            ->with(
+                $placeId,
+                [
+                    new Facility('3.23.1.0.0', 'Voorzieningen voor rolstoelgebruikers'),
+                    new Facility('3.23.2.0.0', 'Assistentie'),
+                    new Facility('3.23.3.0.0', 'Rolstoel ter beschikking'),
+                ]
+            )
+            ->willReturn($expectedCommandId);
+
+        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
+
+        $response = $this->controller->updateFacilitiesWithLabel($request, $placeId);
+        $actualResponseContent = $response->getContent();
+
+        $this->assertEquals($expectedResponseContent, $actualResponseContent);
     }
 }

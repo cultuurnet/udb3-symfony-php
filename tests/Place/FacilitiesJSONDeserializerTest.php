@@ -22,6 +22,7 @@ class FacilitiesJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws DataValidationException
      */
     public function it_should_not_accept_data_without_a_list_of_facility_ids()
     {
@@ -35,6 +36,7 @@ class FacilitiesJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws DataValidationException
      */
     public function it_should_return_a_facilities_list_from_valid_data_with_a_single_facility()
     {
@@ -56,6 +58,7 @@ class FacilitiesJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws DataValidationException
      */
     public function it_should_return_a_facilities_list_without_duplicates()
     {
@@ -77,19 +80,34 @@ class FacilitiesJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws DataValidationException
      */
     public function it_should_return_a_facilities_list_from_valid_data_with_multiple_facilities()
     {
         $deserializer = new FacilitiesJSONDeserializer(new PlaceFacilityResolver());
-        $wheelchairFacility = new Facility("3.23.1.0.0", "Voorzieningen voor rolstoelgebruikers");
-        $audioDescriptionFacility = new Facility("3.13.2.0.0", "Audiodescriptie");
+        $wheelchairFacility = new Facility("3.13.1.0.0", "Voorzieningen voor assistentiehonden");
+        $audioDescriptionFacility = new Facility("3.25.0.0.0", "Contactpunt voor personen met handicap");
 
         $expectedFacilities = [$wheelchairFacility, $audioDescriptionFacility];
 
         $facilities = $deserializer->deserialize(new StringLiteral(
-            '{"facilities": ["3.23.1.0.0", "3.13.2.0.0"]}'
+            '{"facilities": ["3.13.1.0.0", "3.25.0.0.0"]}'
         ));
 
         $this->assertEquals($expectedFacilities, $facilities);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_not_deserialize_unresolvable_facility_ids()
+    {
+        $deserializer = new FacilitiesJSONDeserializer(new PlaceFacilityResolver());
+
+        $this->expectExceptionMessage("Unknown facility id '1.8.2'");
+
+        $deserializer->deserialize(new StringLiteral(
+            '{"facilities": ["3.25.0.0.0", "1.8.2"]}'
+        ));
     }
 }
