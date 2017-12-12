@@ -96,4 +96,18 @@ class FacilitiesJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedFacilities, $facilities);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_not_deserialize_unresolvable_facility_ids()
+    {
+        $deserializer = new FacilitiesJSONDeserializer(new PlaceFacilityResolver());
+
+        $this->expectExceptionMessage("Unknown facility id '1.8.2'");
+
+        $deserializer->deserialize(new StringLiteral(
+            '{"facilities": ["3.25.0.0.0", "1.8.2"]}'
+        ));
+    }
 }

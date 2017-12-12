@@ -215,6 +215,9 @@ class EditOfferRestController
     }
 
     /**
+     * @deprecated use the updateFacilities action instead to prevent unknown facilities from entering the system.
+     *  This method should be gone once III-2414 is completed.
+     *
      * Update the facilities with labels.
      *
      * @param Request $request
