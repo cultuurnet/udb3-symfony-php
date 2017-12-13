@@ -294,7 +294,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             "GEBRUIKERS_BEHEREN",
             "LABELS_BEHEREN",
             "MEDIA_UPLOADEN",
-            "VOORZIENINGEN_BEWERKEN"
+            'VOORZIENINGEN_BEWERKEN'
         ]);
 
         $this->jsonEquals->assert($expectedResponseJson, $responseJson);
