@@ -3,6 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\Deserializer\DeserializerInterface;
+use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
@@ -43,6 +44,11 @@ class EditOfferRestController
     private $calendarJsonDeserializer;
 
     /**
+     * @var DeserializerInterface
+     */
+    private $facilityDeserializer;
+
+    /**
      * EditOfferRestController constructor.
      * @param OfferEditingServiceInterface $editingServiceInterface
      * @param DeserializerInterface $labelJsonDeserializer
@@ -50,6 +56,7 @@ class EditOfferRestController
      * @param DeserializerInterface $descriptionJsonDeserializer
      * @param DeserializerInterface $priceInfoJsonDeserializer
      * @param DeserializerInterface $calendarJsonDeserializer
+     * @param DeserializerInterface $facilityDeserializer
      */
     public function __construct(
         OfferEditingServiceInterface $editingServiceInterface,
@@ -57,7 +64,8 @@ class EditOfferRestController
         DeserializerInterface $titleJsonDeserializer,
         DeserializerInterface $descriptionJsonDeserializer,
         DeserializerInterface $priceInfoJsonDeserializer,
-        DeserializerInterface $calendarJsonDeserializer
+        DeserializerInterface $calendarJsonDeserializer,
+        DeserializerInterface $facilityDeserializer
     ) {
         $this->editService = $editingServiceInterface;
         $this->labelJsonDeserializer = $labelJsonDeserializer;
@@ -65,6 +73,7 @@ class EditOfferRestController
         $this->descriptionJsonDeserializer = $descriptionJsonDeserializer;
         $this->priceInfoJsonDeserializer = $priceInfoJsonDeserializer;
         $this->calendarJsonDeserializer = $calendarJsonDeserializer;
+        $this->facilityDeserializer = $facilityDeserializer;
     }
 
     /**
@@ -184,6 +193,48 @@ class EditOfferRestController
     public function updateTheme($cdbid, $themeId)
     {
         $commandId = $this->editService->updateTheme($cdbid, new StringLiteral($themeId));
+        return new JsonResponse(['commandId' => $commandId]);
+    }
+
+    /**
+     * Update the facilities.
+     *
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
+     */
+    public function updateFacilities(Request $request, $cdbid)
+    {
+        $facilities = $this->facilityDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->editService->updateFacilities($cdbid, $facilities);
+
+        return new JsonResponse(['commandId' => $commandId]);
+    }
+
+    /**
+     * @deprecated use the updateFacilities action instead to prevent unknown facilities from entering the system.
+     *  This method should be gone once III-2414 is completed.
+     *
+     * Update the facilities with labels.
+     *
+     * @param Request $request
+     * @param string $cdbid
+     * @return JsonResponse
+     */
+    public function updateFacilitiesWithLabel(Request $request, $cdbid)
+    {
+        $body_content = json_decode($request->getContent());
+
+        $facilities = array();
+        foreach ($body_content->facilities as $facility) {
+            $facilities[] = new Facility($facility->id, $facility->label);
+        }
+
+        $commandId = $this->editService->updateFacilities($cdbid, $facilities);
+
         return new JsonResponse(['commandId' => $commandId]);
     }
 

@@ -24,6 +24,7 @@ class FacilitiesJSONDeserializer extends JSONDeserializer
 
     /**
      * FacilitiesJSONDeserializer constructor.
+     * @param OfferFacilityResolverInterface $facilityResolver
      */
     public function __construct(OfferFacilityResolverInterface $facilityResolver)
     {
