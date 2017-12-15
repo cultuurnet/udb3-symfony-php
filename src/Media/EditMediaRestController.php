@@ -13,11 +13,10 @@ class EditMediaRestController
     /**
      * @var ImageUploaderInterface
      */
-    protected $imageUploader;
+    private $imageUploader;
 
-    public function __construct(
-        ImageUploaderInterface $imageUploader
-    ) {
+    public function __construct(ImageUploaderInterface $imageUploader)
+    {
         $this->imageUploader = $imageUploader;
     }
 
@@ -46,14 +45,19 @@ class EditMediaRestController
         $response = new JsonResponse();
         $file = $request->files->get('file');
 
-        $commandId = $this->imageUploader->upload(
+        $imageUploadResult = $this->imageUploader->upload(
             $file,
             new StringLiteral($description),
             new StringLiteral($copyrightHolder),
             new Language($language)
         );
 
-        $response->setData(['commandId' => $commandId]);
+        $response->setData(
+            [
+                'commandId' => $imageUploadResult->getJobId(),
+                'imageId' => $imageUploadResult->getImageId()->toNative(),
+            ]
+        );
 
         return $response;
     }
