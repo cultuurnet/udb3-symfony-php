@@ -29,10 +29,10 @@ class ContextControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_return_the_JSONLD_context_for_an_known_entity_type()
     {
-        $contextResponse = $this->controller->get('event');
+        $contextResponse = $this->controller->get('Event');
 
         $expectedResponse = new JsonLdResponse(
-            json_decode(file_get_contents(__DIR__ . '/event.jsonld'))
+            json_decode(file_get_contents(__DIR__ . '/Event.jsonld'))
         );
 
         $this->assertEquals($expectedResponse->getContent(), $contextResponse->getContent());
@@ -43,10 +43,10 @@ class ContextControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_update_the_domain_reference_when_a_custom_base_path_is_set()
     {
-        $path = Url::fromNative('https://du.de');
+        $path = Url::fromNative('https://du.de/');
         $controllerWithCustomBasePath = $this->controller->withCustomBasePath($path);
 
-        $contextResponse = $controllerWithCustomBasePath->get('event');
+        $contextResponse = $controllerWithCustomBasePath->get('Event');
 
         $expectedResponse = new JsonLdResponse(
             json_decode(file_get_contents(__DIR__ . '/event-with-custom-base-path.jsonld'))
@@ -60,10 +60,10 @@ class ContextControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_accepts_custom_base_paths_with_a_trailing_slash()
     {
-        $path = Url::fromNative('https://du.de/');
+        $path = Url::fromNative('https://du.de');
         $controllerWithCustomBasePath = $this->controller->withCustomBasePath($path);
 
-        $contextResponse = $controllerWithCustomBasePath->get('event');
+        $contextResponse = $controllerWithCustomBasePath->get('Event');
 
         $expectedResponse = new JsonLdResponse(
             json_decode(file_get_contents(__DIR__ . '/event-with-custom-base-path.jsonld'))
