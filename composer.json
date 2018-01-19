@@ -1,7 +1,7 @@
 {
   "name": "cultuurnet/udb3-symfony",
   "description": "UDB3 integration with Symfony HTTPFoundation",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "authors": [
     {
       "name": "Kristof Coomans",
