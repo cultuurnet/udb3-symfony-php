@@ -13,19 +13,12 @@ class EventFacilityResolver extends OfferFacilityResolver
     final protected function getFacilities()
     {
         return [
-            "3.23.1.0.0" => new Facility("3.23.1.0.0", "Voorzieningen voor rolstoelgebruikers"),
             "3.23.2.0.0" => new Facility("3.23.2.0.0", "Assistentie"),
             "3.13.1.0.0" => new Facility("3.13.1.0.0", "Voorzieningen voor assistentiehonden"),
             "3.13.2.0.0" => new Facility("3.13.2.0.0", "Audiodescriptie"),
-            "3.13.3.0.0" => new Facility("3.13.3.0.0", "Brochure beschikbaar in braille"),
-            "3.13.4.0.0" => new Facility("3.13.4.0.0", "Brochure beschikbaar in grootletterschrift"),
-            "3.13.5.0.0" => new Facility("3.13.5.0.0", "Brochure beschikbaar in gesproken vorm"),
             "3.17.1.0.0" => new Facility("3.17.1.0.0", "Ringleiding"),
             "3.17.2.0.0" => new Facility("3.17.2.0.0", "Voelstoelen"),
             "3.17.3.0.0" => new Facility("3.17.3.0.0", "Boven- of ondertiteling"),
-            "3.14.0.0.0" => new Facility("3.14.0.0.0", "Educatieve dienstverlening"),
-            "3.15.0.0.0" => new Facility("3.15.0.0.0", "Audiogids"),
-            "3.16.0.0.0" => new Facility("3.16.0.0.0", "Gids"),
             "3.26.0.0.0" => new Facility("3.26.0.0.0", "Parkeerplaats"),
             "3.27.0.0.0" => new Facility("3.27.0.0.0", "Rolstoeltoegankelijk"),
             "3.28.0.0.0" => new Facility("3.28.0.0.0", "Alternatieve ingang"),
