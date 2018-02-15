@@ -75,7 +75,7 @@ class EditEventRestController extends OfferRestBaseController
         );
 
         $eventId = $this->editor->createEvent(
-            new Language('nl'),
+            $majorInfo->getMainLanguage(),
             $majorInfo->getTitle(),
             $majorInfo->getType(),
             $majorInfo->getLocation(),
