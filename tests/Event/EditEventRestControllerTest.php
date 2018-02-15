@@ -13,6 +13,7 @@ use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
@@ -78,6 +79,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('createEvent')
             ->with(
+                new Language('nl'),
                 new Title('foo'),
                 new EventType('1.8.2', 'PARTY!'),
                 new Location(

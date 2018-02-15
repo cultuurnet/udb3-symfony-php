@@ -6,6 +6,7 @@ use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
@@ -74,6 +75,7 @@ class EditEventRestController extends OfferRestBaseController
         );
 
         $eventId = $this->editor->createEvent(
+            new Language('nl'),
             $majorInfo->getTitle(),
             $majorInfo->getType(),
             $majorInfo->getLocation(),

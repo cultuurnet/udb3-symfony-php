@@ -93,6 +93,7 @@ class EditPlaceRestController extends OfferRestBaseController
         );
 
         $place_id = $this->editor->createPlace(
+            new Language('nl'),
             $majorInfo->getTitle(),
             $majorInfo->getType(),
             $majorInfo->getAddress(),

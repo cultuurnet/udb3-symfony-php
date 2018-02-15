@@ -81,6 +81,7 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('createPlace')
             ->with(
+                new Language('nl'),
                 new Title('foo'),
                 new EventType('1.8.2', 'PARTY!'),
                 new Address(
