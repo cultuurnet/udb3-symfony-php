@@ -3,6 +3,7 @@
 namespace CultuurNet\UDB3\Symfony\Deserializer\Organizer;
 
 use CultuurNet\Deserializer\JSONDeserializer;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializer;
 use CultuurNet\UDB3\Title;
@@ -47,7 +48,6 @@ class OrganizerCreationPayloadJSONDeserializer extends JSONDeserializer
         $this->validator->validate($data);
 
         $url = Url::fromNative($data['website']);
-        $title = new Title($data['name']);
         $address = null;
         $contactPoint = null;
 
@@ -68,8 +68,9 @@ class OrganizerCreationPayloadJSONDeserializer extends JSONDeserializer
         }
 
         return new OrganizerCreationPayload(
+            new Language($data['mainLanguage']),
             $url,
-            $title,
+            new Title($data['name']),
             $address,
             $contactPoint
         );

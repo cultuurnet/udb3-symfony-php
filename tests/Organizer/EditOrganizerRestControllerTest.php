@@ -62,7 +62,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->editService->expects($this->once())
             ->method('create')
             ->with(
-                new Language('nl'),
+                new Language('en'),
                 Url::fromNative('http://www.hetdepot.be/'),
                 new Title('Het Depot'),
                 new Address(

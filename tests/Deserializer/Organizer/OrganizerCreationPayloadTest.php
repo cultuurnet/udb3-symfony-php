@@ -7,12 +7,18 @@ use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\ContactPoint;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Title;
 use ValueObjects\Geography\Country;
 use ValueObjects\Web\Url;
 
 class OrganizerCreationPayloadTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Language
+     */
+    private $mainLanguage;
+
     /**
      * @var Url
      */
@@ -40,6 +46,8 @@ class OrganizerCreationPayloadTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $this->mainLanguage = new Language('en');
+
         $this->website = Url::fromNative('http://www.domain.be');
 
         $this->title = new Title('Het Depot');
@@ -58,10 +66,22 @@ class OrganizerCreationPayloadTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->organizerCreationPayload = new OrganizerCreationPayload(
+            $this->mainLanguage,
             $this->website,
             $this->title,
             $this->address,
             $this->contactPoint
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_stores_a_main_language()
+    {
+        $this->assertEquals(
+            $this->mainLanguage,
+            $this->organizerCreationPayload->getMainLanguage()
         );
     }
 
