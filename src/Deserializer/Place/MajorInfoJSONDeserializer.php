@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Place;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\EventTypeJSONDeserializer;
@@ -80,7 +81,8 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
         }
 
         return new MajorInfo(
-            new Title(reset($data['name'])),
+            new Language($data['mainLanguage']),
+            new Title($data['name']),
             $type,
             $address,
             $calendar,

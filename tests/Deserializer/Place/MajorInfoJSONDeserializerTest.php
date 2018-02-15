@@ -2,6 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Deserializer\Place;
 
+use CultuurNet\UDB3\Language;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class MajorInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
@@ -17,6 +18,7 @@ class MajorInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
 
         $majorInfo = $majorInfoJSONDeserializer->deserialize(new StringLiteral($majorInfoAsJson));
 
-        $this->assertEquals($majorInfo->getTitle(), 'Test plaats');
+        $this->assertEquals('Test place', $majorInfo->getTitle());
+        $this->assertEquals(new Language('en'), $majorInfo->getMainLanguage());
     }
 }
