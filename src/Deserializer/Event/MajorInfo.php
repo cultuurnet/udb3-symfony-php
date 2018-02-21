@@ -4,18 +4,12 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Event;
 
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location\Location;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 
 class MajorInfo
 {
-    /**
-     * @var Language
-     */
-    private $mainLanguage;
-
     /**
      * @var Title
      */
@@ -42,7 +36,6 @@ class MajorInfo
     private $theme;
 
     /**
-     * @param Language $mainLanguage
      * @param Title $title
      * @param EventType $type
      * @param Location $location
@@ -50,27 +43,17 @@ class MajorInfo
      * @param Theme|null $theme
      */
     public function __construct(
-        Language $mainLanguage,
         Title $title,
         EventType $type,
         Location $location,
         Calendar $calendar,
         Theme $theme = null
     ) {
-        $this->mainLanguage = $mainLanguage;
         $this->title = $title;
         $this->type = $type;
         $this->location = $location;
         $this->calendar = $calendar;
         $this->theme = $theme;
-    }
-
-    /**
-     * @return Language
-     */
-    public function getMainLanguage()
-    {
-        return $this->mainLanguage;
     }
 
     /**

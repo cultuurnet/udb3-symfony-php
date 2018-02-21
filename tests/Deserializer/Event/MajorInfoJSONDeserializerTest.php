@@ -9,7 +9,6 @@ use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location\Location;
 use ValueObjects\Geography\Country;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -19,7 +18,7 @@ class MajorInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_can_serialize_major_info_with_main_language()
+    public function it_can_serialize_major_info()
     {
         $majorInfoAsJson = file_get_contents(__DIR__ . '/../samples/event-major-info-with-english-name.json');
 
@@ -39,7 +38,6 @@ class MajorInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals('talking title', $majorInfo->getTitle());
-        $this->assertEquals(new Language('en'), $majorInfo->getMainLanguage());
         $this->assertEquals(new EventType('0.17.0.0.0', 'Route'), $majorInfo->getType());
         $this->assertEquals($expectedLocation, $majorInfo->getLocation());
         $this->assertEquals(new Calendar(CalendarType::PERMANENT()), $majorInfo->getCalendar());

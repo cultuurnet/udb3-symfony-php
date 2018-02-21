@@ -6,10 +6,10 @@ use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
-use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Event\CreateEventJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
@@ -36,6 +36,11 @@ class EditEventRestController extends OfferRestBaseController
     protected $majorInfoDeserializer;
 
     /**
+     * @var CreateEventJSONDeserializer
+     */
+    protected $createEventJSONDeserializer;
+
+    /**
      * @var CalendarDeserializer
      */
     protected $calendarDeserializer;
@@ -57,6 +62,7 @@ class EditEventRestController extends OfferRestBaseController
         $this->iriGenerator = $iriGenerator;
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
+        $this->createEventJSONDeserializer = new CreateEventJSONDeserializer();
         $this->calendarDeserializer = new CalendarDeserializer();
     }
 
@@ -65,22 +71,24 @@ class EditEventRestController extends OfferRestBaseController
      *
      * @param Request $request
      * @return JsonResponse
+     *
+     * @throws \CultuurNet\Deserializer\DataValidationException
      */
     public function createEvent(Request $request)
     {
         $response = new JsonResponse();
 
-        $majorInfo = $this->majorInfoDeserializer->deserialize(
+        $createEvent = $this->createEventJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
         $eventId = $this->editor->createEvent(
-            $majorInfo->getMainLanguage(),
-            $majorInfo->getTitle(),
-            $majorInfo->getType(),
-            $majorInfo->getLocation(),
-            $majorInfo->getCalendar(),
-            $majorInfo->getTheme()
+            $createEvent->getMainLanguage(),
+            $createEvent->getTitle(),
+            $createEvent->getType(),
+            $createEvent->getLocation(),
+            $createEvent->getCalendar(),
+            $createEvent->getTheme()
         );
 
         $response->setData(
@@ -119,6 +127,8 @@ class EditEventRestController extends OfferRestBaseController
      * @param Request $request
      * @param string $cdbid
      * @return JsonResponse
+     *
+     * @throws \CultuurNet\Deserializer\DataValidationException
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
