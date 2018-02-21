@@ -12,11 +12,6 @@ use CultuurNet\UDB3\Title;
 class MajorInfo
 {
     /**
-     * @var Language
-     */
-    private $mainLanguage;
-
-    /**
      * @var Title
      */
     private $title;
@@ -42,7 +37,6 @@ class MajorInfo
     private $theme;
 
     /**
-     * @param Language $mainLanguage
      * @param Title $title
      * @param EventType $type
      * @param Address $address
@@ -50,27 +44,17 @@ class MajorInfo
      * @param Theme|null $theme
      */
     public function __construct(
-        Language $mainLanguage,
         Title $title,
         EventType $type,
         Address $address,
         Calendar $calendar,
         Theme $theme = null
     ) {
-        $this->mainLanguage = $mainLanguage;
         $this->title = $title;
         $this->type = $type;
         $this->address = $address;
         $this->calendar = $calendar;
         $this->theme = $theme;
-    }
-
-    /**
-     * @return Language
-     */
-    public function getMainLanguage()
-    {
-        return $this->mainLanguage;
     }
 
     /**

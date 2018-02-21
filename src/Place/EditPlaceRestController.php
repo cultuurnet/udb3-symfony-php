@@ -8,6 +8,7 @@ use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Place\CreatePlaceJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
@@ -34,6 +35,11 @@ class EditPlaceRestController extends OfferRestBaseController
      * @var IriGeneratorInterface
      */
     private $iriGenerator;
+
+    /**
+     * @var CreatePlaceJSONDeserializer
+     */
+    private $createPlaceJSONDeserializer;
 
     /**
      * @var MajorInfoJSONDeserializer
@@ -63,6 +69,7 @@ class EditPlaceRestController extends OfferRestBaseController
         $this->eventRelationsRepository = $event_relations_repository;
         $this->iriGenerator = $iriGenerator;
 
+        $this->createPlaceJSONDeserializer = new CreatePlaceJSONDeserializer();
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
         $this->addressDeserializer = new AddressJSONDeserializer();
     }
@@ -85,10 +92,12 @@ class EditPlaceRestController extends OfferRestBaseController
      *
      * @param Request $request
      * @return JsonResponse
+     *
+     * @throws \CultuurNet\Deserializer\DataValidationException
      */
     public function createPlace(Request $request)
     {
-        $majorInfo = $this->majorInfoDeserializer->deserialize(
+        $majorInfo = $this->createPlaceJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
@@ -135,6 +144,8 @@ class EditPlaceRestController extends OfferRestBaseController
      * @param Request $request
      * @param string $cdbid
      * @return JsonResponse
+     *
+     * @throws \CultuurNet\Deserializer\DataValidationException
      */
     public function updateMajorInfo(Request $request, $cdbid)
     {
@@ -159,6 +170,8 @@ class EditPlaceRestController extends OfferRestBaseController
      * @param string $cdbid
      * @param string $lang
      * @return JsonResponse
+     *
+     * @throws \CultuurNet\Deserializer\DataValidationException
      */
     public function updateAddress(Request $request, $cdbid, $lang)
     {
