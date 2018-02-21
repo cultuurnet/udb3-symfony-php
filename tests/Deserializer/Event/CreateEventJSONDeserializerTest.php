@@ -21,11 +21,11 @@ class CreateEventJSONDeserializerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_can_serialize_create_event_with_main_language()
     {
-        $majorInfoAsJson = file_get_contents(__DIR__ . '/../samples/event-create-with-english-name.json');
+        $createEventAsJson = file_get_contents(__DIR__ . '/../samples/event-create-with-main-language.json');
 
         $createEventJSONDeserializer = new CreateEventJSONDeserializer();
 
-        $createEvent = $createEventJSONDeserializer->deserialize(new StringLiteral($majorInfoAsJson));
+        $createEvent = $createEventJSONDeserializer->deserialize(new StringLiteral($createEventAsJson));
 
         $expectedLocation = new Location(
             '28cf728d-441b-4912-b3b0-f03df0d22491',

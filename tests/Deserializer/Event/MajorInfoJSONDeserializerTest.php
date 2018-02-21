@@ -20,7 +20,7 @@ class MajorInfoJSONDeserializerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_can_serialize_major_info()
     {
-        $majorInfoAsJson = file_get_contents(__DIR__ . '/../samples/event-major-info-with-english-name.json');
+        $majorInfoAsJson = file_get_contents(__DIR__ . '/../samples/event-major-info.json');
 
         $majorInfoJSONDeserializer = new MajorInfoJSONDeserializer();
 
