@@ -1,7 +1,6 @@
 {
-  "name": {
-    "en": "Test plaats"
-  },
+  "name": "Test place",
+  "mainLanguage": "en",
   "location": {
     "id": null,
     "name": "",

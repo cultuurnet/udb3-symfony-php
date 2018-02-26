@@ -81,6 +81,7 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('createPlace')
             ->with(
+                new Language('en'),
                 new Title('foo'),
                 new EventType('1.8.2', 'PARTY!'),
                 new Address(
@@ -186,9 +187,8 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
     {
         return json_encode(
             [
-                "name" => [
-                    "nl" => "foo"
-                ],
+                "mainLanguage" => "en",
+                "name" => "foo",
                 "type" => [
                     "id" => "1.8.2",
                     "label" => "PARTY!"

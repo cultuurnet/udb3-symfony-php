@@ -62,6 +62,7 @@ class EditOrganizerRestController
 
         try {
             $organizerId = $this->editingService->create(
+                $payload->getMainLanguage(),
                 $payload->getWebsite(),
                 $payload->getTitle(),
                 $payload->getAddress(),

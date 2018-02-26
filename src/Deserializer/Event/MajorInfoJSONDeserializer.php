@@ -4,11 +4,9 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Event;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
-use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Location\LocationJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Theme\ThemeJSONDeserializer;
-use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -80,7 +78,7 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
         }
 
         return new MajorInfo(
-            new Title(reset($data['name'])),
+            new Title($data['name']),
             $type,
             $location,
             $calendar,
