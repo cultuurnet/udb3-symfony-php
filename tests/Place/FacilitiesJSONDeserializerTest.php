@@ -4,8 +4,8 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Place;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\Facility;
-use CultuurNet\UDB3\Symfony\Offer\OfferFacilityResolverInterface;
-use CultuurNet\UDB3\Symfony\Place\PlaceFacilityResolver;
+use CultuurNet\UDB3\Offer\OfferFacilityResolverInterface;
+use CultuurNet\UDB3\Place\PlaceFacilityResolver;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class FacilitiesJSONDeserializerTest extends \PHPUnit_Framework_TestCase

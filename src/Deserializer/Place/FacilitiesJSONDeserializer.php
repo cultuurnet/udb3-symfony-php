@@ -5,9 +5,9 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Place;
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Facility;
+use CultuurNet\UDB3\Offer\OfferFacilityResolverInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\RequiredPropertiesDataValidator;
-use CultuurNet\UDB3\Symfony\Offer\OfferFacilityResolverInterface;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class FacilitiesJSONDeserializer extends JSONDeserializer
