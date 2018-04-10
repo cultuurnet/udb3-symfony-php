@@ -11,6 +11,7 @@ use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\LabelJSONDeserializer;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
+use CultuurNet\UDB3\Offer\ReadModel\MainLanguage\MainLanguageQueryInterface;
 use CultuurNet\UDB3\PriceInfo\BasePrice;
 use CultuurNet\UDB3\PriceInfo\Price;
 use CultuurNet\UDB3\PriceInfo\PriceInfo;
@@ -21,6 +22,7 @@ use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
+use CultuurNet\UDB3\ValueObject\MultilingualString;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\Money\Currency;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -31,6 +33,11 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
      * @var OfferEditingServiceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $editService;
+
+    /**
+     * @var MainLanguageQueryInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $mainLanguageQuery;
 
     /**
      * @var LabelJSONDeserializer
@@ -76,6 +83,8 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->editService = $this->createMock(OfferEditingServiceInterface::class);
 
+        $this->mainLanguageQuery = $this->createMock(MainLanguageQueryInterface::class);
+
         $this->calendarDataValidator = $this->createMock(DataValidatorInterface::class);
 
         $this->labelDeserializer = new LabelJSONDeserializer();
@@ -90,6 +99,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->controller = new EditOfferRestController(
             $this->editService,
+            $this->mainLanguageQuery,
             $this->labelDeserializer,
             $this->titleDeserializer,
             $this->descriptionDeserializer,
@@ -201,10 +211,15 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $data = '[
             {"category": "base", "price": 15, "priceCurrency": "EUR"},
-            {"category": "tarrif", "name": "Werkloze dodo kwekers", "price": 0, "priceCurrency": "EUR"}
+            {"category": "tarrif", "name": {"nl": "Werkloze dodo kwekers"}, "price": 0, "priceCurrency": "EUR"}
         ]';
 
         $cdbid = 'c6ff4c27-bdbb-452f-a1b5-d9e2e3aa846c';
+
+        $this->mainLanguageQuery->expects($this->once())
+            ->method('execute')
+            ->with($cdbid)
+            ->willReturn(new Language('nl'));
 
         $request = new Request([], [], [], [], [], [], $data);
 
@@ -214,7 +229,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         );
 
         $expectedTariff = new Tariff(
-            new StringLiteral('Werkloze dodo kwekers'),
+            new MultilingualString(new Language('nl'), new StringLiteral('Werkloze dodo kwekers')),
             new Price(0),
             Currency::fromNative('EUR')
         );

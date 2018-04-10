@@ -3,10 +3,14 @@
 namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\Deserializer\DeserializerInterface;
+use CultuurNet\UDB3\EntityNotFoundException;
 use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
+use CultuurNet\UDB3\Offer\ReadModel\MainLanguage\MainLanguageQueryInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoDataValidator;
+use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -17,6 +21,11 @@ class EditOfferRestController
      * @var OfferEditingServiceInterface
      */
     private $editService;
+
+    /**
+     * @var MainLanguageQueryInterface
+     */
+    private $mainLanguageQuery;
 
     /**
      * @var DeserializerInterface
@@ -51,6 +60,7 @@ class EditOfferRestController
     /**
      * EditOfferRestController constructor.
      * @param OfferEditingServiceInterface $editingServiceInterface
+     * @param MainLanguageQueryInterface $mainLanguageQuery
      * @param DeserializerInterface $labelJsonDeserializer
      * @param DeserializerInterface $titleJsonDeserializer
      * @param DeserializerInterface $descriptionJsonDeserializer
@@ -60,6 +70,7 @@ class EditOfferRestController
      */
     public function __construct(
         OfferEditingServiceInterface $editingServiceInterface,
+        MainLanguageQueryInterface $mainLanguageQuery,
         DeserializerInterface $labelJsonDeserializer,
         DeserializerInterface $titleJsonDeserializer,
         DeserializerInterface $descriptionJsonDeserializer,
@@ -68,6 +79,7 @@ class EditOfferRestController
         DeserializerInterface $facilityDeserializer
     ) {
         $this->editService = $editingServiceInterface;
+        $this->mainLanguageQuery = $mainLanguageQuery;
         $this->labelJsonDeserializer = $labelJsonDeserializer;
         $this->titleJsonDeserializer = $titleJsonDeserializer;
         $this->descriptionJsonDeserializer = $descriptionJsonDeserializer;
@@ -267,9 +279,20 @@ class EditOfferRestController
      */
     public function updatePriceInfo(Request $request, $cdbid)
     {
-        $priceInfo = $this->priceInfoJsonDeserializer->deserialize(
-            new StringLiteral($request->getContent())
-        );
+        $mainLanguage = null;
+        $deserializer = $this->priceInfoJsonDeserializer;
+
+        try {
+            $mainLanguage = $this->mainLanguageQuery->execute($cdbid);
+        } catch (EntityNotFoundException $e) {
+            // Will be handled by the editService.
+        }
+
+        if ($mainLanguage && $deserializer instanceof PriceInfoJSONDeserializer) {
+            $deserializer = $deserializer->forMainLanguage($mainLanguage);
+        }
+
+        $priceInfo = $deserializer->deserialize(new StringLiteral($request->getContent()));
 
         $commandId = $this->editService->updatePriceInfo(
             $cdbid,
