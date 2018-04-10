@@ -2,6 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony;
 
+use CultuurNet\UDB3\BookingInfo;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\AgeRange;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
@@ -90,5 +91,52 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
         $expectedResponse = new JsonResponse(['commandId' => '8E6C0011-E4A8-4790-BD02-D6B4FF7980B9']);
 
         $this->assertEquals($expectedResponse, $response);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_return_a_command_id_when_updating_booking_info()
+    {
+        $givenOfferId = 'b125e7b8-08ac-4740-80e1-b502ff716048';
+        $givenJson = json_encode(
+            [
+                'bookingInfo' => [
+                    'url' => 'https://publiq.be',
+                    'urlLabel' => 'Publiq vzw',
+                    'phone' => '044/444444',
+                    'email' => 'info@publiq.be',
+                    'availabilityStarts' => '2018-01-01T00:00:00+01:00',
+                    'availabilityEnds' => '2018-01-31T23:59:59+01:00',
+                ],
+            ]
+        );
+
+        $givenRequest = new Request([], [], [], [], [], [], $givenJson);
+
+        $expectedCommandId = '098a117c-a981-4737-a57b-b13d70ecb0f3';
+
+        $this->offerEditingService->expects($this->once())
+            ->method('updateBookingInfo')
+            ->with(
+                $givenOfferId,
+                new BookingInfo(
+                    'https://publiq.be',
+                    'Publiq vzw',
+                    '044/444444',
+                    'info@publiq.be',
+                    \DateTimeImmutable::createFromFormat(\DATE_ATOM, '2018-01-01T00:00:00+01:00'),
+                    \DateTimeImmutable::createFromFormat(\DATE_ATOM, '2018-01-31T23:59:59+01:00')
+                )
+            )
+            ->willReturn($expectedCommandId);
+
+        $expectedResponseBody = ['commandId' => $expectedCommandId];
+
+        $actualResponse = $this->offerRestBaseController->updateBookingInfo($givenRequest, $givenOfferId);
+        $actualResponseBody = $actualResponse->getContent();
+        $actualResponseBody = json_decode($actualResponseBody, true);
+
+        $this->assertEquals($expectedResponseBody, $actualResponseBody);
     }
 }

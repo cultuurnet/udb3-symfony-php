@@ -2,13 +2,14 @@
 
 namespace CultuurNet\UDB3\Symfony;
 
-use CultuurNet\UDB3\BookingInfo;
+use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\ContactPoint;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\AgeRange;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
+use CultuurNet\UDB3\Symfony\Deserializer\BookingInfo\BookingInfoJSONDeserializer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,20 +33,34 @@ abstract class OfferRestBaseController
     protected $mediaManager;
 
     /**
+     * @var BookingInfoJSONDeserializer
+     */
+    private $bookingInfoDeserializer;
+
+    /**
      * OfferRestBaseController constructor.
      * @param EventEditingServiceInterface|PlaceEditingServiceInterface $editor
      * @param MediaManagerInterface $mediaManager
+     * @param JSONDeserializer $bookingInfoDeserializer
      */
     public function __construct(
         $editor,
-        MediaManagerInterface $mediaManager
+        MediaManagerInterface $mediaManager,
+        JSONDeserializer $bookingInfoDeserializer = null
     ) {
         $this->editor = $editor;
         $this->mediaManager = $mediaManager;
+
+        if (!$bookingInfoDeserializer) {
+            $bookingInfoDeserializer = new BookingInfoJSONDeserializer();
+        }
+        $this->bookingInfoDeserializer = $bookingInfoDeserializer;
     }
 
     /**
      * Update the description property.
+     *
+     * @todo The call to OfferEditingServiceInterface::updateDescription() is broken. Is this still used?
      *
      * @param Request $request
      * @param string $cdbid
@@ -80,6 +95,8 @@ abstract class OfferRestBaseController
     public function updateTypicalAgeRange(Request $request, $cdbid)
     {
         $body_content = json_decode($request->getContent());
+
+        // @todo Use a data validator and change to an exception so it can be converted to an API problem
         if (empty($body_content->typicalAgeRange)) {
             return new JsonResponse(['error' => "typicalAgeRange required"], 400);
         }
@@ -137,6 +154,8 @@ abstract class OfferRestBaseController
     public function updateOrganizerFromJsonBody(Request $request, $cdbid)
     {
         $body_content = json_decode($request->getContent());
+
+        // @todo Use a data validator and change to an exception so it can be converted to an API problem
         if (empty($body_content->organizer)) {
             return new JsonResponse(['error' => "organizer required"], 400);
         }
@@ -176,6 +195,8 @@ abstract class OfferRestBaseController
     public function updateContactPoint(Request $request, $cdbid)
     {
         $body_content = json_decode($request->getContent());
+
+        // @todo Use a data validator and change to an exception so it can be converted to an API problem
         if (empty($body_content->contactPoint) ||
             !isset($body_content->contactPoint->url) ||
             !isset($body_content->contactPoint->email) ||
@@ -207,26 +228,13 @@ abstract class OfferRestBaseController
      */
     public function updateBookingInfo(Request $request, $cdbid)
     {
-        $body_content = json_decode($request->getContent());
-        if (empty($body_content->bookingInfo)) {
-            return new JsonResponse(['error' => "bookingInfo required"], 400);
-        }
+        $body = (string) $request->getContent();
+        $bookingInfo = $this->bookingInfoDeserializer->deserialize(new StringLiteral($body));
 
-        $response = new JsonResponse();
-
-        $data = $body_content->bookingInfo;
-        $bookingInfo = new BookingInfo(
-            $data->url,
-            $data->urlLabel,
-            $data->phone,
-            $data->email,
-            isset($data->availabilityStarts) ? $data->availabilityStarts : '',
-            isset($data->availabilityEnds) ? $data->availabilityEnds : ''
-        );
         $command_id = $this->editor->updateBookingInfo($cdbid, $bookingInfo);
-        $response->setData(['commandId' => $command_id]);
 
-        return $response;
+        return (new JsonResponse())
+            ->setData(['commandId' => $command_id]);
     }
 
     /**
@@ -242,6 +250,7 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "media object id required"], 400);
         }
 
+        // @todo Validate that this id exists and is in fact an image and not a different type of media object
         $imageId = new UUID($body_content->mediaObjectId);
 
         $response = new JsonResponse();
@@ -266,6 +275,8 @@ abstract class OfferRestBaseController
 
         $mediaObjectId = new UUID($body_content->mediaObjectId);
 
+        // @todo MediaManagerInterface has no getImage() method.
+        // Also, can we be sure that the given $mediaObjectId points to an image and not a different type?
         $image = $this->mediaManager->getImage($mediaObjectId);
 
         $response = new JsonResponse();
@@ -288,6 +299,9 @@ abstract class OfferRestBaseController
         $description = new StringLiteral($body_content->description);
         $copyrightHolder = new StringLiteral($body_content->copyrightHolder);
         $imageId = new UUID($mediaObjectId);
+
+        // @todo MediaManagerInterface has no getImage() method.
+        // Also, can we be sure that the given $mediaObjectId points to an image and not a different type?
         $image = $this->mediaManager->getImage($imageId);
 
         $commandId = $this->editor->updateImage(
@@ -313,6 +327,9 @@ abstract class OfferRestBaseController
     public function removeImage($itemId, $mediaObjectId)
     {
         $imageId = new UUID($mediaObjectId);
+
+        // @todo MediaManagerInterface has no getImage() method.
+        // Also, can we be sure that the given $mediaObjectId points to an image and not a different type?
         $image = $this->mediaManager->getImage($imageId);
 
         $command_id = $this->editor->removeImage($itemId, $image);
@@ -322,6 +339,8 @@ abstract class OfferRestBaseController
 
     /**
      * Save the uploaded image to the destination folder.
+     *
+     * @todo Seems unused, remove? Uses D8-specific functions.
      */
     protected function saveUploadedImage(UploadedFile $file, $itemId, $destination)
     {
@@ -343,6 +362,8 @@ abstract class OfferRestBaseController
 
     /**
      * Get the file id of a given url.
+     *
+     * @todo Seems unused, remove? Uses D8-specific functions.
      */
     protected function getFileIdByUrl($url)
     {
