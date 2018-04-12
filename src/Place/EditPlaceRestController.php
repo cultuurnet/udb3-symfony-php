@@ -2,6 +2,9 @@
 
 namespace CultuurNet\UDB3\Symfony\Place;
 
+use CultuurNet\UDB3\ApiGuard\ApiKey\Reader\ApiKeyReaderInterface;
+use CultuurNet\UDB3\ApiGuard\Consumer\ConsumerReadRepositoryInterface;
+use CultuurNet\UDB3\ApiGuard\Consumer\Specification\ConsumerSpecificationInterface;
 use CultuurNet\UDB3\Event\ReadModel\Relations\RepositoryInterface;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Language;
@@ -52,22 +55,47 @@ class EditPlaceRestController extends OfferRestBaseController
     private $addressDeserializer;
 
     /**
+     * @var ApiKeyReaderInterface
+     */
+    private $apiKeyReader;
+
+    /**
+     * @var ConsumerReadRepositoryInterface
+     */
+    private $consumerReadRepository;
+
+    /**
+     * @var ConsumerSpecificationInterface
+     */
+    private $shouldApprove;
+
+    /**
      * Constructs a RestController.
      *
      * @param PlaceEditingServiceInterface $placeEditor
-     * @param RepositoryInterface          $event_relations_repository
-     * @param MediaManagerInterface        $mediaManager
-     * @param IriGeneratorInterface        $iriGenerator
+     * @param RepositoryInterface $event_relations_repository
+     * @param MediaManagerInterface $mediaManager
+     * @param IriGeneratorInterface $iriGenerator
+     * @param ApiKeyReaderInterface $apiKeyReader
+     * @param ConsumerReadRepositoryInterface $consumerReadRepository
+     * @param ConsumerSpecificationInterface $shouldApprove
      */
     public function __construct(
         PlaceEditingServiceInterface $placeEditor,
         RepositoryInterface $event_relations_repository,
         MediaManagerInterface $mediaManager,
-        IriGeneratorInterface $iriGenerator
+        IriGeneratorInterface $iriGenerator,
+        ApiKeyReaderInterface $apiKeyReader,
+        ConsumerReadRepositoryInterface $consumerReadRepository,
+        ConsumerSpecificationInterface $shouldApprove
     ) {
         parent::__construct($placeEditor, $mediaManager);
         $this->eventRelationsRepository = $event_relations_repository;
         $this->iriGenerator = $iriGenerator;
+
+        $this->apiKeyReader = $apiKeyReader;
+        $this->consumerReadRepository = $consumerReadRepository;
+        $this->shouldApprove = $shouldApprove;
 
         $this->createPlaceJSONDeserializer = new CreatePlaceJSONDeserializer();
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
@@ -101,7 +129,21 @@ class EditPlaceRestController extends OfferRestBaseController
             new StringLiteral($request->getContent())
         );
 
-        $place_id = $this->editor->createPlace(
+        $apiKey = $this->apiKeyReader->read($request);
+
+        $consumer = null;
+        if ($apiKey) {
+            $consumer = $this->consumerReadRepository->getConsumer($apiKey);
+        }
+
+        $approve = false;
+        if ($consumer) {
+            $approve = $this->shouldApprove->satisfiedBy($consumer);
+        }
+
+        $createMethod = $approve ? 'createApprovedPlace' : 'createPlace';
+
+        $place_id = $this->editor->$createMethod(
             $majorInfo->getMainLanguage(),
             $majorInfo->getTitle(),
             $majorInfo->getType(),

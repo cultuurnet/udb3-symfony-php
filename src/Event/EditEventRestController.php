@@ -2,6 +2,9 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
+use CultuurNet\UDB3\ApiGuard\ApiKey\Reader\ApiKeyReaderInterface;
+use CultuurNet\UDB3\ApiGuard\Consumer\ConsumerReadRepositoryInterface;
+use CultuurNet\UDB3\ApiGuard\Consumer\Specification\ConsumerSpecificationInterface;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
@@ -46,20 +49,45 @@ class EditEventRestController extends OfferRestBaseController
     protected $calendarDeserializer;
 
     /**
+     * @var ApiKeyReaderInterface
+     */
+    private $apiKeyReader;
+
+    /**
+     * @var ConsumerReadRepositoryInterface
+     */
+    private $consumerReadRepository;
+
+    /**
+     * @var ConsumerSpecificationInterface
+     */
+    private $shouldApprove;
+
+    /**
      * Constructs a RestController.
      *
      * @param EventEditingServiceInterface $eventEditor
      *   The event editor.
-     * @param IriGeneratorInterface $iriGenerator
      * @param MediaManagerInterface $mediaManager
+     * @param IriGeneratorInterface $iriGenerator
+     * @param ApiKeyReaderInterface $apiKeyReader
+     * @param ConsumerReadRepositoryInterface $consumerReadRepository
+     * @param ConsumerSpecificationInterface $shouldApprove
      */
     public function __construct(
         EventEditingServiceInterface $eventEditor,
         MediaManagerInterface $mediaManager,
-        IriGeneratorInterface $iriGenerator
+        IriGeneratorInterface $iriGenerator,
+        ApiKeyReaderInterface $apiKeyReader,
+        ConsumerReadRepositoryInterface $consumerReadRepository,
+        ConsumerSpecificationInterface $shouldApprove
     ) {
         parent::__construct($eventEditor, $mediaManager);
         $this->iriGenerator = $iriGenerator;
+
+        $this->apiKeyReader = $apiKeyReader;
+        $this->consumerReadRepository = $consumerReadRepository;
+        $this->shouldApprove = $shouldApprove;
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
         $this->createEventJSONDeserializer = new CreateEventJSONDeserializer();
@@ -82,7 +110,21 @@ class EditEventRestController extends OfferRestBaseController
             new StringLiteral($request->getContent())
         );
 
-        $eventId = $this->editor->createEvent(
+        $apiKey = $this->apiKeyReader->read($request);
+
+        $consumer = null;
+        if ($apiKey) {
+            $consumer = $this->consumerReadRepository->getConsumer($apiKey);
+        }
+
+        $approve = false;
+        if ($consumer) {
+            $approve = $this->shouldApprove->satisfiedBy($consumer);
+        }
+
+        $createMethod = $approve ? 'createApprovedEvent' : 'createEvent';
+
+        $eventId = $this->editor->$createMethod(
             $createEvent->getMainLanguage(),
             $createEvent->getTitle(),
             $createEvent->getType(),
