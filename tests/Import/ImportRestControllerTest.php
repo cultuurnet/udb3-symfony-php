@@ -68,7 +68,7 @@ class ImportRestControllerTest extends TestCase
 
         $this->consumerRepository->setConsumer($this->apiKey, $this->consumer);
 
-        $this->importer = $this->createMock(ConsumerAwareDocumentImporterInterface::class);
+        $this->importer = $this->createMock(DocumentImporterInterface::class);
 
         $this->uuidGenerator = $this->createMock(UuidGeneratorInterface::class);
 
@@ -150,16 +150,9 @@ class ImportRestControllerTest extends TestCase
             ]
         );
 
-        $consumerAwareImporter = $this->createMock(ConsumerAwareDocumentImporterInterface::class);
-
-        $this->importer->expects($this->any())
-            ->method('forConsumer')
-            ->with($this->consumer)
-            ->willReturn($consumerAwareImporter);
-
-        $consumerAwareImporter->expects($this->once())
+        $this->importer->expects($this->once())
             ->method('import')
-            ->with($expectedDocument);
+            ->with($expectedDocument, $this->consumer);
 
         $response = $this->controller->importWithId($request, $id);
 

@@ -92,12 +92,7 @@ class ImportRestController
         $body['@id'] = $this->iriGenerator->iri($cdbid);
         $document = $document->withBody($body);
 
-        $documentImporter = $this->documentImporter;
-        if ($consumer && $documentImporter instanceof ConsumerAwareDocumentImporterInterface) {
-            $documentImporter = $documentImporter->forConsumer($consumer);
-        }
-
-        $documentImporter->import($document);
+        $this->documentImporter->import($document, $consumer);
 
         return (new JsonResponse())
             ->setData([$this->idProperty => $cdbid])
