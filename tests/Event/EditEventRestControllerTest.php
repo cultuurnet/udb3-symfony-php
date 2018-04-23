@@ -6,6 +6,11 @@ use CultuurNet\UDB3\Address\Address;
 use CultuurNet\UDB3\Address\Locality;
 use CultuurNet\UDB3\Address\PostalCode;
 use CultuurNet\UDB3\Address\Street;
+use CultuurNet\UDB3\ApiGuard\ApiKey\ApiKey;
+use CultuurNet\UDB3\ApiGuard\ApiKey\Reader\QueryParameterApiKeyReader;
+use CultuurNet\UDB3\ApiGuard\Consumer\ConsumerInterface;
+use CultuurNet\UDB3\ApiGuard\Consumer\InMemoryConsumerRepository;
+use CultuurNet\UDB3\ApiGuard\Consumer\Specification\ConsumerSpecificationInterface;
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\CalendarType;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
@@ -46,16 +51,56 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
      */
     private $iriGenerator;
 
+    /**
+     * @var QueryParameterApiKeyReader
+     */
+    private $apiKeyReader;
+
+    /**
+     * @var InMemoryConsumerRepository
+     */
+    private $consumerRepository;
+
+    /**
+     * @var ApiKey
+     */
+    private $apiKey;
+
+    /**
+     * @var ConsumerInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $consumer;
+
+    /**
+     * @var ConsumerSpecificationInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $shouldApprove;
+
     public function setUp()
     {
         $this->eventEditor = $this->createMock(EventEditingServiceInterface::class);
         $this->mediaManager  = $this->createMock(MediaManagerInterface::class);
         $this->iriGenerator = $this->createMock(IriGeneratorInterface::class);
+        $this->apiKeyReader = new QueryParameterApiKeyReader('apiKey');
+        $this->consumerRepository = new InMemoryConsumerRepository();
+        $this->shouldApprove = $this->createMock(ConsumerSpecificationInterface::class);
+
+        $this->apiKey = new ApiKey('f5278146-3133-48b8-ace4-7e3f0a49328a');
+        $this->consumer = $this->createMock(ConsumerInterface::class);
+        $this->consumerRepository->setConsumer($this->apiKey, $this->consumer);
+
+        $this->shouldApprove->expects($this->any())
+            ->method('satisfiedBy')
+            ->with($this->consumer)
+            ->willReturn(true);
 
         $this->controller = new EditEventRestController(
             $this->eventEditor,
             $this->mediaManager,
-            $this->iriGenerator
+            $this->iriGenerator,
+            $this->apiKeyReader,
+            $this->consumerRepository,
+            $this->shouldApprove
         );
 
         $this->iriGenerator
@@ -78,6 +123,45 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->eventEditor
             ->expects($this->once())
             ->method('createEvent')
+            ->with(
+                new Language('en'),
+                new Title('foo'),
+                new EventType('1.8.2', 'PARTY!'),
+                new Location(
+                    'fe282e4f-35f5-480d-a90b-2720ab883b0a',
+                    new StringLiteral('P-P-Partyzone'),
+                    new Address(
+                        new Street('acmelane 12'),
+                        new PostalCode('3000'),
+                        new Locality('Leuven'),
+                        Country::fromNative('BE')
+                    )
+                )
+            )
+            ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
+
+        $response = $this->controller->createEvent($request);
+
+        $expectedResponseContent = json_encode(
+            [
+                'eventId' => 'A14DD1C8-0F9C-4633-B56A-A908F009AD94',
+                'url' => 'http://du.de/event/A14DD1C8-0F9C-4633-B56A-A908F009AD94',
+            ]
+        );
+
+        $this->assertEquals($expectedResponseContent, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_create_an_approved_event_for_privileged_consumers()
+    {
+        $request = new Request(['apiKey' => $this->apiKey->toNative()], [], [], [], [], [], $this->getMajorInfoJson());
+
+        $this->eventEditor
+            ->expects($this->once())
+            ->method('createApprovedEvent')
             ->with(
                 new Language('en'),
                 new Title('foo'),
