@@ -18,14 +18,8 @@
   },
   "activeCalendarType": "permanent",
   "activeCalendarLabel": "Permanent",
-  "calendarType": "permanent",
-  "openingHours": [
-    {
-      "dayOfWeek": "",
-      "opens": "",
-      "closes": "",
-      "label": ""
-    }
-  ],
+  "calendar": {
+    "type": "permanent"
+  },
   "workflowStatus": "DRAFT"
 }
