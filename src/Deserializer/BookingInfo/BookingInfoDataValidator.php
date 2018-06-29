@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\BookingInfo;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
+use CultuurNet\UDB3\ValueObject\MultilingualString;
 
 class BookingInfoDataValidator implements DataValidatorInterface
 {
@@ -38,6 +39,21 @@ class BookingInfoDataValidator implements DataValidatorInterface
 
             if (!$dateTime) {
                 $messages['bookingInfo.availabilityEnds'] = $availabilityFormatError;
+            }
+        }
+
+        if (isset($bookingInfo['urlLabel'])) {
+            $errorMessage = 'Invalid format. ' .
+                'Expected associative array with language codes as keys and translated strings as values.';
+
+            if (!is_array($bookingInfo['urlLabel'])) {
+                $messages['bookingInfo.urlLabel'] = $errorMessage;
+            } else {
+                try {
+                    MultilingualString::deserialize($bookingInfo['urlLabel']);
+                } catch (\Exception $e) {
+                    $messages['bookingInfo.urlLabel'] = $errorMessage;
+                }
             }
         }
 
