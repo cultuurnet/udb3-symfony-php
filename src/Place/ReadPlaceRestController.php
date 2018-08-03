@@ -72,6 +72,10 @@ class ReadPlaceRestController
         $zipCode = $request->query->get('zipcode');
         $country = $request->query->get('country');
 
+        if (!$country) {
+            $country = 'BE';
+        }
+
         $ids = $this->lookupService->findPlacesByPostalCode($zipCode, $country);
 
         $members = [];
