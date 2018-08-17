@@ -367,6 +367,9 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
                         "addressCountry" => "BE",
                     ],
                 ],
+                "calendar" => [
+                    "type" => "permanent",
+                ],
             ]
         );
     }

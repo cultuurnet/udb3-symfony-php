@@ -283,6 +283,9 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
                     "addressLocality" => "Leuven",
                     "addressCountry" => "BE",
                 ],
+                "calendar" => [
+                    "type" => "permanent",
+                ],
             ]
         );
     }

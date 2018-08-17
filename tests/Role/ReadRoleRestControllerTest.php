@@ -291,6 +291,7 @@ class ReadRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             "AANBOD_MODEREREN",
             "AANBOD_VERWIJDEREN",
             "ORGANISATIES_BEHEREN",
+            "ORGANISATIES_BEWERKEN",
             "GEBRUIKERS_BEHEREN",
             "LABELS_BEHEREN",
             "MEDIA_UPLOADEN",
