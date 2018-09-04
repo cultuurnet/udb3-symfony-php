@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Place;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressDataValidator;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarForPlaceDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\CompositeDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\RequiredPropertiesDataValidator;
@@ -20,10 +21,11 @@ class MajorInfoDataValidator implements DataValidatorInterface
     public function __construct()
     {
         $this->validator = (new CompositeDataValidator())
-            ->withValidator(new RequiredPropertiesDataValidator(['name', 'type', 'address']))
+            ->withValidator(new RequiredPropertiesDataValidator(['name', 'type', 'address', 'calendar']))
             ->withValidator(new AddressDataValidator(), ['address'])
             ->withValidator(new EventTypeDataValidator(), ['type'])
-            ->withValidator(new ThemeDataValidator(), ['theme']);
+            ->withValidator(new ThemeDataValidator(), ['theme'])
+            ->withValidator(new CalendarForPlaceDataValidator(), ['calendar']);
     }
 
     /**
