@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\BookingInfo;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\BookingInfo;
 use CultuurNet\UDB3\Symfony\Deserializer\DataValidator\DataValidatorInterface;
+use CultuurNet\UDB3\ValueObject\MultilingualString;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class BookingInfoJSONDeserializer extends JSONDeserializer
@@ -58,7 +59,7 @@ class BookingInfoJSONDeserializer extends JSONDeserializer
 
         $bookingInfo = new BookingInfo(
             isset($bookingInfo['url']) ? (string) $bookingInfo['url'] : null,
-            isset($bookingInfo['urlLabel']) ? (string) $bookingInfo['urlLabel'] : null,
+            isset($bookingInfo['urlLabel']) ? MultilingualString::deserialize($bookingInfo['urlLabel']) : null,
             isset($bookingInfo['phone']) ? (string) $bookingInfo['phone'] : null,
             isset($bookingInfo['email']) ? (string) $bookingInfo['email'] : null,
             $availabilityStarts,

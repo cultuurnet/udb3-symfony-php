@@ -3,12 +3,15 @@
 namespace CultuurNet\UDB3\Symfony;
 
 use CultuurNet\UDB3\BookingInfo;
+use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\AgeRange;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
+use CultuurNet\UDB3\ValueObject\MultilingualString;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -103,7 +106,7 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
             [
                 'bookingInfo' => [
                     'url' => 'https://publiq.be',
-                    'urlLabel' => 'Publiq vzw',
+                    'urlLabel' => ['nl' => 'Publiq vzw'],
                     'phone' => '044/444444',
                     'email' => 'info@publiq.be',
                     'availabilityStarts' => '2018-01-01T00:00:00+01:00',
@@ -122,7 +125,7 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
                 $givenOfferId,
                 new BookingInfo(
                     'https://publiq.be',
-                    'Publiq vzw',
+                    new MultilingualString(new Language('nl'), new StringLiteral('Publiq vzw')),
                     '044/444444',
                     'info@publiq.be',
                     \DateTimeImmutable::createFromFormat(\DATE_ATOM, '2018-01-01T00:00:00+01:00'),
