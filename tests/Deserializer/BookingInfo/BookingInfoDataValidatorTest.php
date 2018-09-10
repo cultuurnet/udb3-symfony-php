@@ -25,7 +25,7 @@ class BookingInfoDataValidatorTest extends TestCase
     {
         $given = [
             'url' => 'https://publiq.be',
-            'urlLabel' => 'Publiq vzw',
+            'urlLabel' => ['nl' => 'Publiq vzw'],
             'phone' => '044/444444',
             'email' => 'info@publiq.be',
             'availabilityStarts' => '2018-01-01T00:00:00+01:00',
@@ -47,7 +47,7 @@ class BookingInfoDataValidatorTest extends TestCase
         $given = [
             'bookingInfo' => [
                 'url' => 'https://publiq.be',
-                'urlLabel' => 'Publiq vzw',
+                'urlLabel' => ['nl' => 'Publiq vzw'],
                 'phone' => '044/444444',
                 'email' => 'info@publiq.be',
                 'availabilityStarts' => '2018-01-01T00:00:00.234Z',
@@ -66,12 +66,60 @@ class BookingInfoDataValidatorTest extends TestCase
     /**
      * @test
      */
-    public function it_should_pass_if_all_properties_are_valid()
+    public function it_should_throw_an_exception_if_urlLabel_is_a_string()
     {
         $given = [
             'bookingInfo' => [
                 'url' => 'https://publiq.be',
                 'urlLabel' => 'Publiq vzw',
+                'phone' => '044/444444',
+                'email' => 'info@publiq.be',
+                'availabilityStarts' => '2018-01-01T00:00:00+01:00',
+                'availabilityEnds' => '2018-01-31T23:59:59+01:00',
+            ],
+        ];
+
+        $expected = [
+            'bookingInfo.urlLabel' => 'Invalid format. ' .
+                'Expected associative array with language codes as keys and translated strings as values.',
+        ];
+
+        $this->assertValidationMessages($given, $expected);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_throw_an_exception_if_a_urlLabel_language_code_is_invalid()
+    {
+        $given = [
+            'bookingInfo' => [
+                'url' => 'https://publiq.be',
+                'urlLabel' => ['foo' => 'Publiq vzw'],
+                'phone' => '044/444444',
+                'email' => 'info@publiq.be',
+                'availabilityStarts' => '2018-01-01T00:00:00+01:00',
+                'availabilityEnds' => '2018-01-31T23:59:59+01:00',
+            ],
+        ];
+
+        $expected = [
+            'bookingInfo.urlLabel' => 'Invalid format. ' .
+                'Expected associative array with language codes as keys and translated strings as values.',
+        ];
+
+        $this->assertValidationMessages($given, $expected);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_pass_if_all_properties_are_valid()
+    {
+        $given = [
+            'bookingInfo' => [
+                'url' => 'https://publiq.be',
+                'urlLabel' => ['nl' => 'Publiq vzw'],
                 'phone' => '044/444444',
                 'email' => 'info@publiq.be',
                 'availabilityStarts' => '2018-01-01T00:00:00+01:00',
