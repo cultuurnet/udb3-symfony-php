@@ -22,9 +22,9 @@
     "id": "3CuHvenJ+EGkcvhXLg9Ykg",
     "primary": true
   },
-  "activeCalendarType": "permanent",
-  "activeCalendarLabel": "Permanent",
-  "calendarType": "permanent",
+  "calendar": {
+    "type": "permanent"
+  },
   "contactPoint": {
     "url": [],
     "phone": [],

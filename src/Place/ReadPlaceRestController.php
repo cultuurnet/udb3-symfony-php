@@ -70,8 +70,13 @@ class ReadPlaceRestController
         // @todo Add & process pagination parameters
         // @todo Validate zipcode
         $zipCode = $request->query->get('zipcode');
+        $country = $request->query->get('country');
 
-        $ids = $this->lookupService->findPlacesByPostalCode($zipCode);
+        if (!$country) {
+            $country = 'BE';
+        }
+
+        $ids = $this->lookupService->findPlacesByPostalCode($zipCode, $country);
 
         $members = [];
         if (!empty($ids)) {

@@ -5,6 +5,9 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Place;
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarForPlaceDataValidator;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
 use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\EventTypeJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Theme\ThemeJSONDeserializer;
@@ -47,7 +50,10 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
 
         $this->typeDeserializer = new EventTypeJSONDeserializer();
         $this->addressDeserializer = new AddressJSONDeserializer();
-        $this->calendarDeserializer = new CalendarDeserializer();
+        $this->calendarDeserializer = new CalendarJSONDeserializer(
+            new CalendarJSONParser(),
+            new CalendarForPlaceDataValidator()
+        );
         $this->themeDeserializer = new ThemeJSONDeserializer();
     }
 
@@ -69,7 +75,9 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
             new StringLiteral(json_encode($data['address']))
         );
 
-        $calendar = $this->calendarDeserializer->deserialize($data);
+        $calendar = $this->calendarDeserializer->deserialize(
+            new StringLiteral(json_encode($data['calendar']))
+        );
 
         $theme = null;
         if (!empty($data['theme'])) {
