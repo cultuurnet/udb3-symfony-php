@@ -265,7 +265,9 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_handles_calendar_with_one_timestamp_and_start_and_end_on_the_same_day()
     {
         $majorInfoData = json_decode(
-            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_start_and_end_on_the_same_day.json'),
+            file_get_contents(
+                __DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_start_and_end_on_the_same_day.json'
+            ),
             true
         );
 
@@ -317,7 +319,9 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_handles_calendar_with_multiple_timestamps_and_start_and_end_on_the_same_day()
     {
         $majorInfoData = json_decode(
-            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_start_and_end_on_the_same_day.json'),
+            file_get_contents(
+                __DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_start_and_end_on_the_same_day.json'
+            ),
             true
         );
 
@@ -355,7 +359,9 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_handles_calendar_with_multiple_timestamps_and_end_one_day_later()
     {
         $majorInfoData = json_decode(
-            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_start_and_end_one_day_later.json'),
+            file_get_contents(
+                __DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_start_and_end_one_day_later.json'
+            ),
             true
         );
 
@@ -389,7 +395,9 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_handles_calendar_with_one_timestamp_and_end_more_then_one_day_later()
     {
         $majorInfoData = json_decode(
-            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_end_more_then_one_day_later.json'),
+            file_get_contents(
+                __DIR__ . '/samples/calendar/calendar_with_one_timestamp_and_end_more_then_one_day_later.json'
+            ),
             true
         );
 
@@ -415,7 +423,9 @@ class CalendarDeserializerTest extends \PHPUnit_Framework_TestCase
     public function it_handles_calendar_with_multiple_timestamps_and_more_then_one_day_apart()
     {
         $majorInfoData = json_decode(
-            file_get_contents(__DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_more_then_one_day_apart.json'),
+            file_get_contents(
+                __DIR__ . '/samples/calendar/calendar_with_multiple_timestamps_and_more_then_one_day_apart.json'
+            ),
             true
         );
 

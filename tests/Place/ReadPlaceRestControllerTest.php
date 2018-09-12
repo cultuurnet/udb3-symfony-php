@@ -72,7 +72,7 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $serializerInterface->method('deserialize')
             ->willReturnCallback(
-                function() {
+                function () {
                     return $this->place;
                 }
             );
