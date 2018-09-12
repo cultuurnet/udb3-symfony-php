@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Event;
 use CultuurNet\CalendarSummaryV3\CalendarHTMLFormatter;
 use CultuurNet\CalendarSummaryV3\CalendarPlainTextFormatter;
 use CultuurNet\SearchV3\Serializer\Serializer;
+use CultuurNet\SearchV3\Serializer\SerializerInterface;
 use CultuurNet\SearchV3\ValueObjects\Event;
 use CultuurNet\UDB3\Symfony\ApiProblemJsonResponseTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,15 +34,23 @@ class ReadEventRestController
     private $historyRepository;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
      * @param EventServiceInterface $service
      * @param DocumentRepositoryInterface $historyRepository
+     * @param SerializerInterface $serializer
      */
     public function __construct(
         EventServiceInterface $service,
-        DocumentRepositoryInterface $historyRepository
+        DocumentRepositoryInterface $historyRepository,
+        SerializerInterface $serializer
     ) {
         $this->service = $service;
         $this->historyRepository = $historyRepository;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -102,8 +111,7 @@ class ReadEventRestController
         $data = null;
 
         $data = $this->service->getEvent($cdbid);
-        $serializer = new Serializer();
-        $event = $serializer->deserialize($data, Event::class);
+        $event = $this->serializer->deserialize($data, Event::class);
         $calSum = new CalendarPlainTextFormatter();
         //$calSum = new CalendarHTMLFormatter();
 

@@ -2,6 +2,8 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
+use CultuurNet\SearchV3\Serializer\SerializerInterface;
+use CultuurNet\SearchV3\ValueObjects\Event;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Response;
 use CultuurNet\UDB3\Event\EventServiceInterface;
@@ -26,15 +28,32 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
     private $jsonDocument;
 
     /**
+     * @var string
+     */
+    private $calSum;
+
+    /**
+     * @var Event
+     */
+    private $event;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
     {
         $this->jsonDocument = new JsonDocument('id', 'history');
+        $this->calSum = 'zondag 7 oktober 2018 van 12:15 tot 18:00';
+
+        $this->event = new Event();
+        $this->event->setStartDate(new \DateTime('2018-10-07 12:15:00'));
+        $this->event->setEndDate(new \DateTime('2018-10-07 18:00:00'));
+        $this->event->setCalendarType('single');
 
         $eventServiceInterface = $this->createMock(EventServiceInterface::class);
-
         $documentRepositoryInterface = $this->createMock(DocumentRepositoryInterface::class);
+        $serializerInterface = $this->createMock(SerializerInterface::class);
+
         $documentRepositoryInterface->method('get')
             ->willReturnCallback(
                 function ($id) {
@@ -63,13 +82,21 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
                 }
             );
 
+        $serializerInterface->method('deserialize')
+            ->willReturnCallback(
+                function() {
+                    return $this->event;
+                }
+            );
+
         /**
          * @var EventServiceInterface $eventServiceInterface
          * @var DocumentRepositoryInterface $documentRepositoryInterface
          */
         $this->eventRestController = new ReadEventRestController(
             $eventServiceInterface,
-            $documentRepositoryInterface
+            $documentRepositoryInterface,
+            $serializerInterface
         );
     }
 
@@ -123,5 +150,15 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
         $jsonResponse = $this->eventRestController->get(self::NON_EXISTING_ID);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $jsonResponse->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_http_response_with_a_calendar_summary_for_an_event()
+    {
+        $calSumResponse = $this->eventRestController->getCalendarSummary(self::EXISTING_ID);
+
+        $this->assertEquals($this->calSum, $calSumResponse);
     }
 }
