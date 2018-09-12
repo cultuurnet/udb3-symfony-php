@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\Event;
 use CultuurNet\SearchV3\Serializer\SerializerInterface;
 use CultuurNet\SearchV3\ValueObjects\Event;
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
@@ -157,7 +158,8 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
      */
     public function it_returns_a_http_response_with_a_calendar_summary_for_an_event()
     {
-        $calSumResponse = $this->eventRestController->getCalendarSummary(self::EXISTING_ID);
+        $request = new Request(array('style' => 'text', 'format' => 'lg'));
+        $calSumResponse = $this->eventRestController->getCalendarSummary(self::EXISTING_ID, $request);
 
         $this->assertEquals($this->calSum, $calSumResponse);
     }

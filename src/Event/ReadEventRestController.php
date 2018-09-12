@@ -4,7 +4,6 @@ namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultuurNet\CalendarSummaryV3\CalendarHTMLFormatter;
 use CultuurNet\CalendarSummaryV3\CalendarPlainTextFormatter;
-use CultuurNet\SearchV3\Serializer\Serializer;
 use CultuurNet\SearchV3\Serializer\SerializerInterface;
 use CultuurNet\SearchV3\ValueObjects\Event;
 use CultuurNet\UDB3\Symfony\ApiProblemJsonResponseTrait;
@@ -13,6 +12,7 @@ use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class ReadEventRestController
 {
@@ -106,15 +106,33 @@ class ReadEventRestController
      *
      * @return string
      */
-    public function getCalendarSummary($cdbid)
+    public function getCalendarSummary($cdbid, Request $request)
     {
         $data = null;
+        $response = null;
 
-        $data = $this->service->getEvent($cdbid);
-        $event = $this->serializer->deserialize($data, Event::class);
-        $calSum = new CalendarPlainTextFormatter();
-        //$calSum = new CalendarHTMLFormatter();
+        $style = ($request->query->get('style') !== null) ? $request->query->get('style') : 'text';
+        $langCode = ($request->query->get('langCode') !== null) ? $request->query->get('langCode') : 'nl_BE';
+        $hidePastDates = ($request->query->get('hidePast') !== null) ? $request->query->get('hidePast') : false;
+        $timeZone = ($request->query->get('timeZone') !== null) ? $request->query->get('timeZone') : 'Europe/Brussels';
 
-        return $calSum->format($event, 'lg');
+        if ($request->query->get('format') !== null) {
+            $format = $request->query->get('format');
+
+            $data = $this->service->getEvent($cdbid);
+            $event = $this->serializer->deserialize($data, Event::class);
+
+            if ($style === 'html') {
+                $calSum = new CalendarHTMLFormatter($langCode, $hidePastDates, $timeZone);
+            } else {
+                $calSum = new CalendarPlainTextFormatter($langCode, $hidePastDates, $timeZone);
+            }
+
+            $response = $calSum->format($event, $format);
+        } else {
+            $response = $this->createApiProblemJsonResponseNotFound('Please provide a valid calendar summary format', $cdbid);
+        }
+
+        return $response;
     }
 }
