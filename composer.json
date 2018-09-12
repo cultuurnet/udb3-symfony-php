@@ -28,7 +28,7 @@
     "guzzlehttp/guzzle": "~6.2",
     "zendframework/zend-diactoros": "^1.3",
     "chrisboulton/php-resque": "1.2",
-    "cultuurnet/calendar-summary-v3": "dev-master"
+    "cultuurnet/calendar-summary-v3": "dev-feature/III-2738"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.7",
