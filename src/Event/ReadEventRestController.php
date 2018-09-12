@@ -2,6 +2,10 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
+use CultuurNet\CalendarSummaryV3\CalendarHTMLFormatter;
+use CultuurNet\CalendarSummaryV3\CalendarPlainTextFormatter;
+use CultuurNet\SearchV3\Serializer\Serializer;
+use CultuurNet\SearchV3\ValueObjects\Event;
 use CultuurNet\UDB3\Symfony\ApiProblemJsonResponseTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
@@ -86,5 +90,23 @@ class ReadEventRestController
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $cdbid
+     *
+     * @return string
+     */
+    public function getCalendarSummary($cdbid)
+    {
+        $data = null;
+
+        $data = $this->service->getEvent($cdbid);
+        $serializer = new Serializer();
+        $event = $serializer->deserialize($data, Event::class);
+        $calSum = new CalendarPlainTextFormatter();
+        //$calSum = new CalendarHTMLFormatter();
+
+        return $calSum->format($event, 'lg');
     }
 }
