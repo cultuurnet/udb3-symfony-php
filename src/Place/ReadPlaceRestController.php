@@ -2,9 +2,12 @@
 
 namespace CultuurNet\UDB3\Symfony\Place;
 
+use CultuurNet\CalendarSummaryV3\CalendarHTMLFormatter;
+use CultuurNet\CalendarSummaryV3\CalendarPlainTextFormatter;
+use CultuurNet\SearchV3\Serializer\SerializerInterface;
+use CultuurNet\SearchV3\ValueObjects\Place;
 use CultuurNet\Hydra\PagedCollection;
 use CultuurNet\UDB3\EntityServiceInterface;
-use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\Place\ReadModel\Lookup\PlaceLookupServiceInterface;
 use CultuurNet\UDB3\Symfony\ApiProblemJsonResponseTrait;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
@@ -30,13 +33,16 @@ class ReadPlaceRestController
     /**
      * @param EntityServiceInterface $service
      * @param PlaceLookupServiceInterface $lookupService
+     * @param SerializerInterface $serializer
      */
     public function __construct(
         EntityServiceInterface $service,
-        PlaceLookupServiceInterface $lookupService
+        PlaceLookupServiceInterface $lookupService,
+        SerializerInterface $serializer
     ) {
         $this->service = $service;
         $this->lookupService = $lookupService;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -96,5 +102,42 @@ class ReadPlaceRestController
         );
 
         return new JsonLdResponse($pagedCollection);
+    }
+
+    /**
+     * @param string $cdbid
+     *
+     * @return string
+     */
+    public function getCalendarSummary($cdbid, Request $request)
+    {
+        $data = null;
+        $response = null;
+
+        $style = ($request->query->get('style') !== null) ? $request->query->get('style') : 'text';
+        $langCode = ($request->query->get('langCode') !== null) ? $request->query->get('langCode') : 'nl_BE';
+        $hidePastDates = ($request->query->get('hidePast') !== null) ? $request->query->get('hidePast') : false;
+        $timeZone = ($request->query->get('timeZone') !== null) ? $request->query->get('timeZone') : 'Europe/Brussels';
+
+        if ($request->query->get('format') !== null) {
+            $format = $request->query->get('format');
+
+            $data = $this->service->getEntity($cdbid);
+            $place = $this->serializer->deserialize($data, Place::class);
+
+            if ($style === 'html') {
+                $calSum = new CalendarHTMLFormatter($langCode, $hidePastDates, $timeZone);
+            } else {
+                $calSum = new CalendarPlainTextFormatter($langCode, $hidePastDates, $timeZone);
+            }
+
+            $response = $calSum->format($place, $format);
+        } else {
+            $response = $this->createApiProblemJsonResponseNotFound(
+                'Please provide a valid calendar summary format', $cdbid
+            );
+        }
+
+        return $response;
     }
 }

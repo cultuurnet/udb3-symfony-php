@@ -130,7 +130,9 @@ class ReadEventRestController
 
             $response = $calSum->format($event, $format);
         } else {
-            $response = $this->createApiProblemJsonResponseNotFound('Please provide a valid calendar summary format', $cdbid);
+            $response = $this->createApiProblemJsonResponseNotFound(
+                'Please provide a valid calendar summary format', $cdbid
+            );
         }
 
         return $response;
