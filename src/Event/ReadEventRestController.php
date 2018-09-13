@@ -111,30 +111,26 @@ class ReadEventRestController
         $data = null;
         $response = null;
 
-        $style = ($request->query->get('style') !== null) ? $request->query->get('style') : 'text';
-        $langCode = ($request->query->get('langCode') !== null) ? $request->query->get('langCode') : 'nl_BE';
-        $hidePastDates = ($request->query->get('hidePast') !== null) ? $request->query->get('hidePast') : false;
-        $timeZone = ($request->query->get('timeZone') !== null) ? $request->query->get('timeZone') : 'Europe/Brussels';
+        $style = $request->query->get('style', 'text');
+        $langCode = $request->query->get('langCode', 'nl_BE');
+        $hidePastDates = $request->query->get('hidePast', false);
+        $timeZone = $request->query->get('timeZone', 'Europe/Brussels');
+        $format = $request->query->get('format', 'lg');
 
-        if ($request->query->get('format') !== null) {
-            $format = $request->query->get('format');
+        $data = $this->service->getEvent($cdbid);
+        $event = $this->serializer->deserialize($data, Event::class);
 
-            $data = $this->service->getEvent($cdbid);
-            $event = $this->serializer->deserialize($data, Event::class);
-
+        if ($style !== 'html' && $style !== 'text') {
+            $response = $this->createApiProblemJsonResponseNotFound('No style found for ' . $style, $cdbid);
+        } else {
             if ($style === 'html') {
                 $calSum = new CalendarHTMLFormatter($langCode, $hidePastDates, $timeZone);
             } else {
                 $calSum = new CalendarPlainTextFormatter($langCode, $hidePastDates, $timeZone);
             }
-
             $response = $calSum->format($event, $format);
-        } else {
-            $response = $this->createApiProblemJsonResponseNotFound(
-                'Please provide a valid calendar summary format',
-                $cdbid
-            );
         }
+
 
         return $response;
     }
