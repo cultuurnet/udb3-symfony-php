@@ -71,12 +71,17 @@ class ReadPlaceRestController
         // @todo Validate zipcode
         $zipCode = $request->query->get('zipcode');
         $country = $request->query->get('country');
+        $city = $request->query->get('city');
 
         if (!$country) {
             $country = 'BE';
         }
 
-        $ids = $this->lookupService->findPlacesByPostalCode($zipCode, $country);
+        if (!$city) {
+            $ids = $this->lookupService->findPlacesByPostalCode($zipCode, $country);
+        } else {
+            $ids = $this->lookupService->findPlacesByCity($city, $country);
+        }
 
         $members = [];
         if (!empty($ids)) {
