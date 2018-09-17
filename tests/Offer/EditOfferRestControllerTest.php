@@ -259,7 +259,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_should_use_the_editing_service_and_retun_the_command_id_when_updating_an_offer_description_by_language()
+    public function it_should_use_the_editing_service_and_return_command_id_when_updating_offer_description_by_lang()
     {
         $descriptionData = '{"description": "nieuwe beschrijving"}';
 

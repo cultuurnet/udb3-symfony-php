@@ -2,12 +2,17 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
+use CultuurNet\CalendarSummaryV3\CalendarHTMLFormatter;
+use CultuurNet\CalendarSummaryV3\CalendarPlainTextFormatter;
+use CultuurNet\SearchV3\Serializer\SerializerInterface;
+use CultuurNet\SearchV3\ValueObjects\Event;
 use CultuurNet\UDB3\Symfony\ApiProblemJsonResponseTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
 use CultuurNet\UDB3\Event\ReadModel\DocumentRepositoryInterface;
 use CultuurNet\UDB3\Event\EventServiceInterface;
 use CultuurNet\UDB3\Symfony\JsonLdResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class ReadEventRestController
 {
@@ -29,15 +34,23 @@ class ReadEventRestController
     private $historyRepository;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
      * @param EventServiceInterface $service
      * @param DocumentRepositoryInterface $historyRepository
+     * @param SerializerInterface $serializer
      */
     public function __construct(
         EventServiceInterface $service,
-        DocumentRepositoryInterface $historyRepository
+        DocumentRepositoryInterface $historyRepository,
+        SerializerInterface $serializer
     ) {
         $this->service = $service;
         $this->historyRepository = $historyRepository;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -84,6 +97,40 @@ class ReadEventRestController
         } catch (DocumentGoneException $documentGoneException) {
             $response = $this->createApiProblemJsonResponseGone(self::HISTORY_ERROR_GONE, $cdbid);
         }
+
+        return $response;
+    }
+
+    /**
+     * @param string $cdbid
+     *
+     * @return string
+     */
+    public function getCalendarSummary($cdbid, Request $request)
+    {
+        $data = null;
+        $response = null;
+
+        $style = $request->query->get('style', 'text');
+        $langCode = $request->query->get('langCode', 'nl_BE');
+        $hidePastDates = $request->query->get('hidePast', false);
+        $timeZone = $request->query->get('timeZone', 'Europe/Brussels');
+        $format = $request->query->get('format', 'lg');
+
+        $data = $this->service->getEvent($cdbid);
+        $event = $this->serializer->deserialize($data, Event::class);
+
+        if ($style !== 'html' && $style !== 'text') {
+            $response = $this->createApiProblemJsonResponseNotFound('No style found for ' . $style, $cdbid);
+        } else {
+            if ($style === 'html') {
+                $calSum = new CalendarHTMLFormatter($langCode, $hidePastDates, $timeZone);
+            } else {
+                $calSum = new CalendarPlainTextFormatter($langCode, $hidePastDates, $timeZone);
+            }
+            $response = $calSum->format($event, $format);
+        }
+
 
         return $response;
     }
