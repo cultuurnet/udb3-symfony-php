@@ -4,6 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Event;
 
 use CultuurNet\SearchV3\Serializer\SerializerInterface;
 use CultuurNet\SearchV3\ValueObjects\Event;
+use DateTimeZone;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,8 +48,9 @@ class EventRestControllerTest extends PHPUnit_Framework_TestCase
         $this->calSum = 'zondag 7 oktober 2018 van 12:15 tot 18:00';
 
         $this->event = new Event();
-        $this->event->setStartDate(new \DateTime('2018-10-07 12:15:00'));
-        $this->event->setEndDate(new \DateTime('2018-10-07 18:00:00'));
+        $tz = new DateTimeZone('Europe/Brussels');
+        $this->event->setStartDate(new \DateTime('2018-10-07 12:15:00', $tz));
+        $this->event->setEndDate(new \DateTime('2018-10-07 18:00:00', $tz));
         $this->event->setCalendarType('single');
 
         $eventServiceInterface = $this->createMock(EventServiceInterface::class);
