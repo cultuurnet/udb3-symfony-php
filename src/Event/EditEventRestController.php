@@ -11,7 +11,9 @@ use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
-use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarForEventDataValidator;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
+use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\CreateEventJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
@@ -44,7 +46,7 @@ class EditEventRestController extends OfferRestBaseController
     protected $createEventJSONDeserializer;
 
     /**
-     * @var CalendarDeserializer
+     * @var CalendarJSONDeserializer
      */
     protected $calendarDeserializer;
 
@@ -91,7 +93,10 @@ class EditEventRestController extends OfferRestBaseController
 
         $this->majorInfoDeserializer = new MajorInfoJSONDeserializer();
         $this->createEventJSONDeserializer = new CreateEventJSONDeserializer();
-        $this->calendarDeserializer = new CalendarDeserializer();
+        $this->calendarDeserializer = new CalendarJSONDeserializer(
+            new CalendarJSONParser(),
+            new CalendarForEventDataValidator()
+        );
     }
 
     /**
@@ -239,7 +244,7 @@ class EditEventRestController extends OfferRestBaseController
     public function copyEvent(Request $request, $cdbid)
     {
         $copyCalendar = $this->calendarDeserializer->deserialize(
-            json_decode($request->getContent(), true)
+            new StringLiteral($request->getContent())
         );
 
         $copiedEventId = $this->editor->copyEvent($cdbid, $copyCalendar);
