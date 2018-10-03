@@ -8,7 +8,6 @@ use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarForPlaceDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
-use CultuurNet\UDB3\Symfony\Deserializer\CalendarDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\EventTypeJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Theme\ThemeJSONDeserializer;
 use CultuurNet\UDB3\Title;
@@ -32,7 +31,7 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
     private $addressDeserializer;
 
     /**
-     * @var CalendarDeserializer
+     * @var CalendarJSONDeserializer
      */
     private $calendarDeserializer;
 
