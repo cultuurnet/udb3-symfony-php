@@ -157,13 +157,34 @@ class EditOrganizerRestController
     }
 
     /**
+     * @deprecated Use updateAddress with language parameter instead.
+     *
      * @param string $organizerId
      * @param Request $request
      * @return JsonResponse
+     *
      * @throws DataValidationException
      */
-    public function updateAddress($organizerId, Request $request)
-    {
+    public function updateAddressDeprecated(
+        string $organizerId,
+        Request $request
+    ) {
+        return $this->updateAddress($organizerId, 'nl', $request);
+    }
+
+    /**
+     * @param string $organizerId
+     * @param string $lang
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @throws DataValidationException
+     */
+    public function updateAddress(
+        string $organizerId,
+        string $lang,
+        Request $request
+    ) {
         $addressJSONDeserializer = new AddressJSONDeserializer();
 
         $address = $addressJSONDeserializer->deserialize(
@@ -172,7 +193,8 @@ class EditOrganizerRestController
 
         $commandId = $this->editingService->updateAddress(
             $organizerId,
-            $address
+            $address,
+            new Language($lang)
         );
 
         return JsonResponse::create(['commandId' => $commandId]);
@@ -182,7 +204,6 @@ class EditOrganizerRestController
      * @param string $organizerId
      * @param Request $request
      * @return JsonResponse
-     * @throws DataValidationException
      */
     public function updateContactPoint($organizerId, Request $request)
     {
