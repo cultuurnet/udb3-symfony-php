@@ -200,7 +200,8 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             ->method('updateTitle')
             ->with(
                 $organizerId,
-                $name
+                $name,
+                new Language('nl')
             )
             ->willReturn($commandId);
 
@@ -218,6 +219,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws DataValidationException
      */
     public function it_updates_address_of_an_organizer()
     {
@@ -234,7 +236,8 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             ->method('updateAddress')
             ->with(
                 $organizerId,
-                $address
+                $address,
+                new Language('nl')
             )
             ->willReturn($commandId);
 
@@ -243,6 +246,43 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             'organizer_update_address.json'
         );
         $response = $this->controller->updateAddress(
+            $organizerId,
+            'nl',
+            $request
+        );
+
+        $expectedJson = '{"commandId":"' . $commandId . '"}';
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_supports_deprecated_update_address_of_an_organizer()
+    {
+        $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
+        $address = new Address(
+            new Street('Martelarenplein 12'),
+            new PostalCode('3000'),
+            new Locality('Leuven'),
+            Country::fromNative('BE')
+        );
+        $commandId = '76f5537992efd02b71304d0d5d86d991';
+
+        $this->editService->expects($this->once())
+            ->method('updateAddress')
+            ->with(
+                $organizerId,
+                $address,
+                new Language('nl')
+            )
+            ->willReturn($commandId);
+
+        $request = $this->createRequest(
+            Request::METHOD_PUT,
+            'organizer_update_address.json'
+        );
+        $response = $this->controller->updateAddressDeprecated(
             $organizerId,
             $request
         );
