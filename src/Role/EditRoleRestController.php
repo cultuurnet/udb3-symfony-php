@@ -156,6 +156,23 @@ class EditRoleRestController
     }
 
     /**
+     * @param string $id
+     * @param string $sapiVersion
+     * @return JsonResponse
+     */
+    public function removeConstraint(string $id, string $sapiVersion): JsonResponse
+    {
+        $commandId = $this->service->removeConstraint(
+            new UUID($id),
+            SapiVersion::fromNative($sapiVersion)
+        );
+
+        return JsonResponse::create(
+            ['commandId' => $commandId]
+        );
+    }
+
+    /**
      * @param $id
      * @return JsonResponse
      */

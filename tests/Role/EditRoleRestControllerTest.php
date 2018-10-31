@@ -204,6 +204,26 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_removes_a_constraint()
+    {
+        $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
+        $sapiVersion = 'v2';
+
+        $this->editService->expects($this->once())
+            ->method('removeConstraint')
+            ->with(new UUID($roleId), SapiVersion::fromNative($sapiVersion))
+            ->willReturn($this->commandId);
+
+        $response = $this->controller->removeConstraint($roleId, $sapiVersion);
+
+        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
+
+        $this->assertEquals($expectedJson, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
     public function it_deletes_a_role()
     {
         $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';

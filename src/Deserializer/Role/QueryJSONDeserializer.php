@@ -10,7 +10,7 @@ class QueryJSONDeserializer extends JSONDeserializer
 {
     public function __construct()
     {
-        $assoc = TRUE;
+        $assoc = true;
         parent::__construct($assoc);
     }
 
