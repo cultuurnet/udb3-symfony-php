@@ -95,7 +95,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
         $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
         $roleName = new StringLiteral('roleName');
 
-        $request = $this->makeRequest('POST', 'create_role.json');
+        $request = $this->makeRequest('POST', 'samples/create_role.json');
 
         $this->editService->expects($this->once())
             ->method('create')
@@ -116,7 +116,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
         $commandId = '456';
-        $request = $this->makeRequest('PATCH', 'update_role.json');
+        $request = $this->makeRequest('PATCH', 'samples/update_role.json');
         $request->headers->set('Content-Type', 'application/ld+json;domain-model=RenameRole');
 
         $renameRole = new RenameRole(
@@ -147,12 +147,10 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_adds_a_constraint()
     {
         $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
-        $constraintQuery = new Query(
-            'city:3000'
-        );
+        $constraintQuery = new Query('city:3000');
         $sapiVersion = 'v2';
 
-        $request = $this->makeRequest('POST', 'add_constraint.json');
+        $request = $this->makeRequest('POST', 'samples/add_constraint.json');
 
         $this->queryJsonDeserializer->expects($this->once())
             ->method('deserialize')
@@ -161,7 +159,11 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->editService->expects($this->once())
             ->method('addConstraint')
-            ->with(new UUID($roleId), SapiVersion::fromNative($sapiVersion), $constraintQuery)
+            ->with(
+                new UUID($roleId),
+                SapiVersion::fromNative($sapiVersion),
+                $constraintQuery
+            )
             ->willReturn($this->commandId);
 
         $response = $this->controller->addConstraint($request, $roleId, $sapiVersion);
@@ -177,12 +179,10 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_updates_a_constraint()
     {
         $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
-        $constraintQuery = new Query(
-            'city:3000'
-        );
+        $constraintQuery = new Query('city:3000');
         $sapiVersion = 'v2';
 
-        $request = $this->makeRequest('PUT', 'add_constraint.json');
+        $request = $this->makeRequest('PUT', 'samples/add_constraint.json');
 
         $this->queryJsonDeserializer->expects($this->once())
             ->method('deserialize')
@@ -191,7 +191,11 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->editService->expects($this->once())
             ->method('updateConstraint')
-            ->with(new UUID($roleId), SapiVersion::fromNative($sapiVersion), $constraintQuery)
+            ->with(
+                new UUID($roleId),
+                SapiVersion::fromNative($sapiVersion),
+                $constraintQuery
+            )
             ->willReturn($this->commandId);
 
         $response = $this->controller->updateConstraint($request, $roleId, $sapiVersion);
