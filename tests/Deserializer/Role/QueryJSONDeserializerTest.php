@@ -2,7 +2,6 @@
 
 namespace CultuurNet\UDB3\Symfony\Deserializer\Role;
 
-
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\Role\ValueObjects\Query;
 use ValueObjects\StringLiteral\StringLiteral;

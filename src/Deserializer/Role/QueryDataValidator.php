@@ -31,5 +31,4 @@ class QueryDataValidator implements DataValidatorInterface
     {
         $this->requiredFieldsValidator->validate($data);
     }
-
 }
