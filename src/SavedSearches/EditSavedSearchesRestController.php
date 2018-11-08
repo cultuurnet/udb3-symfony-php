@@ -37,12 +37,13 @@ class EditSavedSearchesRestController
 
     /**
      * @param Request $request
-     *
+     * @param string $sapiVersion
      * @return JsonResponse
      */
-    public function save(Request $request)
+    public function save(Request $request, string $sapiVersion)
     {
         $commandDeserializer = new SubscribeToSavedSearchJSONDeserializer(
+            new SapiVersion($sapiVersion),
             new StringLiteral($this->user->id)
         );
 
