@@ -50,7 +50,7 @@ class ReadSavedSearchesControllerTest extends \PHPUnit_Framework_TestCase
             new SavedSearch(
                 new StringLiteral('Saved search 1'),
                 new QueryString('city:herent')
-                ),
+            ),
         ];
 
         $this->savedSearchRepository->expects($this->once())
