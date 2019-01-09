@@ -28,7 +28,7 @@ class ReadSavedSearchesControllerTest extends \PHPUnit_Framework_TestCase
 
         $savedSearchReadRepositoryCollection = new SavedSearchReadRepositoryCollection();
         $savedSearchReadRepositoryCollection = $savedSearchReadRepositoryCollection->withRepository(
-            new SapiVersion(SapiVersion::V2),
+            SapiVersion::V2(),
             $this->savedSearchRepository
         );
 

@@ -43,7 +43,7 @@ class EditSavedSearchesRestController
     public function save(Request $request, string $sapiVersion)
     {
         $commandDeserializer = new SubscribeToSavedSearchJSONDeserializer(
-            new SapiVersion($sapiVersion),
+            SapiVersion::fromNative($sapiVersion),
             new StringLiteral($this->user->id)
         );
 
@@ -63,7 +63,7 @@ class EditSavedSearchesRestController
     public function delete(string $sapiVersion, string $id)
     {
         $command = new UnsubscribeFromSavedSearch(
-            new SapiVersion($sapiVersion),
+            SapiVersion::fromNative($sapiVersion),
             new StringLiteral($this->user->id),
             new StringLiteral($id)
         );

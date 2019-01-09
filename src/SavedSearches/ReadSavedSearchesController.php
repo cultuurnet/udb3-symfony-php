@@ -29,7 +29,7 @@ class ReadSavedSearchesController
     public function ownedByCurrentUser(string $sapiVersion)
     {
         $savedSearchRepository = $this->savedSearchReadRepositoryCollection->getRepository(
-            new SapiVersion($sapiVersion)
+            SapiVersion::fromNative($sapiVersion)
         );
 
         return JsonResponse::create(
