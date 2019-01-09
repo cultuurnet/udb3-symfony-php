@@ -4,12 +4,14 @@ namespace CultuurNet\UDB3\Symfony\Role;
 
 use Broadway\CommandHandling\CommandBusInterface;
 use Crell\ApiProblem\ApiProblem;
+use CultuurNet\Deserializer\DeserializerInterface;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
 use CultuurNet\UDB3\Role\Commands\AbstractCommand;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
+use CultuurNet\UDB3\ValueObject\SapiVersion;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,22 +43,30 @@ class EditRoleRestController
     private $labelEntityService;
 
     /**
+     * @var DeserializerInterface
+     */
+    private $queryJsonDeserializer;
+
+    /**
      * EditRoleRestController constructor.
      * @param RoleEditingServiceInterface $service
      * @param CommandBusInterface $commandBus
      * @param UpdateRoleRequestDeserializer $updateRoleRequestDeserializer
      * @param ReadServiceInterface $labelEntityService
+     * @param DeserializerInterface $queryJsonDeserializer
      */
     public function __construct(
         RoleEditingServiceInterface $service,
         CommandBusInterface $commandBus,
         UpdateRoleRequestDeserializer $updateRoleRequestDeserializer,
-        ReadServiceInterface $labelEntityService
+        ReadServiceInterface $labelEntityService,
+        DeserializerInterface $queryJsonDeserializer
     ) {
         $this->service = $service;
         $this->commandBus = $commandBus;
         $this->updateRoleRequestDeserializer = $updateRoleRequestDeserializer;
         $this->labelEntityService = $labelEntityService;
+        $this->queryJsonDeserializer = $queryJsonDeserializer;
     }
 
     /**
@@ -97,6 +107,69 @@ class EditRoleRestController
         $command = $this->updateRoleRequestDeserializer->deserialize($request, $id);
 
         return $this->commandResponse($command);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $id
+     * @param string $sapiVersion
+     * @return JsonResponse
+     */
+    public function addConstraint(Request $request, string $id, string $sapiVersion): JsonResponse
+    {
+        $query = $this->queryJsonDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->service->addConstraint(
+            new UUID($id),
+            SapiVersion::fromNative($sapiVersion),
+            $query
+        );
+
+        return JsonResponse::create(
+            ['commandId' => $commandId]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param string $id
+     * @param string $sapiVersion
+     * @return JsonResponse
+     */
+    public function updateConstraint(Request $request, string $id, string $sapiVersion): JsonResponse
+    {
+        $query = $this->queryJsonDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $commandId = $this->service->updateConstraint(
+            new UUID($id),
+            SapiVersion::fromNative($sapiVersion),
+            $query
+        );
+
+        return JsonResponse::create(
+            ['commandId' => $commandId]
+        );
+    }
+
+    /**
+     * @param string $id
+     * @param string $sapiVersion
+     * @return JsonResponse
+     */
+    public function removeConstraint(string $id, string $sapiVersion): JsonResponse
+    {
+        $commandId = $this->service->removeConstraint(
+            new UUID($id),
+            SapiVersion::fromNative($sapiVersion)
+        );
+
+        return JsonResponse::create(
+            ['commandId' => $commandId]
+        );
     }
 
     /**
