@@ -6,7 +6,7 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\SavedSearches\Command\SavedSearchCommand;
 use CultuurNet\UDB3\SavedSearches\Command\SubscribeToSavedSearchJSONDeserializer;
 use CultuurNet\UDB3\SavedSearches\Command\UnsubscribeFromSavedSearch;
-use CultuurNet\UDB3\SavedSearches\ReadModel\SavedSearchRepositoryInterface;
+use CultuurNet\UDB3\ValueObject\SapiVersion;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -37,12 +37,13 @@ class EditSavedSearchesRestController
 
     /**
      * @param Request $request
-     *
+     * @param string $sapiVersion
      * @return JsonResponse
      */
-    public function save(Request $request)
+    public function save(Request $request, string $sapiVersion)
     {
         $commandDeserializer = new SubscribeToSavedSearchJSONDeserializer(
+            SapiVersion::fromNative($sapiVersion),
             new StringLiteral($this->user->id)
         );
 
@@ -54,13 +55,15 @@ class EditSavedSearchesRestController
     }
 
     /**
+     * @param string $sapiVersion
      * @param string $id
      *
      * @return JsonResponse
      */
-    public function delete($id)
+    public function delete(string $sapiVersion, string $id)
     {
         $command = new UnsubscribeFromSavedSearch(
+            SapiVersion::fromNative($sapiVersion),
             new StringLiteral($this->user->id),
             new StringLiteral($id)
         );
