@@ -52,8 +52,6 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $entityServiceInterface = $this->createMock(EntityServiceInterface::class);
 
-        $lookupService = $this->createMock(PlaceLookupServiceInterface::class);
-
         $serializerInterface = $this->createMock(SerializerInterface::class);
 
         $entityServiceInterface->method('getEntity')
@@ -79,11 +77,10 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
 
         /**
          * @var EntityServiceInterface $entityServiceInterface
-         * @var PlaceLookupServiceInterface $lookupService
+         * @var SerializerInterface $serializerInterface
          */
         $this->placeRestController = new ReadPlaceRestController(
             $entityServiceInterface,
-            $lookupService,
             $serializerInterface
         );
     }
