@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Event;
 
 use CultuurNet\UDB3\Calendar;
 use CultuurNet\UDB3\Event\EventType;
-use CultuurNet\UDB3\Location\Location;
+use CultuurNet\UDB3\Event\ValueObjects\LocationId;
 use CultuurNet\UDB3\Theme;
 use CultuurNet\UDB3\Title;
 
@@ -21,7 +21,7 @@ class MajorInfo
     private $type;
 
     /**
-     * @var Location
+     * @var LocationId
      */
     private $location;
 
@@ -38,14 +38,14 @@ class MajorInfo
     /**
      * @param Title $title
      * @param EventType $type
-     * @param Location $location
+     * @param LocationId $location
      * @param Calendar $calendar
      * @param Theme|null $theme
      */
     public function __construct(
         Title $title,
         EventType $type,
-        Location $location,
+        LocationId $location,
         Calendar $calendar,
         Theme $theme = null
     ) {
@@ -73,7 +73,7 @@ class MajorInfo
     }
 
     /**
-     * @return Location
+     * @return LocationId
      */
     public function getLocation()
     {

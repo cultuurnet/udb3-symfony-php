@@ -8,8 +8,8 @@ use CultuurNet\UDB3\ApiGuard\Consumer\Specification\ConsumerSpecificationInterfa
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
+use CultuurNet\UDB3\Event\ValueObjects\LocationId;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
-use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarForEventDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
