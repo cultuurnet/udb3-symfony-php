@@ -6,7 +6,6 @@ use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\Deserializer\DeserializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
 /**
@@ -36,7 +35,7 @@ class CommandDeserializerController
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     public function handle(Request $request)
     {
