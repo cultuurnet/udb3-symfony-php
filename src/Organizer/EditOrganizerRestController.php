@@ -48,13 +48,7 @@ class EditOrganizerRestController
         $this->organizerCreationPayloadDeserializer = new OrganizerCreationPayloadJSONDeserializer();
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     *
-     * @throws DataValidationException
-     */
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $payload = $this->organizerCreationPayloadDeserializer->deserialize(
             new StringLiteral($request->getContent())
@@ -84,13 +78,7 @@ class EditOrganizerRestController
         );
     }
 
-    /**
-     * @param $organizerId
-     * @param Request $request
-     * @return JsonResponse
-     * @throws DataValidationException
-     */
-    public function updateUrl($organizerId, Request $request)
+    public function updateUrl(string $organizerId, Request $request): Response
     {
         $websiteJSONDeserializer = new UrlJSONDeserializer();
         $website = $websiteJSONDeserializer->deserialize(
@@ -98,7 +86,7 @@ class EditOrganizerRestController
         );
 
         try {
-            $commandId = $this->editingService->updateWebsite(
+            $this->editingService->updateWebsite(
                 $organizerId,
                 $website
             );
@@ -111,33 +99,24 @@ class EditOrganizerRestController
             throw $e;
         }
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @deprecated Use updateName with language parameter instead.
-     * @param string $organizerId
-     * @param Request $request
-     * @return JsonResponse
      */
     public function updateNameDeprecated(
-        $organizerId,
+        string $organizerId,
         Request $request
-    ) {
+    ): Response {
         return $this->updateName($organizerId, 'nl', $request);
     }
 
-    /**
-     * @param string $organizerId
-     * @param string $lang
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function updateName(
-        $organizerId,
-        $lang,
+        string $organizerId,
+        string $lang,
         Request $request
-    ) {
+    ): Response {
         $titleJSONDeserializer = new TitleJSONDeserializer(
             false,
             new StringLiteral('name')
@@ -147,65 +126,46 @@ class EditOrganizerRestController
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editingService->updateTitle(
+        $this->editingService->updateTitle(
             $organizerId,
             $title,
             empty($lang) ? new Language('nl') : new Language($lang)
         );
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @deprecated Use updateAddress with language parameter instead.
-     *
-     * @param string $organizerId
-     * @param Request $request
-     * @return JsonResponse
-     *
-     * @throws DataValidationException
      */
     public function updateAddressDeprecated(
         string $organizerId,
         Request $request
-    ) {
+    ): Response {
         return $this->updateAddress($organizerId, 'nl', $request);
     }
 
-    /**
-     * @param string $organizerId
-     * @param string $lang
-     * @param Request $request
-     * @return JsonResponse
-     *
-     * @throws DataValidationException
-     */
     public function updateAddress(
         string $organizerId,
         string $lang,
         Request $request
-    ) {
+    ): Response {
         $addressJSONDeserializer = new AddressJSONDeserializer();
 
         $address = $addressJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editingService->updateAddress(
+        $this->editingService->updateAddress(
             $organizerId,
             $address,
             new Language($lang)
         );
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param string $organizerId
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function updateContactPoint($organizerId, Request $request)
+    public function updateContactPoint(string $organizerId, Request $request): Response
     {
         $contactPointJSONDeserializer = new ContactPointJSONDeserializer();
 
@@ -213,49 +173,35 @@ class EditOrganizerRestController
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editingService->updateContactPoint(
+        $this->editingService->updateContactPoint(
             $organizerId,
             $contactPoint
         );
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param string $organizerId
-     * @param string $labelName
-     * @return Response
-     */
-    public function addLabel($organizerId, $labelName)
+    public function addLabel(string $organizerId, string $labelName): Response
     {
-        $commandId = $this->editingService->addLabel(
+        $this->editingService->addLabel(
             $organizerId,
             new Label($labelName)
         );
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param string $organizerId
-     * @param string $labelName
-     * @return Response
-     */
-    public function removeLabel($organizerId, $labelName)
+    public function removeLabel($organizerId, $labelName): Response
     {
-        $commandId = $this->editingService->removeLabel(
+        $this->editingService->removeLabel(
             $organizerId,
             new Label($labelName)
         );
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param string $cdbid
-     * @return Response
-     */
-    public function delete($cdbid)
+    public function delete($cdbid): Response
     {
         $cdbid = (string) $cdbid;
 
@@ -263,9 +209,8 @@ class EditOrganizerRestController
             throw new InvalidArgumentException('Required field cdbid is missing');
         }
 
-        $commandId = $this->editingService->delete($cdbid);
+        $this->editingService->delete($cdbid);
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
+        return new Response();
     }
 }
