@@ -45,7 +45,7 @@ class EditMediaRestController
         $response = new JsonResponse();
         $file = $request->files->get('file');
 
-        $imageUploadResult = $this->imageUploader->upload(
+        $imageId = $this->imageUploader->upload(
             $file,
             new StringLiteral($description),
             new StringLiteral($copyrightHolder),
@@ -54,8 +54,7 @@ class EditMediaRestController
 
         $response->setData(
             [
-                'commandId' => $imageUploadResult->getJobId(),
-                'imageId' => $imageUploadResult->getImageId()->toNative(),
+                'imageId' => $imageId->toNative(),
             ]
         );
 
