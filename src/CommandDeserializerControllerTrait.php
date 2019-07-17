@@ -4,8 +4,8 @@ namespace CultuurNet\UDB3\Symfony;
 
 use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\Deserializer\DeserializerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
 trait CommandDeserializerControllerTrait
@@ -26,7 +26,7 @@ trait CommandDeserializerControllerTrait
     /**
      * @param Request $request
      * @param DeserializerInterface $deserializer
-     * @return JsonResponse
+     * @return Response
      */
     private function handleRequestWithDeserializer(
         Request $request,
@@ -36,19 +36,8 @@ trait CommandDeserializerControllerTrait
             new StringLiteral($request->getContent())
         );
 
-        return $this->handleCommand($command);
-    }
+        $this->commandBus->dispatch($command);
 
-    /**
-     * @param mixed $command
-     * @return JsonResponse
-     */
-    private function handleCommand($command)
-    {
-        $commandId = $this->commandBus->dispatch($command);
-
-        return JsonResponse::create(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 }

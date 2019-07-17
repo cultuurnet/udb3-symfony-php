@@ -83,17 +83,14 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 '301A7905-D329-49DD-8F2F-19CE6C3C10D4',
                 '28AB9364-D650-4C6A-BCF5-E918A49025DF'
-            )
-            ->willReturn('8E6C0011-E4A8-4790-BD02-D6B4FF7980B9');
+            );
 
         $response = $this->offerRestBaseController->updateOrganizer(
             '301A7905-D329-49DD-8F2F-19CE6C3C10D4',
             '28AB9364-D650-4C6A-BCF5-E918A49025DF'
         );
 
-        $expectedResponse = new JsonResponse(['commandId' => '8E6C0011-E4A8-4790-BD02-D6B4FF7980B9']);
-
-        $this->assertEquals($expectedResponse, $response);
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -117,8 +114,6 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
 
         $givenRequest = new Request([], [], [], [], [], [], $givenJson);
 
-        $expectedCommandId = '098a117c-a981-4737-a57b-b13d70ecb0f3';
-
         $this->offerEditingService->expects($this->once())
             ->method('updateBookingInfo')
             ->with(
@@ -131,15 +126,9 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
                     \DateTimeImmutable::createFromFormat(\DATE_ATOM, '2018-01-01T00:00:00+01:00'),
                     \DateTimeImmutable::createFromFormat(\DATE_ATOM, '2018-01-31T23:59:59+01:00')
                 )
-            )
-            ->willReturn($expectedCommandId);
+            );
 
-        $expectedResponseBody = ['commandId' => $expectedCommandId];
+        $response = $this->offerRestBaseController->updateBookingInfo($givenRequest, $givenOfferId);
 
-        $actualResponse = $this->offerRestBaseController->updateBookingInfo($givenRequest, $givenOfferId);
-        $actualResponseBody = $actualResponse->getContent();
-        $actualResponseBody = json_decode($actualResponseBody, true);
-
-        $this->assertEquals($expectedResponseBody, $actualResponseBody);
-    }
+        $this->assertEquals(200, $response->getStatusCode());    }
 }

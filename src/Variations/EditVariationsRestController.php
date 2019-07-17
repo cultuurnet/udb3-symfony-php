@@ -11,6 +11,7 @@ use CultuurNet\UDB3\Variations\Command\EditDescriptionJSONDeserializer;
 use CultuurNet\UDB3\Variations\Model\Properties\Id;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\GoneHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -38,7 +39,7 @@ class EditVariationsRestController
     /**
      * @param Request $request
      * @param string $id
-     * @return JsonResponse
+     * @return Response
      */
     public function edit(Request $request, $id)
     {
@@ -56,7 +57,7 @@ class EditVariationsRestController
 
     /**
      * @param string $id
-     * @return JsonResponse
+     * @return Response
      */
     public function delete($id)
     {
@@ -66,7 +67,9 @@ class EditVariationsRestController
             new Id($id)
         );
 
-        return $this->handleCommand($command);
+        $this->commandBus->dispatch($command);
+
+        return new Response();
     }
 
     /**

@@ -248,17 +248,11 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
                         Country::fromNative('BE')
                     )
                 )
-            )
-            ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
+            );
 
         $response = $this->controller->updateMajorInfo($request, $eventId->toNative());
 
-        $expectedResponseContent = json_encode(
-            ["commandId" => "A14DD1C8-0F9C-4633-B56A-A908F009AD94"]
-        );
-
-        $this->assertEquals($expectedResponseContent, $response->getContent());
-    }
+        $this->assertEquals(200, $response->getStatusCode());    }
 
     /**
      * @test
@@ -267,20 +261,16 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $eventId = '7f71ebbd-b22b-4b94-96df-947ad0c1534f';
         $locationId = '9a1fe7fc-4129-4563-aafd-414ef25b2814';
-        $commandId = 'commandId';
 
         $this->eventEditor->expects($this->once())
             ->method('updateLocation')
             ->with(
                 $eventId,
                 new LocationId('9a1fe7fc-4129-4563-aafd-414ef25b2814')
-            )
-            ->willReturn($commandId);
+            );
 
         $response = $this->controller->updateLocation($eventId, $locationId);
 
-        $expectedResponse = json_encode(['commandId' => $commandId]);
-        $this->assertEquals($expectedResponse, $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -290,7 +280,6 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_updates_audience()
     {
         $eventId = new UUID('7f71ebbd-b22b-4b94-96df-947ad0c1534f');
-        $commandId = 'commandId';
         $content = json_encode(['audienceType' => 'education']);
         $request = new Request([], [], [], [], [], [], $content);
 
@@ -299,13 +288,10 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $eventId,
                 new Audience(AudienceType::EDUCATION())
-            )
-            ->willReturn($commandId);
+            );
 
         $response = $this->controller->updateAudience($request, $eventId);
 
-        $expectedResponse = json_encode(['commandId' => $commandId]);
-        $this->assertEquals($expectedResponse, $response->getContent());
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -314,7 +300,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_error_when_updating_audience_but_missing_cdbid()
     {
-        $eventId = null;
+        $eventId = '';
         $content = json_encode(['audienceType' => 'education']);
         $request = new Request([], [], [], [], [], [], $content);
 

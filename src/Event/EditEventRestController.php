@@ -20,6 +20,7 @@ use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class EditEventRestController extends OfferRestBaseController
@@ -148,42 +149,24 @@ class EditEventRestController extends OfferRestBaseController
         return $response;
     }
 
-    /**
-     * Remove an event.
-     *
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function deleteEvent($cdbid)
+    public function deleteEvent($cdbid): Response
     {
-        $response = new JsonResponse();
-
         if (empty($cdbid)) {
             throw new InvalidArgumentException('Required fields are missing');
         }
 
-        $command_id = $this->editor->deleteEvent($cdbid);
-        $response->setData(['commandId' => $command_id]);
+        $this->editor->deleteEvent($cdbid);
 
-        return $response;
+        return new Response();
     }
 
-    /**
-     * Update the major info of an item.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     *
-     * @throws \CultuurNet\Deserializer\DataValidationException
-     */
-    public function updateMajorInfo(Request $request, $cdbid)
+    public function updateMajorInfo(Request $request, string $cdbid): Response
     {
         $majorInfo = $this->majorInfoDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $command_id = $this->editor->updateMajorInfo(
+        $this->editor->updateMajorInfo(
             $cdbid,
             $majorInfo->getTitle(),
             $majorInfo->getType(),
@@ -192,31 +175,20 @@ class EditEventRestController extends OfferRestBaseController
             $majorInfo->getTheme()
         );
 
-        return JsonResponse::create(['commandId' => $command_id]);
+        return new Response();
     }
 
-    /**
-     * @param string $cdbid
-     * @param string $locationId
-     *
-     * @return JsonResponse
-     */
-    public function updateLocation($cdbid, $locationId)
+    public function updateLocation(string $cdbid, string $locationId): Response
     {
-        $commandId = $this->editor->updateLocation(
+        $this->editor->updateLocation(
             $cdbid,
             new LocationId($locationId)
         );
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateAudience(Request $request, $cdbid)
+    public function updateAudience(Request $request, string $cdbid): Response
     {
         if (empty($cdbid)) {
             return new JsonResponse(['error' => 'cdbid is required.'], 400);
@@ -231,17 +203,12 @@ class EditEventRestController extends OfferRestBaseController
             AudienceType::fromNative($bodyAsArray['audienceType'])
         );
 
-        $commandId = $this->editor->updateAudience($cdbid, $audience);
+        $this->editor->updateAudience($cdbid, $audience);
 
-        return JsonResponse::create(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function copyEvent(Request $request, $cdbid)
+    public function copyEvent(Request $request, string $cdbid): JsonResponse
     {
         $copyCalendar = $this->calendarDeserializer->deserialize(
             new StringLiteral($request->getContent())

@@ -13,6 +13,7 @@ use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class EditOfferRestController
@@ -88,196 +89,110 @@ class EditOfferRestController
         $this->facilityDeserializer = $facilityDeserializer;
     }
 
-    /**
-     * @param $cdbid
-     * @param $label
-     * @return JsonResponse
-     */
-    public function addLabel($cdbid, $label)
+    public function addLabel(string $cdbid, string $label): Response
     {
-        $commandId = $this->editService->addLabel(
+        $this->editService->addLabel(
             $cdbid,
             new Label($label)
         );
 
-        return new JsonResponse(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @deprecated
-     *
-     * @param Request $request
-     * @param $cdbid
-     * @return JsonResponse
      */
-    public function addLabelFromJsonBody(Request $request, $cdbid)
+    public function addLabelFromJsonBody(Request $request, string $cdbid): Response
     {
         $json = new StringLiteral($request->getContent());
         $label = $this->labelJsonDeserializer->deserialize($json);
 
-        $commandId = $this->editService->addLabel(
+        $this->editService->addLabel(
             $cdbid,
             $label
         );
 
-        return new JsonResponse(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param $cdbid
-     * @param $label
-     * @return JsonResponse
-     */
-    public function removeLabel($cdbid, $label)
+    public function removeLabel(string $cdbid, string $label): Response
     {
-        $commandId = $this->editService->removeLabel(
+        $this->editService->removeLabel(
             $cdbid,
             new Label($label)
         );
 
-        return new JsonResponse(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @param Request $request
-     * @param $cdbid
-     * @param $lang
-     * @return JsonResponse
-     */
-    public function updateTitle(Request $request, $cdbid, $lang)
+    public function updateTitle(Request $request, string $cdbid, string $lang): Response
     {
         $title = $this->titleJsonDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editService->updateTitle(
+        $this->editService->updateTitle(
             $cdbid,
             new Language($lang),
             $title
         );
 
-        return new JsonResponse(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 
-    /**
-     * @param Request $request
-     * @param $cdbid
-     * @param $lang
-     * @return JsonResponse
-     */
-    public function updateDescription(Request $request, $cdbid, $lang)
+    public function updateDescription(Request $request, $cdbid, $lang): Response
     {
         $description = $this->descriptionJsonDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editService->updateDescription(
+        $this->editService->updateDescription(
             $cdbid,
             new Language($lang),
             $description
         );
 
-        return new JsonResponse(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 
-    /**
-     * @param string $cdbid
-     * @param string $typeId
-     *
-     * @return JsonResponse
-     */
-    public function updateType($cdbid, $typeId)
+    public function updateType(string $cdbid, string $typeId): Response
     {
-        $commandId = $this->editService->updateType($cdbid, new StringLiteral($typeId));
-        return new JsonResponse(['commandId' => $commandId]);
+        $this->editService->updateType($cdbid, new StringLiteral($typeId));
+        return new Response();
     }
 
-    /**
-     * @param string $cdbid
-     * @param string $themeId
-     *
-     * @return JsonResponse
-     */
-    public function updateTheme($cdbid, $themeId)
+    public function updateTheme(string $cdbid, string $themeId): Response
     {
-        $commandId = $this->editService->updateTheme($cdbid, new StringLiteral($themeId));
-        return new JsonResponse(['commandId' => $commandId]);
+        $this->editService->updateTheme($cdbid, new StringLiteral($themeId));
+        return new Response();
     }
 
-    /**
-     * Update the facilities.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateFacilities(Request $request, $cdbid)
+    public function updateFacilities(Request $request, string $cdbid): Response
     {
         $facilities = $this->facilityDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editService->updateFacilities($cdbid, $facilities);
+        $this->editService->updateFacilities($cdbid, $facilities);
 
-        return new JsonResponse(['commandId' => $commandId]);
+        return new Response();
     }
 
-    /**
-     * @deprecated use the updateFacilities action instead to prevent unknown facilities from entering the system.
-     *  This method should be gone once III-2414 is completed.
-     *
-     * Update the facilities with labels.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateFacilitiesWithLabel(Request $request, $cdbid)
-    {
-        $body_content = json_decode($request->getContent());
-
-        $facilities = array();
-        foreach ($body_content->facilities as $facility) {
-            $facilities[] = new Facility($facility->id, $facility->label);
-        }
-
-        $commandId = $this->editService->updateFacilities($cdbid, $facilities);
-
-        return new JsonResponse(['commandId' => $commandId]);
-    }
-
-    /**
-     * @param Request $request
-     * @param string $cdbid
-     *
-     * @return JsonResponse
-     */
-    public function updateCalendar(Request $request, $cdbid)
+    public function updateCalendar(Request $request, string $cdbid): Response
     {
         $calendar = $this->calendarJsonDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editService->updateCalendar(
+        $this->editService->updateCalendar(
             $cdbid,
             $calendar
         );
 
-        return new JsonResponse(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 
-    /**
-     * @param Request $request
-     * @param $cdbid
-     * @return JsonResponse
-     */
-    public function updatePriceInfo(Request $request, $cdbid)
+    public function updatePriceInfo(Request $request, string $cdbid): Response
     {
         $mainLanguage = null;
         $deserializer = $this->priceInfoJsonDeserializer;
@@ -294,13 +209,11 @@ class EditOfferRestController
 
         $priceInfo = $deserializer->deserialize(new StringLiteral($request->getContent()));
 
-        $commandId = $this->editService->updatePriceInfo(
+        $this->editService->updatePriceInfo(
             $cdbid,
             $priceInfo
         );
 
-        return new JsonResponse(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 }
