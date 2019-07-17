@@ -75,7 +75,7 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_should_create_and_return_a_command_when_updating_an_offer_organization()
+    public function it_should_update_an_offer_organization()
     {
         $this->offerEditingService
             ->expects($this->once())
@@ -96,7 +96,7 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_should_return_a_command_id_when_updating_booking_info()
+    public function it_should_update_booking_info()
     {
         $givenOfferId = 'b125e7b8-08ac-4740-80e1-b502ff716048';
         $givenJson = json_encode(
