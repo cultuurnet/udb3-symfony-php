@@ -6,7 +6,6 @@ use Broadway\CommandHandling\CommandBusInterface;
 use Crell\ApiProblem\ApiProblem;
 use CultuurNet\Deserializer\DeserializerInterface;
 use CultuurNet\UDB3\Label\Services\ReadServiceInterface;
-use CultuurNet\UDB3\Role\Commands\AbstractCommand;
 use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
@@ -100,13 +99,36 @@ class EditRoleRestController
     /**
      * @param Request $request
      * @param $id
-     * @return JsonResponse
+     * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): Response
     {
         $command = $this->updateRoleRequestDeserializer->deserialize($request, $id);
 
-        return $this->commandResponse($command);
+        $this->commandBus->dispatch($command);
+
+        return new Response();
+    }
+
+    /**
+     * @param Request $request
+     * @param string $id
+     * @param string $sapiVersion
+     * @return Response
+     */
+    public function addConstraint(Request $request, string $id, string $sapiVersion): Response
+    {
+        $query = $this->queryJsonDeserializer->deserialize(
+            new StringLiteral($request->getContent())
+        );
+
+        $this->service->addConstraint(
+            new UUID($id),
+            SapiVersion::fromNative($sapiVersion),
+            $query
+        );
+
+        return new Response();
     }
 
     /**
@@ -115,68 +137,41 @@ class EditRoleRestController
      * @param string $sapiVersion
      * @return JsonResponse
      */
-    public function addConstraint(Request $request, string $id, string $sapiVersion): JsonResponse
+    public function updateConstraint(Request $request, string $id, string $sapiVersion): Response
     {
         $query = $this->queryJsonDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->service->addConstraint(
+        $this->service->updateConstraint(
             new UUID($id),
             SapiVersion::fromNative($sapiVersion),
             $query
         );
 
-        return JsonResponse::create(
-            ['commandId' => $commandId]
-        );
-    }
-
-    /**
-     * @param Request $request
-     * @param string $id
-     * @param string $sapiVersion
-     * @return JsonResponse
-     */
-    public function updateConstraint(Request $request, string $id, string $sapiVersion): JsonResponse
-    {
-        $query = $this->queryJsonDeserializer->deserialize(
-            new StringLiteral($request->getContent())
-        );
-
-        $commandId = $this->service->updateConstraint(
-            new UUID($id),
-            SapiVersion::fromNative($sapiVersion),
-            $query
-        );
-
-        return JsonResponse::create(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 
     /**
      * @param string $id
      * @param string $sapiVersion
-     * @return JsonResponse
+     * @return Response
      */
-    public function removeConstraint(string $id, string $sapiVersion): JsonResponse
+    public function removeConstraint(string $id, string $sapiVersion): Response
     {
-        $commandId = $this->service->removeConstraint(
+        $this->service->removeConstraint(
             new UUID($id),
             SapiVersion::fromNative($sapiVersion)
         );
 
-        return JsonResponse::create(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 
     /**
      * @param $id
-     * @return JsonResponse
+     * @return Response
      */
-    public function delete($id)
+    public function delete($id): Response
     {
         $roleId = (string) $id;
 
@@ -184,18 +179,17 @@ class EditRoleRestController
             throw new InvalidArgumentException('Required field roleId is missing');
         }
 
-        $commandId = $this->service->delete(new UUID($roleId));
+        $this->service->delete(new UUID($roleId));
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @param $roleId
      * @param string $permissionKey
-     * @return JsonResponse
+     * @return Response
      */
-    public function addPermission($roleId, $permissionKey)
+    public function addPermission($roleId, $permissionKey): Response
     {
         $roleId = (string) $roleId;
 
@@ -209,21 +203,20 @@ class EditRoleRestController
             throw new InvalidArgumentException('Field permission is invalid.');
         }
 
-        $commandId = $this->service->addPermission(
+        $this->service->addPermission(
             new UUID($roleId),
             Permission::getByName($permissionKey)
         );
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @param $roleId
      * @param string $permissionKey
-     * @return JsonResponse
+     * @return Response
      */
-    public function removePermission($roleId, $permissionKey)
+    public function removePermission($roleId, $permissionKey): Response
     {
         $roleId = (string) $roleId;
 
@@ -237,22 +230,21 @@ class EditRoleRestController
             throw new InvalidArgumentException('Field permission is invalid.');
         }
 
-        $commandId = $this->service->removePermission(
+        $this->service->removePermission(
             new UUID($roleId),
             Permission::getByName($permissionKey)
         );
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @param string $roleId
      * @param string $labelIdentifier
-     * @return JsonResponse
+     * @return Response
      * @throws InvalidArgumentException
      */
-    public function addLabel($roleId, $labelIdentifier)
+    public function addLabel($roleId, $labelIdentifier): Response
     {
         $roleId = (string) $roleId;
         $labelId = $this->getLabelId($labelIdentifier);
@@ -269,19 +261,18 @@ class EditRoleRestController
             throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
         }
 
-        $commandId = $this->service->addLabel($roleId, $labelId);
+        $this->service->addLabel($roleId, $labelId);
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @param string $roleId
      * @param string $labelIdentifier
-     * @return JsonResponse
+     * @return Response
      * @throws InvalidArgumentException
      */
-    public function removeLabel($roleId, $labelIdentifier)
+    public function removeLabel($roleId, $labelIdentifier): Response
     {
         $roleId = (string) $roleId;
         $labelId = $this->getLabelId($labelIdentifier);
@@ -298,19 +289,18 @@ class EditRoleRestController
             throw new InvalidArgumentException('Required field roleId is not a valid uuid.');
         }
 
-        $commandId = $this->service->removeLabel($roleId, $labelId);
+        $this->service->removeLabel($roleId, $labelId);
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @param $roleId
      * @param $userId
-     * @return JsonResponse
+     * @return Response
      * @throws InvalidArgumentException
      */
-    public function addUser($roleId, $userId)
+    public function addUser($roleId, $userId): Response
     {
         $roleId = (string) $roleId;
         $userId = (string) $userId;
@@ -327,19 +317,18 @@ class EditRoleRestController
 
         $userId = new StringLiteral($userId);
 
-        $commandId = $this->service->addUser($roleId, $userId);
+        $this->service->addUser($roleId, $userId);
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
+        return new Response();
     }
 
     /**
      * @param $roleId
      * @param $userId
-     * @return JsonResponse
+     * @return Response
      * @throws InvalidArgumentException
      */
-    public function removeUser($roleId, $userId)
+    public function removeUser($roleId, $userId): Response
     {
         $roleId = (string) $roleId;
         $userId = (string) $userId;
@@ -356,26 +345,9 @@ class EditRoleRestController
 
         $userId = new StringLiteral($userId);
 
-        $commandId = $this->service->removeUser($roleId, $userId);
+        $this->service->removeUser($roleId, $userId);
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $commandId]);
-    }
-
-    /**
-     * Dispatches the command and returns a JsonResponse with its id.
-     *
-     * @param AbstractCommand $command
-     *
-     * @return JsonResponse
-     */
-    private function commandResponse(AbstractCommand $command)
-    {
-        $commandId = $this->commandBus->dispatch($command);
-
-        return JsonResponse::create(
-            ['commandId' => $commandId]
-        );
+        return new Response();
     }
 
     /**

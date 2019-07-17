@@ -104,9 +104,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->create($request);
 
-        $expectedJson = '{"roleId":"' . $roleId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -136,9 +134,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->update($request, $roleId);
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -168,9 +164,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->addConstraint($request, $roleId, $sapiVersion);
 
-        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -200,9 +194,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateConstraint($request, $roleId, $sapiVersion);
 
-        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -220,9 +212,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->removeConstraint($roleId, $sapiVersion);
 
-        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -240,9 +230,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->delete($roleId);
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -269,9 +257,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->addLabel($this->roleId, $this->labelId);
 
-        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -303,9 +289,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->addLabel($this->roleId, $labelName);
 
-        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -340,9 +324,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->removeLabel($this->roleId, $this->labelId);
 
-        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -374,9 +356,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->removeLabel($this->roleId, $labelName);
 
-        $expectedJson = '{"commandId":"' . $this->commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
