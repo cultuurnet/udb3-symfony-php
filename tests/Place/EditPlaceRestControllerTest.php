@@ -210,7 +210,7 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
 
         $response = $this->placeRestController->updateMajorInfo($request, $placeId->toNative());
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -247,7 +247,7 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
 
         $response = $this->placeRestController->updateAddress($request, $placeId, $lang);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

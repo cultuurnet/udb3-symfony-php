@@ -90,7 +90,7 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
             '28AB9364-D650-4C6A-BCF5-E918A49025DF'
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -130,5 +130,5 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->offerRestBaseController->updateBookingInfo($givenRequest, $givenOfferId);
 
-        $this->assertEquals(200, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());    }
 }

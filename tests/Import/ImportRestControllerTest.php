@@ -119,7 +119,7 @@ class ImportRestControllerTest extends TestCase
 
         $expected = json_encode(['mockId' => $id]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
         $this->assertEquals($expected, $response->getContent());
     }
 
@@ -156,7 +156,7 @@ class ImportRestControllerTest extends TestCase
 
         $expected = json_encode(['mockId' => $id]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
         $this->assertEquals($expected, $response->getContent());
     }
 
@@ -194,7 +194,7 @@ class ImportRestControllerTest extends TestCase
 
         $expected = json_encode(['mockId' => $id]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
         $this->assertEquals($expected, $response->getContent());
     }
 
@@ -235,7 +235,7 @@ class ImportRestControllerTest extends TestCase
 
         $expected = json_encode(['mockId' => $generatedId]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
         $this->assertEquals($expected, $response->getContent());
     }
 

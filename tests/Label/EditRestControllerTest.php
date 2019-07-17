@@ -85,7 +85,7 @@ class EditRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->editRestController->patch($request, $this->uuid);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

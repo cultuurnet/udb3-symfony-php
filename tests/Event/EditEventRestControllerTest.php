@@ -252,7 +252,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateMajorInfo($request, $eventId->toNative());
 
-        $this->assertEquals(200, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());    }
 
     /**
      * @test
@@ -271,7 +271,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateLocation($eventId, $locationId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -292,7 +292,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateAudience($request, $eventId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

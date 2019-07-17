@@ -98,7 +98,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->create($request);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -126,7 +126,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->update($request, $roleId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -155,7 +155,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->addConstraint($request, $roleId, $sapiVersion);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -184,7 +184,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateConstraint($request, $roleId, $sapiVersion);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -201,7 +201,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->removeConstraint($roleId, $sapiVersion);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -217,7 +217,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->delete($roleId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -243,7 +243,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->addLabel($this->roleId, $this->labelId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -274,7 +274,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->addLabel($this->roleId, $labelName);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -308,7 +308,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->removeLabel($this->roleId, $this->labelId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -339,7 +339,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->removeLabel($this->roleId, $labelName);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
