@@ -16,6 +16,7 @@ use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\CreateEventJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Event\MajorInfoJSONDeserializer;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -157,7 +158,7 @@ class EditEventRestController extends OfferRestBaseController
 
         $this->editor->deleteEvent($cdbid);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateMajorInfo(Request $request, string $cdbid): Response
@@ -175,7 +176,7 @@ class EditEventRestController extends OfferRestBaseController
             $majorInfo->getTheme()
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateLocation(string $cdbid, string $locationId): Response
@@ -185,7 +186,7 @@ class EditEventRestController extends OfferRestBaseController
             new LocationId($locationId)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateAudience(Request $request, string $cdbid): Response
@@ -205,7 +206,7 @@ class EditEventRestController extends OfferRestBaseController
 
         $this->editor->updateAudience($cdbid, $audience);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function copyEvent(Request $request, string $cdbid): JsonResponse

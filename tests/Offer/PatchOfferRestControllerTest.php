@@ -60,7 +60,7 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
 
         $response = $controller->handle($request, $this->itemId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     public function commandRequestDataProvider()
@@ -179,7 +179,7 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
 
         $response = $controller->handle($request, $this->itemId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

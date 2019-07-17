@@ -126,7 +126,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->controller
             ->addLabel($cdbid, $label);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -161,7 +161,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->controller
             ->addLabelFromJsonBody($request, $cdbid);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -182,7 +182,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->controller
             ->removeLabel($cdbid, $label);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -228,7 +228,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->controller
             ->updatePriceInfo($request, $cdbid);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -251,7 +251,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->controller
             ->updateDescription($request, 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0', 'nl');
 
-        $this->assertEquals(200, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());    }
 
     /**
      * @test
@@ -278,7 +278,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->controller
             ->updateCalendar($request, $eventId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -301,7 +301,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
                 'CEFFE9F0-AD3C-446B-838A-0E309843C5E1'
             );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -323,7 +323,7 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
                 '6B22AC5E-83AF-4590-91C9-91B4D66426CD'
             );
 
-        $this->assertEquals(200, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());    }
 
     /**
      * @test
@@ -365,6 +365,6 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateFacilities($request, $placeId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

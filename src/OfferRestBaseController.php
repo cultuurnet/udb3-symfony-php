@@ -7,11 +7,10 @@ use CultuurNet\UDB3\ContactPoint;
 use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Offer\AgeRange;
-use CultuurNet\UDB3\Offer\InvalidAgeRangeException;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\BookingInfo\BookingInfoJSONDeserializer;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,21 +71,21 @@ abstract class OfferRestBaseController
 
         $this->editor->updateTypicalAgeRange($cdbid, $ageRange);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function deleteTypicalAgeRange(string $cdbid)
     {
         $this->editor->deleteTypicalAgeRange($cdbid);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateOrganizer(string $cdbid, string $organizerId): Response
     {
         $this->editor->updateOrganizer($cdbid, $organizerId);
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -103,14 +102,14 @@ abstract class OfferRestBaseController
 
         $this->editor->updateOrganizer($cdbid, $body_content->organizer);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function deleteOrganizer(string $cdbid, string $organizerId): Response
     {
         $this->editor->deleteOrganizer($cdbid, $organizerId);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateContactPoint(Request $request, string $cdbid): Response
@@ -134,7 +133,7 @@ abstract class OfferRestBaseController
             )
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateBookingInfo(Request $request, string $cdbid): Response
@@ -144,7 +143,7 @@ abstract class OfferRestBaseController
 
         $this->editor->updateBookingInfo($cdbid, $bookingInfo);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function addImage(Request $request, string $itemId): Response
@@ -159,7 +158,7 @@ abstract class OfferRestBaseController
 
         $this->editor->addImage($itemId, $imageId);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function selectMainImage(Request $request, string $itemId): Response
@@ -177,7 +176,7 @@ abstract class OfferRestBaseController
 
         $this->editor->selectMainImage($itemId, $image);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateImage(Request $request, string $itemId, string $mediaObjectId): Response
@@ -198,7 +197,7 @@ abstract class OfferRestBaseController
             $copyrightHolder
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function removeImage(string $itemId, string $mediaObjectId): Response
@@ -211,6 +210,6 @@ abstract class OfferRestBaseController
 
         $this->editor->removeImage($itemId, $image);
 
-        return new Response();
+        return new NoContent();
     }
 }

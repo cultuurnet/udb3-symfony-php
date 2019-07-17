@@ -5,6 +5,7 @@ namespace CultuurNet\UDB3\Symfony\SavedSearches;
 use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\SavedSearches\Command\SubscribeToSavedSearchJSONDeserializer;
 use CultuurNet\UDB3\SavedSearches\Command\UnsubscribeFromSavedSearch;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use CultuurNet\UDB3\ValueObject\SapiVersion;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,7 +48,7 @@ class EditSavedSearchesRestController
 
         $this->commandBus->dispatch($command);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function delete(string $sapiVersion, string $id): Response
@@ -60,6 +61,6 @@ class EditSavedSearchesRestController
 
         $this->commandBus->dispatch($command);
 
-        return new Response();
+        return new NoContent();
     }
 }

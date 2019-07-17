@@ -149,7 +149,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -178,7 +178,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -205,7 +205,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -239,7 +239,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -272,7 +272,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -311,7 +311,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -327,7 +327,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->delete($cdbId);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -344,7 +344,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->addLabel($organizerId, $labelName);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -361,7 +361,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->removeLabel($organizerId, $labelName);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

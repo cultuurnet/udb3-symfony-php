@@ -4,7 +4,7 @@ namespace CultuurNet\UDB3\Symfony\Offer;
 
 use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Offer\OfferType;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -60,7 +60,7 @@ class PatchOfferRestController
 
         $this->commandBus->dispatch($command);
 
-        return new Response();
+        return new NoContent();
     }
 
     /**

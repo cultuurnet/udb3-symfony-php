@@ -4,14 +4,12 @@ namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\Deserializer\DeserializerInterface;
 use CultuurNet\UDB3\EntityNotFoundException;
-use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\Offer\ReadModel\MainLanguage\MainLanguageQueryInterface;
-use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -96,7 +94,7 @@ class EditOfferRestController
             new Label($label)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -112,7 +110,7 @@ class EditOfferRestController
             $label
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function removeLabel(string $cdbid, string $label): Response
@@ -122,7 +120,7 @@ class EditOfferRestController
             new Label($label)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateTitle(Request $request, string $cdbid, string $lang): Response
@@ -137,7 +135,7 @@ class EditOfferRestController
             $title
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateDescription(Request $request, $cdbid, $lang): Response
@@ -152,19 +150,19 @@ class EditOfferRestController
             $description
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateType(string $cdbid, string $typeId): Response
     {
         $this->editService->updateType($cdbid, new StringLiteral($typeId));
-        return new Response();
+        return new NoContent();
     }
 
     public function updateTheme(string $cdbid, string $themeId): Response
     {
         $this->editService->updateTheme($cdbid, new StringLiteral($themeId));
-        return new Response();
+        return new NoContent();
     }
 
     public function updateFacilities(Request $request, string $cdbid): Response
@@ -175,7 +173,7 @@ class EditOfferRestController
 
         $this->editService->updateFacilities($cdbid, $facilities);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateCalendar(Request $request, string $cdbid): Response
@@ -189,7 +187,7 @@ class EditOfferRestController
             $calendar
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updatePriceInfo(Request $request, string $cdbid): Response
@@ -214,6 +212,6 @@ class EditOfferRestController
             $priceInfo
         );
 
-        return new Response();
+        return new NoContent();
     }
 }
