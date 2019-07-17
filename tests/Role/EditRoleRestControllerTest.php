@@ -29,11 +29,6 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var string
      */
-    private $commandId;
-
-    /**
-     * @var string
-     */
     private $labelId;
 
     /**
@@ -69,7 +64,6 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->roleId = (new UUID())->toNative();
-        $this->commandId = (new UUID())->toNative();
         $this->labelId = (new UUID())->toNative();
 
         $this->editService = $this->createMock(RoleEditingServiceInterface::class);
@@ -113,7 +107,6 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_updates_a_role()
     {
         $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
-        $commandId = '456';
         $request = $this->makeRequest('PATCH', 'samples/update_role.json');
         $request->headers->set('Content-Type', 'application/ld+json;domain-model=RenameRole');
 
@@ -129,8 +122,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->commandBus->expects($this->once())
             ->method('dispatch')
-            ->with($renameRole)
-            ->willReturn($commandId);
+            ->with($renameRole);
 
         $response = $this->controller->update($request, $roleId);
 
@@ -159,8 +151,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
                 new UUID($roleId),
                 SapiVersion::fromNative($sapiVersion),
                 $constraintQuery
-            )
-            ->willReturn($this->commandId);
+            );
 
         $response = $this->controller->addConstraint($request, $roleId, $sapiVersion);
 
@@ -189,8 +180,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
                 new UUID($roleId),
                 SapiVersion::fromNative($sapiVersion),
                 $constraintQuery
-            )
-            ->willReturn($this->commandId);
+            );
 
         $response = $this->controller->updateConstraint($request, $roleId, $sapiVersion);
 
@@ -207,8 +197,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->editService->expects($this->once())
             ->method('removeConstraint')
-            ->with(new UUID($roleId), SapiVersion::fromNative($sapiVersion))
-            ->willReturn($this->commandId);
+            ->with(new UUID($roleId), SapiVersion::fromNative($sapiVersion));
 
         $response = $this->controller->removeConstraint($roleId, $sapiVersion);
 
@@ -221,12 +210,10 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_deletes_a_role()
     {
         $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
-        $commandId = '456';
 
         $this->editService->expects($this->once())
             ->method('delete')
-            ->with($roleId)
-            ->willReturn($commandId);
+            ->with($roleId);
 
         $response = $this->controller->delete($roleId);
 
@@ -252,8 +239,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 new UUID($this->roleId),
                 new UUID($this->labelId)
-            )
-            ->willReturn($this->commandId);
+            );
 
         $response = $this->controller->addLabel($this->roleId, $this->labelId);
 
@@ -284,8 +270,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 new UUID($this->roleId),
                 new UUID($this->labelId)
-            )
-            ->willReturn($this->commandId);
+            );
 
         $response = $this->controller->addLabel($this->roleId, $labelName);
 
@@ -319,8 +304,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 new UUID($this->roleId),
                 new UUID($this->labelId)
-            )
-            ->willReturn($this->commandId);
+            );
 
         $response = $this->controller->removeLabel($this->roleId, $this->labelId);
 
@@ -351,8 +335,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 new UUID($this->roleId),
                 new UUID($this->labelId)
-            )
-            ->willReturn($this->commandId);
+            );
 
         $response = $this->controller->removeLabel($this->roleId, $labelName);
 
