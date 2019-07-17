@@ -89,7 +89,7 @@ class EditRoleRestController
 
         $response->setData(
             [
-                'roleId' => $roleId
+                'roleId' => $roleId->toNative(),
             ]
         );
 

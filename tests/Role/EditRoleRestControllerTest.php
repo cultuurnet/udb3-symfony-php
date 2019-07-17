@@ -86,7 +86,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_creates_a_role()
     {
-        $roleId = 'd01e0e24-4a8e-11e6-beb8-9e71128cae77';
+        $roleId = new UUID('d01e0e24-4a8e-11e6-beb8-9e71128cae77');
         $roleName = new StringLiteral('roleName');
 
         $request = $this->makeRequest('POST', 'samples/create_role.json');
@@ -98,7 +98,7 @@ class EditRoleRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->create($request);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(['roleId' => $roleId->toNative()], json_decode($response->getContent(), true));
     }
 
     /**
