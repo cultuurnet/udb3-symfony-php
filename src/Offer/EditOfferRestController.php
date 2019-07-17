@@ -4,14 +4,11 @@ namespace CultuurNet\UDB3\Symfony\Offer;
 
 use CultuurNet\Deserializer\DeserializerInterface;
 use CultuurNet\UDB3\EntityNotFoundException;
-use CultuurNet\UDB3\Facility;
 use CultuurNet\UDB3\Label;
 use CultuurNet\UDB3\Language;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\Offer\ReadModel\MainLanguage\MainLanguageQueryInterface;
-use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\PriceInfo\PriceInfoJSONDeserializer;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
