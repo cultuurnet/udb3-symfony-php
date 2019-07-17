@@ -76,7 +76,6 @@ class EditRoleRestController
      */
     public function create(Request $request)
     {
-        $response = new JsonResponse();
         $body_content = json_decode($request->getContent());
 
 
@@ -88,13 +87,7 @@ class EditRoleRestController
             new StringLiteral($body_content->name)
         );
 
-        $response->setData(
-            [
-                'roleId' => $roleId
-            ]
-        );
-
-        return $response;
+        return new JsonResponse(['roleId' => $roleId], 201);
     }
 
     /**
