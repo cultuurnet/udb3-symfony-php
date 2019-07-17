@@ -13,6 +13,7 @@ use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\CreatePlaceJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -150,7 +151,7 @@ class EditPlaceRestController extends OfferRestBaseController
 
         $this->editor->deletePlace($cdbid);
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateMajorInfo(Request $request, string $cdbid): Response
@@ -168,7 +169,7 @@ class EditPlaceRestController extends OfferRestBaseController
             $majorInfo->getTheme()
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateAddress(Request $request, string $cdbid, string $lang): Response
@@ -183,7 +184,7 @@ class EditPlaceRestController extends OfferRestBaseController
             new Language($lang)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function getEvents(string $cdbid): JsonResponse

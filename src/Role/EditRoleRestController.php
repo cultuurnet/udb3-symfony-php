@@ -10,6 +10,7 @@ use CultuurNet\UDB3\Role\Commands\UpdateRoleRequestDeserializer;
 use CultuurNet\UDB3\Role\Services\RoleEditingServiceInterface;
 use CultuurNet\UDB3\Role\ValueObjects\Permission;
 use CultuurNet\UDB3\Symfony\HttpFoundation\ApiProblemJsonResponse;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use CultuurNet\UDB3\ValueObject\SapiVersion;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -107,7 +108,7 @@ class EditRoleRestController
 
         $this->commandBus->dispatch($command);
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -128,7 +129,7 @@ class EditRoleRestController
             $query
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -149,7 +150,7 @@ class EditRoleRestController
             $query
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -164,7 +165,7 @@ class EditRoleRestController
             SapiVersion::fromNative($sapiVersion)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -181,7 +182,7 @@ class EditRoleRestController
 
         $this->service->delete(new UUID($roleId));
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -208,7 +209,7 @@ class EditRoleRestController
             Permission::getByName($permissionKey)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -235,7 +236,7 @@ class EditRoleRestController
             Permission::getByName($permissionKey)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -263,7 +264,7 @@ class EditRoleRestController
 
         $this->service->addLabel($roleId, $labelId);
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -291,7 +292,7 @@ class EditRoleRestController
 
         $this->service->removeLabel($roleId, $labelId);
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -319,7 +320,7 @@ class EditRoleRestController
 
         $this->service->addUser($roleId, $userId);
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -347,7 +348,7 @@ class EditRoleRestController
 
         $this->service->removeUser($roleId, $userId);
 
-        return new Response();
+        return new NoContent();
     }
 
     /**

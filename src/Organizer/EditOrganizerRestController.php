@@ -13,6 +13,7 @@ use CultuurNet\UDB3\Symfony\Deserializer\ContactPoint\ContactPointJSONDeserializ
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\OrganizerCreationPayloadJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Organizer\UrlJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\TitleJSONDeserializer;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,7 +100,7 @@ class EditOrganizerRestController
             throw $e;
         }
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -132,7 +133,7 @@ class EditOrganizerRestController
             empty($lang) ? new Language('nl') : new Language($lang)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     /**
@@ -162,7 +163,7 @@ class EditOrganizerRestController
             new Language($lang)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function updateContactPoint(string $organizerId, Request $request): Response
@@ -178,7 +179,7 @@ class EditOrganizerRestController
             $contactPoint
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function addLabel(string $organizerId, string $labelName): Response
@@ -188,7 +189,7 @@ class EditOrganizerRestController
             new Label($labelName)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function removeLabel($organizerId, $labelName): Response
@@ -198,7 +199,7 @@ class EditOrganizerRestController
             new Label($labelName)
         );
 
-        return new Response();
+        return new NoContent();
     }
 
     public function delete($cdbid): Response
@@ -211,6 +212,6 @@ class EditOrganizerRestController
 
         $this->editingService->delete($cdbid);
 
-        return new Response();
+        return new NoContent();
     }
 }
