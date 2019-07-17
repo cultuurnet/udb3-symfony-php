@@ -130,5 +130,6 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->offerRestBaseController->updateBookingInfo($givenRequest, $givenOfferId);
 
-        $this->assertEquals(204, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());
+    }
 }

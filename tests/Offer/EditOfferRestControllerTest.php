@@ -251,7 +251,8 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->controller
             ->updateDescription($request, 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0', 'nl');
 
-        $this->assertEquals(204, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());
+    }
 
     /**
      * @test
@@ -323,7 +324,8 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
                 '6B22AC5E-83AF-4590-91C9-91B4D66426CD'
             );
 
-        $this->assertEquals(204, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());
+    }
 
     /**
      * @test

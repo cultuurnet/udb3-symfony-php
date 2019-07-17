@@ -252,7 +252,8 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->controller->updateMajorInfo($request, $eventId->toNative());
 
-        $this->assertEquals(204, $response->getStatusCode());    }
+        $this->assertEquals(204, $response->getStatusCode());
+    }
 
     /**
      * @test
