@@ -192,7 +192,6 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
     {
         $placeId = new UUID('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
         $request = new Request([], [], [], [], [], [], $this->getMajorInfoJson());
-        $commandId = 'fc6b8c00-7362-4e69-826d-9a2fc9cc8a2e';
 
         $this->placeEditingService
             ->expects($this->once())
@@ -207,14 +206,11 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
                     new Locality('Leuven'),
                     Country::fromNative('BE')
                 )
-            )
-            ->willReturn('fc6b8c00-7362-4e69-826d-9a2fc9cc8a2e');
+            );
 
         $response = $this->placeRestController->updateMajorInfo($request, $placeId->toNative());
 
-        $expectedResponseContent = json_encode(["commandId" => $commandId]);
-
-        $this->assertEquals($expectedResponseContent, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -236,8 +232,6 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
         $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
         $lang = 'nl';
 
-        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
-
         $this->placeEditingService->expects($this->once())
             ->method('updateAddress')
             ->with(
@@ -249,15 +243,11 @@ class EditPlaceRestControllerTest extends PHPUnit_Framework_TestCase
                     Country::fromNative('BE')
                 ),
                 new Language($lang)
-            )
-            ->willReturn($expectedCommandId);
-
-        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
+            );
 
         $response = $this->placeRestController->updateAddress($request, $placeId, $lang);
-        $actualResponseContent = $response->getContent();
 
-        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

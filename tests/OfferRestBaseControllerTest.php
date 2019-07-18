@@ -75,7 +75,7 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_should_create_and_return_a_command_when_updating_an_offer_organization()
+    public function it_should_update_an_offer_organization()
     {
         $this->offerEditingService
             ->expects($this->once())
@@ -83,23 +83,20 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 '301A7905-D329-49DD-8F2F-19CE6C3C10D4',
                 '28AB9364-D650-4C6A-BCF5-E918A49025DF'
-            )
-            ->willReturn('8E6C0011-E4A8-4790-BD02-D6B4FF7980B9');
+            );
 
         $response = $this->offerRestBaseController->updateOrganizer(
             '301A7905-D329-49DD-8F2F-19CE6C3C10D4',
             '28AB9364-D650-4C6A-BCF5-E918A49025DF'
         );
 
-        $expectedResponse = new JsonResponse(['commandId' => '8E6C0011-E4A8-4790-BD02-D6B4FF7980B9']);
-
-        $this->assertEquals($expectedResponse, $response);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
      */
-    public function it_should_return_a_command_id_when_updating_booking_info()
+    public function it_should_update_booking_info()
     {
         $givenOfferId = 'b125e7b8-08ac-4740-80e1-b502ff716048';
         $givenJson = json_encode(
@@ -117,8 +114,6 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
 
         $givenRequest = new Request([], [], [], [], [], [], $givenJson);
 
-        $expectedCommandId = '098a117c-a981-4737-a57b-b13d70ecb0f3';
-
         $this->offerEditingService->expects($this->once())
             ->method('updateBookingInfo')
             ->with(
@@ -131,15 +126,10 @@ class OfferRestBaseControllerTest extends \PHPUnit_Framework_TestCase
                     \DateTimeImmutable::createFromFormat(\DATE_ATOM, '2018-01-01T00:00:00+01:00'),
                     \DateTimeImmutable::createFromFormat(\DATE_ATOM, '2018-01-31T23:59:59+01:00')
                 )
-            )
-            ->willReturn($expectedCommandId);
+            );
 
-        $expectedResponseBody = ['commandId' => $expectedCommandId];
+        $response = $this->offerRestBaseController->updateBookingInfo($givenRequest, $givenOfferId);
 
-        $actualResponse = $this->offerRestBaseController->updateBookingInfo($givenRequest, $givenOfferId);
-        $actualResponseBody = $actualResponse->getContent();
-        $actualResponseBody = json_decode($actualResponseBody, true);
-
-        $this->assertEquals($expectedResponseBody, $actualResponseBody);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

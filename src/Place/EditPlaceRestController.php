@@ -13,18 +13,15 @@ use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\Address\AddressJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\CreatePlaceJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Place\MajorInfoJSONDeserializer;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use CultuurNet\UDB3\Symfony\OfferRestBaseController;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
-/**
- * Class EditPlaceRestController.
- *
- * @package Drupal\culturefeed_udb3\Controller
- */
 class EditPlaceRestController extends OfferRestBaseController
 {
     /**
@@ -102,28 +99,14 @@ class EditPlaceRestController extends OfferRestBaseController
         $this->addressDeserializer = new AddressJSONDeserializer();
     }
 
-    /**
-     * Creates a json-ld response.
-     *
-     * @return BinaryFileResponse
-     *   The response.
-     */
-    public function placeContext()
+    public function placeContext(): BinaryFileResponse
     {
         $response = new BinaryFileResponse('/udb3/api/1.0/place.jsonld');
         $response->headers->set('Content-Type', 'application/ld+json');
         return $response;
     }
 
-    /**
-     * Create a new place.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     *
-     * @throws \CultuurNet\Deserializer\DataValidationException
-     */
-    public function createPlace(Request $request)
+    public function createPlace(Request $request): JsonResponse
     {
         $majorInfo = $this->createPlaceJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
@@ -160,42 +143,24 @@ class EditPlaceRestController extends OfferRestBaseController
         );
     }
 
-    /**
-     * Remove a place.
-     *
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function deletePlace($cdbid)
+    public function deletePlace(string $cdbid): Response
     {
-        $response = new JsonResponse();
-
         if (empty($cdbid)) {
             throw new InvalidArgumentException('Required fields are missing');
         }
 
-        $command_id = $this->editor->deletePlace($cdbid);
-        $response->setData(['commandId' => $command_id]);
+        $this->editor->deletePlace($cdbid);
 
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Update the major info of an item.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     *
-     * @throws \CultuurNet\Deserializer\DataValidationException
-     */
-    public function updateMajorInfo(Request $request, $cdbid)
+    public function updateMajorInfo(Request $request, string $cdbid): Response
     {
         $majorInfo = $this->majorInfoDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editor->updateMajorInfo(
+        $this->editor->updateMajorInfo(
             $cdbid,
             $majorInfo->getTitle(),
             $majorInfo->getType(),
@@ -204,40 +169,25 @@ class EditPlaceRestController extends OfferRestBaseController
             $majorInfo->getTheme()
         );
 
-        return new JsonResponse(['commandId' => $commandId]);
+        return new NoContent();
     }
 
-    /**
-     * @param Request $request
-     * @param string $cdbid
-     * @param string $lang
-     * @return JsonResponse
-     *
-     * @throws \CultuurNet\Deserializer\DataValidationException
-     */
-    public function updateAddress(Request $request, $cdbid, $lang)
+    public function updateAddress(Request $request, string $cdbid, string $lang): Response
     {
         $address = $this->addressDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
 
-        $commandId = $this->editor->updateAddress(
+        $this->editor->updateAddress(
             $cdbid,
             $address,
             new Language($lang)
         );
 
-        return new JsonResponse(['commandId' => $commandId]);
+        return new NoContent();
     }
 
-    /**
-     * Get the events for a given place.
-     *
-     * @param string $cdbid
-     *
-     * @return JsonResponse
-     */
-    public function getEvents($cdbid)
+    public function getEvents(string $cdbid): JsonResponse
     {
         $response = new JsonResponse();
 
