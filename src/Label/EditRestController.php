@@ -42,7 +42,7 @@ class EditRestController
             Privacy::fromNative($bodyAsArray['privacy'])
         );
 
-        return new JsonResponse(['uuid' => $uuid->toNative()]);
+        return new JsonResponse(['uuid' => $uuid->toNative()], 201);
     }
 
     public function patch(Request $request, string $id): Response

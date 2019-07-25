@@ -75,7 +75,8 @@ class EditOrganizerRestController
             [
                 'organizerId' => $organizerId,
                 'url' => $this->iriGenerator->iri($organizerId),
-            ]
+            ],
+            201
         );
     }
 

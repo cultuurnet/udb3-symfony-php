@@ -42,7 +42,6 @@ class EditMediaRestController
             return new JsonResponse(['error' => "language required"], 400);
         }
 
-        $response = new JsonResponse();
         $file = $request->files->get('file');
 
         $imageId = $this->imageUploader->upload(
@@ -52,12 +51,11 @@ class EditMediaRestController
             new Language($language)
         );
 
-        $response->setData(
+        return new JsonResponse(
             [
                 'imageId' => $imageId->toNative(),
-            ]
+            ],
+            201
         );
-
-        return $response;
     }
 }

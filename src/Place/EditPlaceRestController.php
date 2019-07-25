@@ -139,7 +139,8 @@ class EditPlaceRestController extends OfferRestBaseController
             [
                 'placeId' => $place_id,
                 'url' => $this->iriGenerator->iri($place_id),
-            ]
+            ],
+            201
         );
     }
 
