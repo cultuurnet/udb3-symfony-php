@@ -48,7 +48,7 @@ class EditSavedSearchesRestController
 
         $this->commandBus->dispatch($command);
 
-        return new NoContent();
+        return new Response('', 201);
     }
 
     public function delete(string $sapiVersion, string $id): Response

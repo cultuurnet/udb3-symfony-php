@@ -2,6 +2,7 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
+use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\UDB3\ApiGuard\ApiKey\Reader\ApiKeyReaderInterface;
 use CultuurNet\UDB3\ApiGuard\Consumer\ConsumerReadRepositoryInterface;
 use CultuurNet\UDB3\ApiGuard\Consumer\Specification\ConsumerSpecificationInterface;
@@ -101,18 +102,8 @@ class EditEventRestController extends OfferRestBaseController
         );
     }
 
-    /**
-     * Create a new event.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     *
-     * @throws \CultuurNet\Deserializer\DataValidationException
-     */
-    public function createEvent(Request $request)
+    public function createEvent(Request $request): JsonResponse
     {
-        $response = new JsonResponse();
-
         $createEvent = $this->createEventJSONDeserializer->deserialize(
             new StringLiteral($request->getContent())
         );
@@ -140,14 +131,13 @@ class EditEventRestController extends OfferRestBaseController
             $createEvent->getTheme()
         );
 
-        $response->setData(
+        return new JsonResponse(
             [
                 'eventId' => $eventId,
                 'url' => $this->iriGenerator->iri($eventId)
-            ]
+            ],
+            201
         );
-
-        return $response;
     }
 
     public function deleteEvent($cdbid): Response
