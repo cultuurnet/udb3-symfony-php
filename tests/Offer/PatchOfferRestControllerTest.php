@@ -52,10 +52,6 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
     ) {
         $controller = new PatchOfferRestController($offerType, $this->commandBus);
 
-        $expectedResponse = new JsonResponse([
-            'commandId' =>  '6a9762dc-f0d6-400d-b097-00ada39a76e2'
-        ]);
-
         $this->commandBus
             ->expects($this->once())
             ->method('dispatch')
@@ -64,7 +60,7 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
 
         $response = $controller->handle($request, $this->itemId);
 
-        $this->assertEquals($expectedResponse->getContent(), $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     public function commandRequestDataProvider()
@@ -162,10 +158,6 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
             'application/ld+json;domain-model=Publish'
         );
 
-        $expectedResponse = new JsonResponse([
-            'commandId' =>  '6a9762dc-f0d6-400d-b097-00ada39a76e2'
-        ]);
-
         $beforeDate = new \DateTime();
 
         $this->commandBus
@@ -185,9 +177,9 @@ class PatchOfferRestControllerTest extends PHPUnit_Framework_TestCase
                 return '6a9762dc-f0d6-400d-b097-00ada39a76e2';
             });
 
-        $actualResponse = $controller->handle($request, $this->itemId);
+        $response = $controller->handle($request, $this->itemId);
 
-        $this->assertEquals($expectedResponse->getContent(), $actualResponse->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

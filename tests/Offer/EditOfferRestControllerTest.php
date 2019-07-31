@@ -116,23 +116,17 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $label = 'test label';
         $cdbid = 'c6ff4c27-bdbb-452f-a1b5-d9e2e3aa846c';
 
-        $commandId = 'f9989e43-d14d-4a28-9092-34d7cd1a71fd';
-
         $this->editService->expects($this->once())
             ->method('addLabel')
             ->with(
                 $cdbid,
                 $label
-            )
-            ->willReturn($commandId);
+            );
 
-        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+        $response = $this->controller
+            ->addLabel($cdbid, $label);
 
-        $actualResponseContent = $this->controller
-            ->addLabel($cdbid, $label)
-            ->getContent();
-
-        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -157,23 +151,17 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $json = new StringLiteral($data);
         $expectedLabel = $this->labelDeserializer->deserialize($json);
 
-        $commandId = 'f9989e43-d14d-4a28-9092-34d7cd1a71fd';
-
         $this->editService->expects($this->once())
             ->method('addLabel')
             ->with(
                 $cdbid,
                 $expectedLabel
-            )
-            ->willReturn($commandId);
+            );
 
-        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+        $response = $this->controller
+            ->addLabelFromJsonBody($request, $cdbid);
 
-        $actualResponseContent = $this->controller
-            ->addLabelFromJsonBody($request, $cdbid)
-            ->getContent();
-
-        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -184,23 +172,17 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $label = 'test label';
         $cdbid = 'c6ff4c27-bdbb-452f-a1b5-d9e2e3aa846c';
 
-        $commandId = 'f9989e43-d14d-4a28-9092-34d7cd1a71fd';
-
         $this->editService->expects($this->once())
             ->method('removeLabel')
             ->with(
                 $cdbid,
                 $label
-            )
-            ->willReturn($commandId);
+            );
 
-        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+        $response = $this->controller
+            ->removeLabel($cdbid, $label);
 
-        $actualResponseContent = $this->controller
-            ->removeLabel($cdbid, $label)
-            ->getContent();
-
-        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -236,29 +218,23 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
         $expectedPriceInfo = (new PriceInfo($expectedBasePrice))
             ->withExtraTariff($expectedTariff);
 
-        $commandId = 'f9989e43-d14d-4a28-9092-34d7cd1a71fd';
-
         $this->editService->expects($this->once())
             ->method('updatePriceInfo')
             ->with(
                 $cdbid,
                 $expectedPriceInfo
-            )
-            ->willReturn($commandId);
+            );
 
-        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
+        $response = $this->controller
+            ->updatePriceInfo($request, $cdbid);
 
-        $actualResponseContent = $this->controller
-            ->updatePriceInfo($request, $cdbid)
-            ->getContent();
-
-        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
      */
-    public function it_should_use_the_editing_service_and_return_command_id_when_updating_offer_description_by_lang()
+    public function it_updates_the_offer_description_by_lang()
     {
         $descriptionData = '{"description": "nieuwe beschrijving"}';
 
@@ -270,22 +246,18 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
                 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0',
                 new Language('nl'),
                 new Description('nieuwe beschrijving')
-            )
-            ->willReturn('3390051C-3071-4917-896D-AA0B792392C0');
+            );
 
-        $responseContent = $this->controller
-            ->updateDescription($request, 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0', 'nl')
-            ->getContent();
+        $response = $this->controller
+            ->updateDescription($request, 'EC545F35-C76E-4EFC-8AB0-5024DA866CA0', 'nl');
 
-        $expectedResponseContent = '{"commandId":"3390051C-3071-4917-896D-AA0B792392C0"}';
-
-        $this->assertEquals($expectedResponseContent, $responseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
      */
-    public function it_handles_updating_calendar()
+    public function it_updates_the_calendar_info()
     {
         $eventId = '0f4ea9ad-3681-4f3b-adc2-4b8b00dd845a';
 
@@ -302,22 +274,18 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $eventId,
                 $calendar
-            )
-            ->willReturn('commandId');
+            );
 
-        $responseContent = $this->controller
-            ->updateCalendar($request, $eventId)
-            ->getContent();
+        $response = $this->controller
+            ->updateCalendar($request, $eventId);
 
-        $expectedResponseContent = '{"commandId":"commandId"}';
-
-        $this->assertEquals($expectedResponseContent, $responseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
      */
-    public function it_should_return_a_command_id_when_updating_theme_by_id()
+    public function it_updates_the_theme_by_id()
     {
         $this->editService
             ->expects($this->once())
@@ -328,21 +296,19 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             )
             ->willReturn('EBFF0B3A-0401-4C4D-A355-D326C8A4F31A');
 
-        $responseContent = $this->controller
+        $response = $this->controller
             ->updateTheme(
                 'B904CD9E-0125-473E-ADDB-EC5E7ED12875',
                 'CEFFE9F0-AD3C-446B-838A-0E309843C5E1'
-            )
-            ->getContent();
+            );
 
-        $expectedResponseContent = '{"commandId":"EBFF0B3A-0401-4C4D-A355-D326C8A4F31A"}';
-        $this->assertEquals($expectedResponseContent, $responseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
      */
-    public function it_should_return_a_command_id_when_updating_type_by_id()
+    public function it_updates_the_type_by_id()
     {
         $this->editService
             ->expects($this->once())
@@ -350,24 +316,21 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 'BA403978-7378-41F7-A416-C5D2155D6EDE',
                 new StringLiteral('6B22AC5E-83AF-4590-91C9-91B4D66426CD')
-            )
-            ->willReturn('2B7D4F57-A813-4C4F-8B32-EA7091A0FF1B');
+            );
 
-        $responseContent = $this->controller
+        $response = $this->controller
             ->updateType(
                 'BA403978-7378-41F7-A416-C5D2155D6EDE',
                 '6B22AC5E-83AF-4590-91C9-91B4D66426CD'
-            )
-            ->getContent();
+            );
 
-        $expectedResponseContent = '{"commandId":"2B7D4F57-A813-4C4F-8B32-EA7091A0FF1B"}';
-        $this->assertEquals($expectedResponseContent, $responseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
      */
-    public function it_should_update_the_facilities_of_a_place()
+    public function it_updates_the_facilities_of_a_place()
     {
         $json = json_encode(
             [
@@ -390,8 +353,6 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
 
-        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
-
         $this->facilitiesJSONDeserializer->expects($this->once())
             ->method('deserialize')
             ->with(new StringLiteral($json))
@@ -402,65 +363,10 @@ class EditOfferRestControllerTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $placeId,
                 $facilities
-            )
-            ->willReturn($expectedCommandId);
-
-        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
+            );
 
         $response = $this->controller->updateFacilities($request, $placeId);
-        $actualResponseContent = $response->getContent();
 
-        $this->assertEquals($expectedResponseContent, $actualResponseContent);
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_update_the_facilities_of_a_place_when_sent_with_labels()
-    {
-        $json = json_encode(
-            [
-                'facilities' =>
-                    [
-                        [
-                            'id' => '3.23.1.0.0',
-                            'label' => 'Voorzieningen voor rolstoelgebruikers'
-                        ],
-                        [
-                            'id' => '3.23.2.0.0',
-                            'label' => 'Assistentie'
-                        ],
-                        [
-                            'id' => '3.23.3.0.0',
-                            'label' => 'Rolstoel ter beschikking'
-                        ],
-                    ]
-            ]
-        );
-
-        $request = new Request([], [], [], [], [], [], $json);
-
-        $placeId = '6645274f-d969-4d70-865e-3ec799db9624';
-
-        $expectedCommandId = 'b17dd484-dbf6-4b77-a00c-90cf919f929b';
-
-        $this->editService->expects($this->once())
-            ->method('updateFacilities')
-            ->with(
-                $placeId,
-                [
-                    new Facility('3.23.1.0.0', 'Voorzieningen voor rolstoelgebruikers'),
-                    new Facility('3.23.2.0.0', 'Assistentie'),
-                    new Facility('3.23.3.0.0', 'Rolstoel ter beschikking'),
-                ]
-            )
-            ->willReturn($expectedCommandId);
-
-        $expectedResponseContent = json_encode(['commandId' => $expectedCommandId]);
-
-        $response = $this->controller->updateFacilitiesWithLabel($request, $placeId);
-        $actualResponseContent = $response->getContent();
-
-        $this->assertEquals($expectedResponseContent, $actualResponseContent);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

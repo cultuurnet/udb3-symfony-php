@@ -133,15 +133,13 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
         $url = Url::fromNative('http://www.depot.be');
-        $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateWebsite')
             ->with(
                 $organizerId,
                 $url
-            )
-            ->willReturn($commandId);
+            );
 
         $content = '{"url":"' . (string) $url . '"}';
         $request = new Request([], [], [], [], [], [], $content);
@@ -151,8 +149,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -163,7 +160,6 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
         $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
         $name = new Title('Le Depot');
         $language = new Language('fr');
-        $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateTitle')
@@ -171,8 +167,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
                 $organizerId,
                 $name,
                 $language
-            )
-            ->willReturn($commandId);
+            );
 
         $content = '{"name":"' . $name->toNative() . '"}';
         $request = new Request([], [], [], [], [], [], $content);
@@ -183,8 +178,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -194,7 +188,6 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     {
         $organizerId = '5e1d6fec-d0ea-4203-b466-7fb9711f3bb9';
         $name = new Title('Het Depot');
-        $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateTitle')
@@ -202,8 +195,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
                 $organizerId,
                 $name,
                 new Language('nl')
-            )
-            ->willReturn($commandId);
+            );
 
         $content = '{"name":"' . $name->toNative() . '"}';
         $request = new Request([], [], [], [], [], [], $content);
@@ -213,13 +205,11 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
-     * @throws DataValidationException
      */
     public function it_updates_address_of_an_organizer()
     {
@@ -230,7 +220,6 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             new Locality('Leuven'),
             Country::fromNative('BE')
         );
-        $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateAddress')
@@ -238,8 +227,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
                 $organizerId,
                 $address,
                 new Language('nl')
-            )
-            ->willReturn($commandId);
+            );
 
         $request = $this->createRequest(
             Request::METHOD_PUT,
@@ -251,8 +239,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -267,7 +254,6 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             new Locality('Leuven'),
             Country::fromNative('BE')
         );
-        $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateAddress')
@@ -275,8 +261,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
                 $organizerId,
                 $address,
                 new Language('nl')
-            )
-            ->willReturn($commandId);
+            );
 
         $request = $this->createRequest(
             Request::METHOD_PUT,
@@ -287,8 +272,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -310,15 +294,13 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
                 "https://www.depot.be"
             ]
         );
-        $commandId = '76f5537992efd02b71304d0d5d86d991';
 
         $this->editService->expects($this->once())
             ->method('updateContactPoint')
             ->with(
                 $organizerId,
                 $contactPoint
-            )
-            ->willReturn($commandId);
+            );
 
         $request = $this->createRequest(
             Request::METHOD_PUT,
@@ -329,8 +311,7 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
             $request
         );
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -339,18 +320,14 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_deletes_an_organizer()
     {
         $cdbId = '123';
-        $commandId = '456';
 
         $this->editService->expects($this->once())
             ->method('delete')
-            ->with($cdbId)
-            ->willReturn($commandId);
+            ->with($cdbId);
 
         $response = $this->controller->delete($cdbId);
 
-        $expectedJson = '{"commandId":"' . $commandId . '"}';
-
-        $this->assertEquals($expectedJson, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -359,18 +336,15 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_adds_a_label()
     {
         $organizerId = 'organizerId';
-        $labelName = '2dotstwice';
-        $commandId = 'commandId';
+        $labelName = 'publiq';
 
         $this->editService->expects($this->once())
             ->method('addLabel')
-            ->with($organizerId, $labelName)
-            ->willReturn($commandId);
+            ->with($organizerId, $labelName);
 
         $response = $this->controller->addLabel($organizerId, $labelName);
 
-        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedResponseContent, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -379,18 +353,15 @@ class EditOrganizerRestControllerTest extends \PHPUnit_Framework_TestCase
     public function it_removes_a_label()
     {
         $organizerId = 'organizerId';
-        $labelName = '2dotstwice';
-        $commandId = 'commandId';
+        $labelName = 'publiq';
 
         $this->editService->expects($this->once())
             ->method('removeLabel')
-            ->with($organizerId, $labelName)
-            ->willReturn($commandId);
+            ->with($organizerId, $labelName);
 
         $response = $this->controller->removeLabel($organizerId, $labelName);
 
-        $expectedResponseContent = '{"commandId":"' . $commandId . '"}';
-        $this->assertEquals($expectedResponseContent, $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**

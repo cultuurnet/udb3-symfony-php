@@ -127,21 +127,15 @@ class EditMediaRestControllerTest extends \PHPUnit_Framework_TestCase
         );
 
         $imageId = new UUID('08d9df2e-091d-4f65-930b-00f565a9158f');
-        $jobId = '9691CCF6-7D9F-499F-A97C-4E50ACB8BB7E';
-        $imageUploadResult = new ImageUploadResult(
-            $imageId,
-            $jobId
-        );
 
         $this->imageUploader
             ->expects($this->once())
             ->method('upload')
-            ->willReturn($imageUploadResult);
+            ->willReturn($imageId);
 
         $response = $this->controller->upload($uploadRequest);
 
         $expectedResponseContent = json_encode([
-            'commandId' => $jobId,
             'imageId' => $imageId->toNative(),
         ]);
 

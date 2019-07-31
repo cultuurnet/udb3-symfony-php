@@ -4,8 +4,9 @@ namespace CultuurNet\UDB3\Symfony\Offer;
 
 use Broadway\CommandHandling\CommandBusInterface;
 use CultuurNet\UDB3\Offer\OfferType;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class PatchOfferRestController
@@ -35,13 +36,7 @@ class PatchOfferRestController
         $this->commandBus = $commandBus;
     }
 
-    /**
-     * @param Request $request
-     * @param $cdbid
-     * @return JsonResponse
-     * @throws \Exception
-     */
-    public function handle(Request $request, $cdbid)
+    public function handle(Request $request, string $cdbid): Response
     {
         $domainModel = $this->parseDomainModelNameFromRequest($request);
         $commandClass = 'CultuurNet\UDB3\\' . $this->offerType->getValue() . '\Commands\Moderation\\' . $domainModel;
@@ -63,9 +58,9 @@ class PatchOfferRestController
             $command = new $commandClass($cdbid);
         }
 
-        return new JsonResponse([
-            'commandId' => $this->commandBus->dispatch($command)
-        ]);
+        $this->commandBus->dispatch($command);
+
+        return new NoContent();
     }
 
     /**

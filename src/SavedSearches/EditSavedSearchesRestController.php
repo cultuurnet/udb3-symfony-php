@@ -3,12 +3,12 @@
 namespace CultuurNet\UDB3\Symfony\SavedSearches;
 
 use Broadway\CommandHandling\CommandBusInterface;
-use CultuurNet\UDB3\SavedSearches\Command\SavedSearchCommand;
 use CultuurNet\UDB3\SavedSearches\Command\SubscribeToSavedSearchJSONDeserializer;
 use CultuurNet\UDB3\SavedSearches\Command\UnsubscribeFromSavedSearch;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use CultuurNet\UDB3\ValueObject\SapiVersion;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class EditSavedSearchesRestController
@@ -35,12 +35,7 @@ class EditSavedSearchesRestController
         $this->commandBus = $commandBus;
     }
 
-    /**
-     * @param Request $request
-     * @param string $sapiVersion
-     * @return JsonResponse
-     */
-    public function save(Request $request, string $sapiVersion)
+    public function save(Request $request, string $sapiVersion): Response
     {
         $commandDeserializer = new SubscribeToSavedSearchJSONDeserializer(
             SapiVersion::fromNative($sapiVersion),
@@ -51,16 +46,12 @@ class EditSavedSearchesRestController
             new StringLiteral($request->getContent())
         );
 
-        return $this->commandResponse($command);
+        $this->commandBus->dispatch($command);
+
+        return new Response('', 201);
     }
 
-    /**
-     * @param string $sapiVersion
-     * @param string $id
-     *
-     * @return JsonResponse
-     */
-    public function delete(string $sapiVersion, string $id)
+    public function delete(string $sapiVersion, string $id): Response
     {
         $command = new UnsubscribeFromSavedSearch(
             SapiVersion::fromNative($sapiVersion),
@@ -68,22 +59,8 @@ class EditSavedSearchesRestController
             new StringLiteral($id)
         );
 
-        return $this->commandResponse($command);
-    }
+        $this->commandBus->dispatch($command);
 
-    /**
-     * Dispatches the command and returns a JsonResponse with its id.
-     *
-     * @param SavedSearchCommand $command
-     *
-     * @return JsonResponse
-     */
-    private function commandResponse(SavedSearchCommand $command)
-    {
-        $commandId = $this->commandBus->dispatch($command);
-
-        return JsonResponse::create(
-            ['commandId' => $commandId]
-        );
+        return new NoContent();
     }
 }

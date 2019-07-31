@@ -10,9 +10,10 @@ use CultuurNet\UDB3\Offer\AgeRange;
 use CultuurNet\UDB3\Offer\OfferEditingServiceInterface;
 use CultuurNet\UDB3\Place\PlaceEditingServiceInterface;
 use CultuurNet\UDB3\Symfony\Deserializer\BookingInfo\BookingInfoJSONDeserializer;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use CultuurNet\UDB3\Symfony\HttpFoundation\NoContent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -57,42 +58,7 @@ abstract class OfferRestBaseController
         $this->bookingInfoDeserializer = $bookingInfoDeserializer;
     }
 
-    /**
-     * Update the description property.
-     *
-     * @todo The call to OfferEditingServiceInterface::updateDescription() is broken. Is this still used?
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateDescription(Request $request, $cdbid)
-    {
-        $response = new JsonResponse();
-        $body_content = json_decode($request->getContent());
-
-        if (!isset($body_content->description)) {
-            return new JsonResponse(['error' => "description required"], 400);
-        }
-
-        $command_id = $this->editor->updateDescription(
-            $cdbid,
-            $body_content->description
-        );
-
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
-    }
-
-    /**
-     * Update the typicalAgeRange property.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateTypicalAgeRange(Request $request, $cdbid)
+    public function updateTypicalAgeRange(Request $request, string $cdbid): Response
     {
         $body_content = json_decode($request->getContent());
 
@@ -101,57 +67,31 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "typicalAgeRange required"], 400);
         }
 
-        $response = new JsonResponse();
         $ageRange = AgeRange::fromString($body_content->typicalAgeRange);
 
-        $command_id = $this->editor->updateTypicalAgeRange($cdbid, $ageRange);
-        $response->setData(['commandId' => $command_id]);
+        $this->editor->updateTypicalAgeRange($cdbid, $ageRange);
 
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Delete the typicalAgeRange property.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function deleteTypicalAgeRange(Request $request, $cdbid)
+    public function deleteTypicalAgeRange(string $cdbid)
     {
-        $response = new JsonResponse();
+        $this->editor->deleteTypicalAgeRange($cdbid);
 
-        $command_id = $this->editor->deleteTypicalAgeRange($cdbid);
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Update the organizer property.
-     *
-     * @param string $cdbid
-     * @param string $organizerId
-     * @return JsonResponse
-     */
-    public function updateOrganizer($cdbid, $organizerId)
+    public function updateOrganizer(string $cdbid, string $organizerId): Response
     {
-        $response = new JsonResponse();
+        $this->editor->updateOrganizer($cdbid, $organizerId);
 
-        $command_id = $this->editor->updateOrganizer($cdbid, $organizerId);
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
+        return new NoContent();
     }
 
     /**
      * @deprecated
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
      */
-    public function updateOrganizerFromJsonBody(Request $request, $cdbid)
+    public function updateOrganizerFromJsonBody(Request $request, string $cdbid): Response
     {
         $body_content = json_decode($request->getContent());
 
@@ -160,39 +100,19 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "organizer required"], 400);
         }
 
-        $response = new JsonResponse();
+        $this->editor->updateOrganizer($cdbid, $body_content->organizer);
 
-        $command_id = $this->editor->updateOrganizer($cdbid, $body_content->organizer);
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Delete the given organizer.
-     *
-     * @param string $cdbid
-     * @param string $organizerId
-     * @return JsonResponse
-     */
-    public function deleteOrganizer($cdbid, $organizerId)
+    public function deleteOrganizer(string $cdbid, string $organizerId): Response
     {
-        $response = new JsonResponse();
+        $this->editor->deleteOrganizer($cdbid, $organizerId);
 
-        $command_id = $this->editor->deleteOrganizer($cdbid, $organizerId);
-        $response->setData(['commandId' => $command_id]);
-
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Update the contactPoint.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateContactPoint(Request $request, $cdbid)
+    public function updateContactPoint(Request $request, string $cdbid): Response
     {
         $body_content = json_decode($request->getContent());
 
@@ -204,9 +124,7 @@ abstract class OfferRestBaseController
             return new JsonResponse(['error' => "contactPoint and his properties required"], 400);
         }
 
-        $response = new JsonResponse();
-
-        $command_id = $this->editor->updateContactPoint(
+        $this->editor->updateContactPoint(
             $cdbid,
             new ContactPoint(
                 $body_content->contactPoint->phone,
@@ -214,36 +132,21 @@ abstract class OfferRestBaseController
                 $body_content->contactPoint->url
             )
         );
-        $response->setData(['commandId' => $command_id]);
 
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Update the bookingInfo.
-     *
-     * @param Request $request
-     * @param string $cdbid
-     * @return JsonResponse
-     */
-    public function updateBookingInfo(Request $request, $cdbid)
+    public function updateBookingInfo(Request $request, string $cdbid): Response
     {
         $body = (string) $request->getContent();
         $bookingInfo = $this->bookingInfoDeserializer->deserialize(new StringLiteral($body));
 
-        $command_id = $this->editor->updateBookingInfo($cdbid, $bookingInfo);
+        $this->editor->updateBookingInfo($cdbid, $bookingInfo);
 
-        return (new JsonResponse())
-            ->setData(['commandId' => $command_id]);
+        return new NoContent();
     }
 
-    /**
-     * Add an image.
-     *
-     * @param Request $request
-     * @param string $itemId
-     */
-    public function addImage(Request $request, $itemId)
+    public function addImage(Request $request, string $itemId): Response
     {
         $body_content = json_decode($request->getContent());
         if (empty($body_content->mediaObjectId)) {
@@ -253,20 +156,12 @@ abstract class OfferRestBaseController
         // @todo Validate that this id exists and is in fact an image and not a different type of media object
         $imageId = new UUID($body_content->mediaObjectId);
 
-        $response = new JsonResponse();
-        $commandId = $this->editor->addImage($itemId, $imageId);
-        $response->setData(['commandId' => $commandId]);
+        $this->editor->addImage($itemId, $imageId);
 
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Select the main image for an item.
-     *
-     * @param Request $request
-     * @param string $itemId
-     */
-    public function selectMainImage(Request $request, $itemId)
+    public function selectMainImage(Request $request, string $itemId): Response
     {
         $body_content = json_decode($request->getContent());
         if (empty($body_content->mediaObjectId)) {
@@ -279,21 +174,12 @@ abstract class OfferRestBaseController
         // Also, can we be sure that the given $mediaObjectId points to an image and not a different type?
         $image = $this->mediaManager->getImage($mediaObjectId);
 
-        $response = new JsonResponse();
-        $commandId = $this->editor->selectMainImage($itemId, $image);
-        $response->setData(['commandId' => $commandId]);
+        $this->editor->selectMainImage($itemId, $image);
 
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Update an image.
-     *
-     * @param Request $request
-     * @param string $itemId
-     * @param string $mediaObjectId
-     */
-    public function updateImage(Request $request, $itemId, $mediaObjectId)
+    public function updateImage(Request $request, string $itemId, string $mediaObjectId): Response
     {
         $body_content = json_decode($request->getContent());
         $description = new StringLiteral($body_content->description);
@@ -304,27 +190,17 @@ abstract class OfferRestBaseController
         // Also, can we be sure that the given $mediaObjectId points to an image and not a different type?
         $image = $this->mediaManager->getImage($imageId);
 
-        $commandId = $this->editor->updateImage(
+        $this->editor->updateImage(
             $itemId,
             $image,
             $description,
             $copyrightHolder
         );
 
-        $response = new JsonResponse();
-        $response->setData(['commandId' => $commandId]);
-
-        return $response;
+        return new NoContent();
     }
 
-    /**
-     * Remove an image from an item by id.
-     *
-     * @param Request $request
-     * @param string $itemId
-     * @param string $mediaObjectId
-     */
-    public function removeImage($itemId, $mediaObjectId)
+    public function removeImage(string $itemId, string $mediaObjectId): Response
     {
         $imageId = new UUID($mediaObjectId);
 
@@ -332,44 +208,8 @@ abstract class OfferRestBaseController
         // Also, can we be sure that the given $mediaObjectId points to an image and not a different type?
         $image = $this->mediaManager->getImage($imageId);
 
-        $command_id = $this->editor->removeImage($itemId, $image);
+        $this->editor->removeImage($itemId, $image);
 
-        return new JsonResponse(['commandId' => $command_id]);
-    }
-
-    /**
-     * Save the uploaded image to the destination folder.
-     *
-     * @todo Seems unused, remove? Uses D8-specific functions.
-     */
-    protected function saveUploadedImage(UploadedFile $file, $itemId, $destination)
-    {
-        $filename = $file->getClientOriginalName();
-
-        // Save the image in drupal files.
-        file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
-
-        $file = file_save_data(
-            file_get_contents($file->getPathname()),
-            $destination . '/' . $filename,
-            FILE_EXISTS_RENAME
-        );
-
-        $this->fileUsage->add($file, 'culturefeed_udb3', 'udb3_item', $itemId);
-
-        return $file;
-    }
-
-    /**
-     * Get the file id of a given url.
-     *
-     * @todo Seems unused, remove? Uses D8-specific functions.
-     */
-    protected function getFileIdByUrl($url)
-    {
-        $public_files_path = Settings::get('file_public_path', conf_path() . '/files');
-        $uri = str_replace($GLOBALS['base_url'] . '/' . $public_files_path . '/', 'public://', $url);
-
-        return db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', array(':uri' => $uri))->fetchField();
+        return new NoContent();
     }
 }
