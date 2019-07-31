@@ -4,7 +4,6 @@ namespace CultuurNet\UDB3\Symfony\MyOrganizers;
 
 use CultuurNet\Hydra\PagedCollection;
 use CultuurNet\Hydra\Symfony\PageUrlGenerator;
-use CultuurNet\UDB3\Dashboard\DashboardItemLookupServiceInterface;
 use CultuurNet\UDB3\MyOrganizers\MyOrganizersLookupServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +14,6 @@ class MyOrganizersController
 {
     private const PAGE_ITEM_LIMIT = 50;
     private const PAGE_PARAMETER = 'page';
-
-    /**
-     * @var DashboardItemLookupServiceInterface
-     */
-    private $itemLookupService;
 
     /**
      * @var \CultureFeed_User

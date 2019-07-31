@@ -5,7 +5,6 @@ namespace CultuurNet\UDB3\Symfony\Place;
 use CultuurNet\SearchV3\Serializer\SerializerInterface;
 use CultuurNet\UDB3\EntityServiceInterface;
 use CultuurNet\UDB3\Event\ReadModel\DocumentGoneException;
-use CultuurNet\UDB3\Place\ReadModel\Lookup\PlaceLookupServiceInterface;
 use CultuurNet\UDB3\ReadModel\JsonDocument;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,8 +51,6 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $entityServiceInterface = $this->createMock(EntityServiceInterface::class);
 
-        $lookupService = $this->createMock(PlaceLookupServiceInterface::class);
-
         $serializerInterface = $this->createMock(SerializerInterface::class);
 
         $entityServiceInterface->method('getEntity')
@@ -79,11 +76,10 @@ class ReadPlaceRestControllerTest extends \PHPUnit_Framework_TestCase
 
         /**
          * @var EntityServiceInterface $entityServiceInterface
-         * @var PlaceLookupServiceInterface $lookupService
+         * @var SerializerInterface $serializerInterface
          */
         $this->placeRestController = new ReadPlaceRestController(
             $entityServiceInterface,
-            $lookupService,
             $serializerInterface
         );
     }
