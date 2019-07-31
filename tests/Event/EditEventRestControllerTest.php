@@ -2,10 +2,6 @@
 
 namespace CultuurNet\UDB3\Symfony\Event;
 
-use CultuurNet\UDB3\Address\Address;
-use CultuurNet\UDB3\Address\Locality;
-use CultuurNet\UDB3\Address\PostalCode;
-use CultuurNet\UDB3\Address\Street;
 use CultuurNet\UDB3\ApiGuard\ApiKey\ApiKey;
 use CultuurNet\UDB3\ApiGuard\ApiKey\Reader\QueryParameterApiKeyReader;
 use CultuurNet\UDB3\ApiGuard\Consumer\ConsumerInterface;
@@ -17,17 +13,14 @@ use CultuurNet\UDB3\Event\EventEditingServiceInterface;
 use CultuurNet\UDB3\Event\EventType;
 use CultuurNet\UDB3\Event\ValueObjects\Audience;
 use CultuurNet\UDB3\Event\ValueObjects\AudienceType;
+use CultuurNet\UDB3\Event\ValueObjects\LocationId;
 use CultuurNet\UDB3\Iri\IriGeneratorInterface;
 use CultuurNet\UDB3\Language;
-use CultuurNet\UDB3\Location\Location;
-use CultuurNet\UDB3\Location\LocationId;
 use CultuurNet\UDB3\Media\MediaManagerInterface;
 use CultuurNet\UDB3\Title;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Request;
-use ValueObjects\Geography\Country;
 use ValueObjects\Identity\UUID;
-use ValueObjects\StringLiteral\StringLiteral;
 
 class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -127,16 +120,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
                 new Language('en'),
                 new Title('foo'),
                 new EventType('1.8.2', 'PARTY!'),
-                new Location(
-                    'fe282e4f-35f5-480d-a90b-2720ab883b0a',
-                    new StringLiteral('P-P-Partyzone'),
-                    new Address(
-                        new Street('acmelane 12'),
-                        new PostalCode('3000'),
-                        new Locality('Leuven'),
-                        Country::fromNative('BE')
-                    )
-                )
+                new LocationId('fe282e4f-35f5-480d-a90b-2720ab883b0a')
             )
             ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
 
@@ -166,16 +150,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
                 new Language('en'),
                 new Title('foo'),
                 new EventType('1.8.2', 'PARTY!'),
-                new Location(
-                    'fe282e4f-35f5-480d-a90b-2720ab883b0a',
-                    new StringLiteral('P-P-Partyzone'),
-                    new Address(
-                        new Street('acmelane 12'),
-                        new PostalCode('3000'),
-                        new Locality('Leuven'),
-                        Country::fromNative('BE')
-                    )
-                )
+                new LocationId('fe282e4f-35f5-480d-a90b-2720ab883b0a')
             )
             ->willReturn('A14DD1C8-0F9C-4633-B56A-A908F009AD94');
 
@@ -238,16 +213,7 @@ class EditEventRestControllerTest extends \PHPUnit_Framework_TestCase
                 $eventId,
                 new Title('foo'),
                 new EventType('1.8.2', 'PARTY!'),
-                new Location(
-                    'fe282e4f-35f5-480d-a90b-2720ab883b0a',
-                    new StringLiteral('P-P-Partyzone'),
-                    new Address(
-                        new Street('acmelane 12'),
-                        new PostalCode('3000'),
-                        new Locality('Leuven'),
-                        Country::fromNative('BE')
-                    )
-                )
+                new LocationId('fe282e4f-35f5-480d-a90b-2720ab883b0a')
             );
 
         $response = $this->controller->updateMajorInfo($request, $eventId->toNative());

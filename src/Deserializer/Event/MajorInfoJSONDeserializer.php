@@ -4,10 +4,10 @@ namespace CultuurNet\UDB3\Symfony\Deserializer\Event;
 
 use CultuurNet\Deserializer\DataValidationException;
 use CultuurNet\Deserializer\JSONDeserializer;
+use CultuurNet\UDB3\Event\ValueObjects\LocationId;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarForEventDataValidator;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Calendar\CalendarJSONParser;
-use CultuurNet\UDB3\Symfony\Deserializer\Location\LocationJSONDeserializer;
 use CultuurNet\UDB3\Symfony\Deserializer\Theme\ThemeJSONDeserializer;
 use CultuurNet\UDB3\Title;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -18,11 +18,6 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
      * @var MajorInfoDataValidator
      */
     private $validator;
-
-    /**
-     * @var LocationJSONDeserializer
-     */
-    private $locationDeserializer;
 
     /**
      * @var EventTypeJSONDeserializer
@@ -47,7 +42,6 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
         $this->validator = new MajorInfoDataValidator();
 
         $this->typeDeserializer = new EventTypeJSONDeserializer();
-        $this->locationDeserializer = new LocationJSONDeserializer();
         $this->calendarDeserializer = new CalendarJSONDeserializer(
             new CalendarJSONParser(),
             new CalendarForEventDataValidator()
@@ -69,13 +63,15 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
             new StringLiteral(json_encode($data['type']))
         );
 
-        $location = $this->locationDeserializer->deserialize(
-            new StringLiteral(json_encode($data['location']))
-        );
-
         $calendar = $this->calendarDeserializer->deserialize(
             new StringLiteral(json_encode($data['calendar']))
         );
+
+        $locationId = $data['location'];
+        if (is_array($locationId) && isset($locationId['id'])) {
+            $locationId = $locationId['id'];
+        }
+        $locationId = new LocationId($locationId);
 
         $theme = null;
         if (!empty($data['theme'])) {
@@ -87,7 +83,7 @@ class MajorInfoJSONDeserializer extends JSONDeserializer
         return new MajorInfo(
             new Title($data['name']),
             $type,
-            $location,
+            $locationId,
             $calendar,
             $theme
         );
